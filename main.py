@@ -10,6 +10,7 @@
 #################################################################################
 ##
 ## Import
+
 import pygame
 import random
 import copy
@@ -82,7 +83,11 @@ def getSprite(Color):
 		Tab.append(tabTemp)
 	return Tab
 
-def Dessine():
+# dessine():
+#	Parcourt TAB et place les images aux coordonnees idoines
+#	en fonction de la valeur des cases du tableau
+#	Puis place les joueurs
+def dessine():
 	for i in range(LARGEUR):
 		for j in range(HAUTEUR):
 			if(TAB[j][i] == 2):
@@ -93,8 +98,12 @@ def Dessine():
 				screen.blit(Grass,(i*ZOOM,j*ZOOM))
 
 	JoueurBleu.draw(screen)
+	pygame.display.flip() # Rafraichis l'affichage de Pygame
 
-# Setup
+#################################################################################
+##
+##  Initialisation
+
 pygame.init()
 police = pygame.font.SysFont("arial", 22)
 screeenWidth = (LARGEUR+1) * ZOOM
@@ -105,25 +114,47 @@ done = False
 clock = pygame.time.Clock()   
 pygame.mouse.set_visible(True)
 
-JoueurBleu = Player(64,0,getSprite(Bleu))
+JoueurBleu = Player(96,102,getSprite(Bleu))
+
 #################################################################################
 ##
-##   GAME LOOP
+##   Boucle principale
 
 
-# -------- Main Program Loop -----------
+# --------  Main -----------
 while not done:
-   event = pygame.event.Event(pygame.USEREVENT)    
-   pygame.event.pump()
-   for event in pygame.event.get():
-      if event.type == pygame.QUIT:
-         done = True
-     
-   pygame.display.flip()
+	event = pygame.event.Event(pygame.USEREVENT)    
+	pygame.event.pump()
+
+	for event in pygame.event.get():
+		if event.type == pygame.QUIT:
+			done = True
+
+	keysPressed = pygame.key.get_pressed()	# On retient la derniere touche pressee
+
+	## Mouvements du Joueur
+	#	Deplacement
+	#	On choisit la direction du sprite
+	#	On passe a la sprite d'apres modulo le nombre de sprite
+
+	if(keysPressed[pygame.K_DOWN]):
+		JoueurBleu.y += 4
+		JoueurBleu.spriteDir = 0	
+		JoueurBleu.spriteCount = (JoueurBleu.spriteCount + 1) % 4
+	if(keysPressed[pygame.K_UP]):
+		JoueurBleu.y -= 4
+		JoueurBleu.spriteDir = 3
+		JoueurBleu.spriteCount = (JoueurBleu.spriteCount + 1) % 4
+	if(keysPressed[pygame.K_RIGHT]):
+		JoueurBleu.x += 4
+		JoueurBleu.spriteDir = 2
+		JoueurBleu.spriteCount = (JoueurBleu.spriteCount + 1) % 4
+	if(keysPressed[pygame.K_LEFT]):
+		JoueurBleu.x -= 4
+		JoueurBleu.spriteDir = 1
+		JoueurBleu.spriteCount = (JoueurBleu.spriteCount + 1) % 4
+
+	dessine()	# On redessine l'affichage et on actualise
+	clock.tick(30) # Limite d'image par seconde
  
-   Dessine()
-    # Limit frames per second
-   clock.tick(20)
- 
-# Close the window and quit.
-pygame.quit()
+pygame.quit() # Ferme la fenetre et quitte.

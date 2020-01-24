@@ -11,6 +11,8 @@ class Player:
 		self.x = startX
 		self.y = startY
 		self.sprite = spriteTab
+		self.spriteDir = 0
+		self.spriteCount = 0
 
 	def draw(self, surface):
-		surface.blit(self.sprite[0][0], (self.x, self.y))
+		surface.blit(self.sprite[self.spriteDir][self.spriteCount], (self.x - 32, self.y - 102))
