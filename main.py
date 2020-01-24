@@ -45,6 +45,7 @@ LARGEUR = len(TAB[0])  # nb de cases en largeur
 
 Block = pygame.image.load("images/blocks/stone.png")
 BlockMiddle = pygame.image.load("images/blocks/stone2.png")
+Grass = pygame.image.load("images/blocks/grass.png")
 #################################################################
 ##
 ##  INIT FENETRE 
@@ -55,6 +56,8 @@ def Dessine():
 				screen.blit(BlockMiddle,(i*ZOOM,j*ZOOM))
 			if(TAB[j][i] == 1):
 				screen.blit(Block,(i*ZOOM,j*ZOOM))
+			if(TAB[j][i] == 0):
+				screen.blit(Grass,(i*ZOOM,j*ZOOM))
 
 
 # Setup
