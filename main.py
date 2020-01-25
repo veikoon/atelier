@@ -46,7 +46,6 @@ TAB = [ [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
         [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
 
 
-ZOOM = 64   # Taille d'une case en pixels
 HAUTEUR = len(TAB)     # Nombre de cases en hauteur
 LARGEUR = len(TAB[0])  # Nombre de cases en largeur
 GREEN = [0, 255, 0]
@@ -134,14 +133,18 @@ police = pygame.font.SysFont("arial", 22)
 font = pygame.font.SysFont("arial", 50)
 screenInfo = pygame.display.Info()
 screeenWidth = screenInfo.current_w
-screenHeight = screenInfo.current_h
+screenHeight = screenInfo.current_h - 100
 screen = pygame.display.set_mode((screeenWidth,screenHeight), RESIZABLE)
 pygame.display.set_caption("ESIEE - BOMBERMAN")
 done = False
 clock = pygame.time.Clock()
 pygame.mouse.set_visible(True)
 temps = time.time()
+
 JoueurBleu = Player(96,102,getSprite(Bleu))
+
+ZOOM = int((64/1920)*screeenWidth)   # Taille d'une case en pixels
+
 
 #################################################################################
 ##
