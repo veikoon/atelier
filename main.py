@@ -12,6 +12,7 @@
 ## Import
 
 import pygame
+from pygame import *
 import random
 import copy
 import time	
@@ -130,9 +131,10 @@ def move(player, posX, posY):
 pygame.init()
 police = pygame.font.SysFont("arial", 22)
 font = pygame.font.SysFont("arial", 50)
-screeenWidth = (LARGEUR+1) * ZOOM
-screenHeight = (HAUTEUR+2) * ZOOM
-screen = pygame.display.set_mode((screeenWidth,screenHeight))
+screenInfo = pygame.display.Info()
+screeenWidth = screenInfo.current_w
+screenHeight = screenInfo.current_h
+screen = pygame.display.set_mode((screeenWidth,screenHeight), RESIZABLE)
 pygame.display.set_caption("ESIEE - BOMBERMAN")
 done = False
 clock = pygame.time.Clock()   
@@ -159,7 +161,6 @@ while not done:
 	## Mouvements du Joueur
 	#	On choisit la direction du sprite en fonction de sa position dans le tableau des sprites
 	#	On fait appelle a la fonction move pour changer les coordonnees et les sprites
-	print(keysPressed)
 	if(keysPressed[pygame.K_DOWN]):
 		JoueurBleu.spriteDir = 0
 		move(JoueurBleu,0,4)
