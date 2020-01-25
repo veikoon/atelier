@@ -20,4 +20,4 @@ from pygame import *
 
 class Sprite:
 
-    # fonction getSprite(.)
+    # fonction getSprite()

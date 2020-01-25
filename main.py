@@ -17,7 +17,7 @@ import random
 import copy
 import time
 from Player import Player
-from Sprite import Sprite
+#from Sprite import Sprite
 
 #################################################################################
 ##
