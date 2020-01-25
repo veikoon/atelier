@@ -12,15 +12,17 @@
 ## Import
 
 import pygame
+from pygame import *
 import random
 import copy
-import time	
+import time
 from Player import Player
+from Sprite import Sprite
 
 #################################################################################
 ##
 ##  Variables globales
- 
+
 # TAB est la matrice permettant de former la carte
 # 0 vide
 # 1 mur exterieur
@@ -41,9 +43,9 @@ TAB = [ [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
         [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
         [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
         [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]       
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
 
-   
+
 ZOOM = 64   # Taille d'une case en pixels
 HAUTEUR = len(TAB)     # Nombre de cases en hauteur
 LARGEUR = len(TAB[0])  # Nombre de cases en largeur
@@ -72,7 +74,7 @@ Vert = pygame.image.load("images/ia/Vert/sprite.png")
 ##
 ##  Fonctions principales
 
-# getSprite(Color): 
+# getSprite(Color):
 # 	Decoupe l'image Color en sprite
 #	Met les sprite a l'echelle de la carte
 #	Les rajoute dans un tableau en 2D tel que :
@@ -130,12 +132,13 @@ def move(player, posX, posY):
 pygame.init()
 police = pygame.font.SysFont("arial", 22)
 font = pygame.font.SysFont("arial", 50)
-screeenWidth = (LARGEUR+1) * ZOOM
-screenHeight = (HAUTEUR+2) * ZOOM
-screen = pygame.display.set_mode((screeenWidth,screenHeight))
+screenInfo = pygame.display.Info()
+screeenWidth = screenInfo.current_w
+screenHeight = screenInfo.current_h
+screen = pygame.display.set_mode((screeenWidth,screenHeight), RESIZABLE)
 pygame.display.set_caption("ESIEE - BOMBERMAN")
 done = False
-clock = pygame.time.Clock()   
+clock = pygame.time.Clock()
 pygame.mouse.set_visible(True)
 temps = time.time()
 JoueurBleu = Player(96,102,getSprite(Bleu))
@@ -147,7 +150,7 @@ JoueurBleu = Player(96,102,getSprite(Bleu))
 
 # --------  Main -----------
 while not done:
-	event = pygame.event.Event(pygame.USEREVENT)    
+	event = pygame.event.Event(pygame.USEREVENT)
 	pygame.event.pump()
 
 	for event in pygame.event.get():
@@ -176,5 +179,5 @@ while not done:
 	screen.fill(BLACK)
 	dessine()	# On redessine l'affichage et on actualise
 	clock.tick(30) # Limite d'image par seconde
- 
+
 pygame.quit() # Ferme la fenetre et quitte.
