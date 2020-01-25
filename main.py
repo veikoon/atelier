@@ -159,7 +159,6 @@ while not done:
 	## Mouvements du Joueur
 	#	On choisit la direction du sprite en fonction de sa position dans le tableau des sprites
 	#	On fait appelle a la fonction move pour changer les coordonnees et les sprites
-	print(keysPressed)
 	if(keysPressed[pygame.K_DOWN]):
 		JoueurBleu.spriteDir = 0
 		move(JoueurBleu,0,4)
