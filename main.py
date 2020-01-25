@@ -14,6 +14,7 @@
 import pygame
 import random
 import copy
+import time	
 from Player import Player
 
 #################################################################################
@@ -27,9 +28,9 @@ from Player import Player
 # 3 briques destructibles
 
 TAB = [ [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,2,3,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
+        [1,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
         [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
         [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
         [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
@@ -46,6 +47,9 @@ TAB = [ [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 ZOOM = 64   # Taille d'une case en pixels
 HAUTEUR = len(TAB)     # Nombre de cases en hauteur
 LARGEUR = len(TAB[0])  # Nombre de cases en largeur
+GREEN = [0, 255, 0]
+WHITE = [255, 255, 255]
+BLACK = [0, 0, 0]
 
 #################################################################################
 ##
@@ -55,6 +59,7 @@ LARGEUR = len(TAB[0])  # Nombre de cases en largeur
 Block = pygame.image.load("images/blocks/stone.png")
 BlockMiddle = pygame.image.load("images/blocks/stone2.png")
 Grass = pygame.image.load("images/blocks/grass.png")
+Brick = pygame.image.load("images/blocks/brick.png")
 
 # des sprites des differents personnages
 Bleu = pygame.image.load("images/ia/Bleu/sprite.png")
@@ -90,6 +95,8 @@ def getSprite(Color):
 def dessine():
 	for i in range(LARGEUR):
 		for j in range(HAUTEUR):
+			if(TAB[j][i] == 3):
+				screen.blit(Brick,(i*ZOOM,j*ZOOM))
 			if(TAB[j][i] == 2):
 				screen.blit(BlockMiddle,(i*ZOOM,j*ZOOM))
 			if(TAB[j][i] == 1):
@@ -98,7 +105,23 @@ def dessine():
 				screen.blit(Grass,(i*ZOOM,j*ZOOM))
 
 	JoueurBleu.draw(screen)
+	screen.blit(font.render(str(actualTime // 1), True, WHITE), ((1920 // 2) - 25 , 64*HAUTEUR + 32))
 	pygame.display.flip() # Rafraichis l'affichage de Pygame
+
+## move():
+#	On change les coordonnees du joueur selon son deplacement
+#	On regarde la retenu de sprite est complete ou non:
+#		* Si oui on change de sprite (+1 %Nombre de sprite pour ne pas sortir du tableau) et et on reset la retenu de sprite
+#		* Si non on augmente la retenu
+#	(permet d'eviter un changement de sprite trop rapide par rapport a sa vitesse)
+def move(player, posX, posY):
+	player.y += posY
+	player.x += posX
+	if(player.spriteOffset == 2):
+		player.spriteCount = (JoueurBleu.spriteCount + 1) % 4
+		player.spriteOffset = 0
+	else:
+		player.spriteOffset += 1
 
 #################################################################################
 ##
@@ -106,6 +129,7 @@ def dessine():
 
 pygame.init()
 police = pygame.font.SysFont("arial", 22)
+font = pygame.font.SysFont("arial", 50)
 screeenWidth = (LARGEUR+1) * ZOOM
 screenHeight = (HAUTEUR+2) * ZOOM
 screen = pygame.display.set_mode((screeenWidth,screenHeight))
@@ -113,7 +137,7 @@ pygame.display.set_caption("ESIEE - BOMBERMAN")
 done = False
 clock = pygame.time.Clock()   
 pygame.mouse.set_visible(True)
-
+temps = time.time()
 JoueurBleu = Player(96,102,getSprite(Bleu))
 
 #################################################################################
@@ -130,30 +154,27 @@ while not done:
 		if event.type == pygame.QUIT:
 			done = True
 
-	keysPressed = pygame.key.get_pressed()	# On retient la derniere touche pressee
+	keysPressed = pygame.key.get_pressed()	# On retient les touches pressees
 
 	## Mouvements du Joueur
-	#	Deplacement
-	#	On choisit la direction du sprite
-	#	On passe a la sprite d'apres modulo le nombre de sprite
-
+	#	On choisit la direction du sprite en fonction de sa position dans le tableau des sprites
+	#	On fait appelle a la fonction move pour changer les coordonnees et les sprites
+	print(keysPressed)
 	if(keysPressed[pygame.K_DOWN]):
-		JoueurBleu.y += 4
-		JoueurBleu.spriteDir = 0	
-		JoueurBleu.spriteCount = (JoueurBleu.spriteCount + 1) % 4
+		JoueurBleu.spriteDir = 0
+		move(JoueurBleu,0,4)
 	if(keysPressed[pygame.K_UP]):
-		JoueurBleu.y -= 4
+		move(JoueurBleu,0,-4)
 		JoueurBleu.spriteDir = 3
-		JoueurBleu.spriteCount = (JoueurBleu.spriteCount + 1) % 4
 	if(keysPressed[pygame.K_RIGHT]):
-		JoueurBleu.x += 4
+		move(JoueurBleu,4,0)
 		JoueurBleu.spriteDir = 2
-		JoueurBleu.spriteCount = (JoueurBleu.spriteCount + 1) % 4
 	if(keysPressed[pygame.K_LEFT]):
-		JoueurBleu.x -= 4
+		move(JoueurBleu,-4,0)
 		JoueurBleu.spriteDir = 1
-		JoueurBleu.spriteCount = (JoueurBleu.spriteCount + 1) % 4
 
+	actualTime = time.time() - temps
+	screen.fill(BLACK)
 	dessine()	# On redessine l'affichage et on actualise
 	clock.tick(30) # Limite d'image par seconde
  
