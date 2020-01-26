@@ -172,6 +172,15 @@ while not done:
         if event.type == pygame.QUIT:
             done = True
 
+        if event.type == pygame.VIDEORESIZE:
+            screenHeight = event.h
+            screeenWidth = event.w
+            ZOOM = int((64/1920)*screeenWidth)
+            pygame.display.flip()
+            dessine()
+        
+
+
     keysPressed = pygame.key.get_pressed()  # On retient les touches pressees
 
     ## Mouvements du Joueur
@@ -191,6 +200,7 @@ while not done:
         JoueurBleu.spriteDir = 1
     if(keysPressed[pygame.K_SPACE]):
         poseBombe(JoueurBleu)
+
 
     actualTime = time.time() - temps
     screen.fill(BLACK)
