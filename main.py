@@ -18,6 +18,7 @@ import random
 import copy
 import time
 from Player import Player
+from Bombe import Bombe
 #from Sprite import Sprite
 
 #################################################################################
