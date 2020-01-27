@@ -125,6 +125,10 @@ def dessine():
                 screen.blit(Grass,(i*ZOOM,j*ZOOM))
 
     JoueurBleu.draw(screen)
+    JoueurVert.draw(screen)
+    JoueurJaune.draw(screen)
+    JoueurRouge.draw(screen)
+    JoueurOrange.draw(screen)
     screen.blit(font.render(str(actualTime // 1), True, WHITE), ((1920 // 2) - 25 , 64*HAUTEUR + 32))
     pygame.display.flip() # Rafraichis l'affichage de Pygame
 
@@ -169,9 +173,22 @@ temps = time.time()
 pygame.mixer.music.play()#activation de la musique
 ZOOM = int((64/1920)*screeenWidth)   # Taille d'une case en pixels
 JoueurBleu = Player(96,102,getSprite(Bleu,int(ZOOM*(102/64))))
+liste_ia = []
+JoueurJaune = Player(720,350,getSprite(Jaune,int(ZOOM*(102/64))))
+JoueurOrange = Player(1450,102,getSprite(Orange,int(ZOOM*(102/64))))
+JoueurRouge = Player(1450,700,getSprite(Rouge,int(ZOOM*(102/64))))
+JoueurVert= Player(96,700,getSprite(Vert,int(ZOOM*(102/64))))
 
+
+liste_ia.append(JoueurJaune)
+liste_ia.append(JoueurOrange)
+liste_ia.append(JoueurRouge)
+liste_ia.append(JoueurVert)
 
 JoueurBleu = Player(96,102,getSprite(Bleu,int(ZOOM*(102/64))))
+
+#Deplacement aléatoire des personnages
+
 
 
 
@@ -196,7 +213,10 @@ while not done:
             ZOOM = int((64/1920)*screeenWidth)
 
             JoueurBleu.sprite = getSprite(Bleu,int(ZOOM*(102/64)))
-
+            JoueurJaune.sprite = getSprite(Jaune,int(ZOOM*(102/64)))
+            JoueurOrange.sprite = getSprite(Orange,int(ZOOM*(102/64)))
+            JoueurRouge.sprite = getSprite(Rouge,int(ZOOM*(102/64)))
+            JoueurVert.sprite = getSprite(Vert,int(ZOOM*(102/64)))
             Grass = pygame.transform.scale(Grass,(ZOOM,ZOOM))
             Brick = pygame.transform.scale(Brick,(ZOOM,ZOOM))
             Block = pygame.transform.scale(Block,(ZOOM,ZOOM))
