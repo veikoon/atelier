@@ -2,7 +2,7 @@
 #   Class Bombe from Bomberman                                                  #
 #   Created by Quentin : 25/01/2020                                             #
 #                                                                               #
-#   Cette classe permet de definir toutes les propriete d'une Bombe         #
+#   Cette classe permet de definir toutes les propriete d'une Bombe         	#
 #                                                                               #
 #################################################################################
 import pygame

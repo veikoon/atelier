@@ -54,6 +54,7 @@ GREEN = [0, 255, 0]
 WHITE = [255, 255, 255]
 BLACK = [0, 0, 0]
 actualTime = 0
+vitesse = 4
 
 ListBomb = []
 #################################################################################
@@ -162,19 +163,24 @@ def poseBombe(player):
     if(TAB[caseY][caseX] == 0):
         TAB[caseY][caseX] = 4
 
-def getTabPos(player):
-    posX = player.x // ZOOM
-    posY = player.y // ZOOM
+def getTabPos(x,y):
+    posX = x // ZOOM
+    posY = y // ZOOM
     return (posX,posY)
 
 def getPossibleMove(player):
     possibleMove = []
-    posTabX = getTabPos(player)[1]
-    posTabY = getTabPos(player)[0]
-    if(TAB[posTabX+1][posTabY] == 0 or TAB[posTabX+1][posTabY] == 5): possibleMove.append((0,1))
-    if(TAB[posTabX-1][posTabY] == 0 or TAB[posTabX-1][posTabY] == 5): possibleMove.append((0,-1))
-    if(TAB[posTabX][posTabY+1] == 0 or TAB[posTabX][posTabY+1] == 5): possibleMove.append((1,0))
-    if(TAB[posTabX][posTabY-1] == 0 or TAB[posTabX][posTabY-1] == 5): possibleMove.append((-1,0))
+    tab = []
+
+    tab.append(TAB[getTabPos(player.x,player.y+vitesse)[1]][getTabPos(player.x,player.y+vitesse)[0]])
+    tab.append(TAB[getTabPos(player.x,player.y-vitesse)[1]][getTabPos(player.x,player.y-vitesse)[0]])
+    tab.append(TAB[getTabPos(player.x+vitesse,player.y)[1]][getTabPos(player.x+vitesse,player.y)[0]])
+    tab.append(TAB[getTabPos(player.x-vitesse,player.y)[1]][getTabPos(player.x-vitesse,player.y)[0]])
+
+    if(tab[0]  == 0 or tab[0]  == 5): possibleMove.append((0,1))
+    if(tab[1]  == 0 or tab[1]  == 5): possibleMove.append((0,-1))
+    if(tab[2]  == 0 or tab[2]  == 5): possibleMove.append((1,0))
+    if(tab[3]  == 0 or tab[3]  == 5): possibleMove.append((-1,0))
     return possibleMove
 
 
@@ -189,14 +195,14 @@ screenInfo = pygame.display.Info()
 screeenWidth = screenInfo.current_w
 screenHeight = screenInfo.current_h - 100
 screen = pygame.display.set_mode((screeenWidth,screenHeight), RESIZABLE)
-pygame.display.set_caption("ESIEE - BOMBERMAN")
+pygame.display.set_caption("ESIEE - BOMB HERMAN")
 done = False
 clock = pygame.time.Clock()
 pygame.mouse.set_visible(True)
 temps = time.time()
 pygame.mixer.music.play()#activation de la musique
 ZOOM = int((64/1920)*screeenWidth)   # Taille d'une case en pixels
-JoueurBleu = Player(96,102,getSprite(Bleu,int(ZOOM*(102/64))))
+JoueurBleu = Player(ZOOM + ZOOM//2,ZOOM + ZOOM//2,getSprite(Bleu,int(ZOOM*(102/64))))
 liste_ia = []
 JoueurJaune = Player(720,350,getSprite(Jaune,int(ZOOM*(102/64))))
 JoueurOrange = Player(1450,102,getSprite(Orange,int(ZOOM*(102/64))))
@@ -208,8 +214,6 @@ liste_ia.append(JoueurJaune)
 liste_ia.append(JoueurOrange)
 liste_ia.append(JoueurRouge)
 liste_ia.append(JoueurVert)
-
-JoueurBleu = Player(96,102,getSprite(Bleu,int(ZOOM*(102/64))))
 
 #Deplacement aléatoire des personnages
 dep = [(0,4), (0,-4), (4,0),(-4,0)]
@@ -269,18 +273,18 @@ while not done:
     #   On choisit la direction du sprite en fonction de sa position dans le tableau des sprites
     #   On fait appelle a la fonction move pour changer les coordonnees et les sprites
     possibleMove = getPossibleMove(JoueurBleu)
-    print(possibleMove)
+    print(possibleMove,getTabPos(JoueurBleu.x,JoueurBleu.y))
     if(keysPressed[pygame.K_DOWN]  and (0,1) in possibleMove):
         JoueurBleu.spriteDir = 0
-        move(JoueurBleu,0,ZOOM)
+        move(JoueurBleu,0,vitesse)
     if(keysPressed[pygame.K_UP] and (0,-1) in possibleMove):
-        move(JoueurBleu,0,-ZOOM)
+        move(JoueurBleu,0,-vitesse)
         JoueurBleu.spriteDir = 3
     if(keysPressed[pygame.K_RIGHT] and (1,0) in possibleMove):
-        move(JoueurBleu,ZOOM,0)
+        move(JoueurBleu,vitesse,0)
         JoueurBleu.spriteDir = 2
     if(keysPressed[pygame.K_LEFT] and (-1,0) in possibleMove):
-        move(JoueurBleu,-ZOOM,0)
+        move(JoueurBleu,-vitesse,0)
         JoueurBleu.spriteDir = 1
     if(keysPressed[pygame.K_SPACE]):
         poseBombe(JoueurBleu)
