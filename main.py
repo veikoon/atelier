@@ -153,6 +153,21 @@ def poseBombe(player):
     if(TAB[caseY][caseX] == 0):
         TAB[caseY][caseX] = 4
 
+def getTabPos(player):
+    posX = player.x // ZOOM
+    posY = player.y // ZOOM
+    return (posX,posY)
+
+def getPossibleMove(player):
+    possibleMove = []
+    posTabX = getTabPos(player)[1]
+    posTabY = getTabPos(player)[0]
+    if(TAB[posTabX+1][posTabY] == 0 or TAB[posTabX+1][posTabY] == 5): possibleMove.append((0,1))
+    if(TAB[posTabX-1][posTabY] == 0 or TAB[posTabX-1][posTabY] == 5): possibleMove.append((0,-1))
+    if(TAB[posTabX][posTabY+1] == 0 or TAB[posTabX][posTabY+1] == 5): possibleMove.append((1,0))
+    if(TAB[posTabX][posTabY-1] == 0 or TAB[posTabX][posTabY-1] == 5): possibleMove.append((-1,0))
+    return possibleMove
+
 
 #################################################################################
 ##
@@ -232,21 +247,22 @@ while not done:
     ## Mouvements du Joueur
     #   On choisit la direction du sprite en fonction de sa position dans le tableau des sprites
     #   On fait appelle a la fonction move pour changer les coordonnees et les sprites
-    if(keysPressed[pygame.K_DOWN]):
+    possibleMove = getPossibleMove(JoueurBleu)
+    print(possibleMove)
+    if(keysPressed[pygame.K_DOWN]  and (0,1) in possibleMove):
         JoueurBleu.spriteDir = 0
-        move(JoueurBleu,0,4)
-    if(keysPressed[pygame.K_UP]):
-        move(JoueurBleu,0,-4)
+        move(JoueurBleu,0,ZOOM)
+    if(keysPressed[pygame.K_UP] and (0,-1) in possibleMove):
+        move(JoueurBleu,0,-ZOOM)
         JoueurBleu.spriteDir = 3
-    if(keysPressed[pygame.K_RIGHT]):
-        move(JoueurBleu,4,0)
+    if(keysPressed[pygame.K_RIGHT] and (1,0) in possibleMove):
+        move(JoueurBleu,ZOOM,0)
         JoueurBleu.spriteDir = 2
-    if(keysPressed[pygame.K_LEFT]):
-        move(JoueurBleu,-4,0)
+    if(keysPressed[pygame.K_LEFT] and (-1,0) in possibleMove):
+        move(JoueurBleu,-ZOOM,0)
         JoueurBleu.spriteDir = 1
     if(keysPressed[pygame.K_SPACE]):
         poseBombe(JoueurBleu)
-
 
     actualTime = time.time() - temps
     screen.fill(BLACK)
