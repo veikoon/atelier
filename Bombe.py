@@ -17,7 +17,6 @@ class Bombe:
         self.spriteDir = 0          # Selectionne le tableau de sprite (en 1D) correspondant a la direction du joueur
         self.spriteCount = 0        # Selectionne le sprite du tableau correspondant au mouvement actuel
         self.spriteOffset = 0       # Permet de changer de sprite en fonction du decalage et non a chaque mouvement
-        self.ListBomb =[]
 
 
 # getSpriteBombe(imgBombe):
