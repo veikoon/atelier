@@ -153,6 +153,13 @@ def draw():
 
 	pygame.display.flip() # Rafraichis l'affichage de Pygame
 
+
+def mort(Player):
+    Player.lives -= 1
+    if Player.lives == 0:
+        LIST_JOUEUR.remove(Player)
+    
+
 # removeBomb(LIST_BOMB)
 # regarde chaque bombe de la liste et si la bombe explose, l'enleve de la liste des BOMBES
 def removeBomb():

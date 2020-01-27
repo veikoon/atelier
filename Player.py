@@ -16,7 +16,7 @@ class Player:
 		self.spriteDir = 0			# Selectionne le tableau de sprite (en 1D) correspondant a la direction du joueur
 		self.spriteCount = 0		# Selectionne le sprite du tableau correspondant au mouvement actuel
 		self.spriteOffset = 0		# Permet de changer de sprite en fonction du decalage et non a chaque mouvement
-
+		self.lives = 3
 
 	##	draw():
 	# Permet de dessiner le personnage dont les coordonnees sont au milieu de ses pieds
@@ -55,3 +55,4 @@ class Player:
 			self.spriteOffset = 0
 		else:
 			self.spriteOffset += 1
+
