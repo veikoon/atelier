@@ -188,6 +188,7 @@ liste_ia.append(JoueurVert)
 JoueurBleu = Player(96,102,getSprite(Bleu,int(ZOOM*(102/64))))
 
 #Deplacement aléatoire des personnages
+dep = [(0,4), (0,-4), (4,0),(-4,0)]
 
 
 
@@ -225,8 +226,19 @@ while not done:
             pygame.display.flip()
             dessine()
 
-
-
+    for ia in liste_ia:
+        deplacement_ia = []
+        deplacement_ia = random.randrange(len(dep))
+        if deplacement_ia == 0:
+            ia.spriteDir = 0
+        if deplacement_ia == 1:
+            ia.spriteDir = 3
+        if deplacement_ia == 2:
+            ia.spriteDir = 2
+        if deplacement_ia == 3:
+            ia.spriteDir = 1
+        move(ia,dep[deplacement_ia][0], dep[deplacement_ia][1])
+        time.sleep(0.01)
     keysPressed = pygame.key.get_pressed()  # On retient les touches pressees
 
     ## Mouvements du Joueur
