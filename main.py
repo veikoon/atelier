@@ -238,7 +238,7 @@ while not done:
         if deplacement_ia == 3:
             ia.spriteDir = 1
         move(ia,dep[deplacement_ia][0], dep[deplacement_ia][1])
-        time.sleep(0.01)
+        time.sleep(0.00001)
     keysPressed = pygame.key.get_pressed()  # On retient les touches pressees
 
     ## Mouvements du Joueur
