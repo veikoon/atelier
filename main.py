@@ -13,6 +13,7 @@
 
 import pygame
 from pygame import *
+import os
 import random
 import copy
 import time
@@ -28,7 +29,7 @@ from Player import Player
 # 1 mur exterieur
 # 2 mur interieur
 # 3 briques destructibles
-
+pygame.init()
 TAB = [ [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
         [1,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
         [1,0,2,3,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
@@ -51,7 +52,7 @@ LARGEUR = len(TAB[0])  # Nombre de cases en largeur
 GREEN = [0, 255, 0]
 WHITE = [255, 255, 255]
 BLACK = [0, 0, 0]
-
+actualTime = 0
 #################################################################################
 ##
 ##  Importation des images :
@@ -71,6 +72,19 @@ Vert = pygame.image.load("images/ia/Vert/sprite.png")
 
 #du sprite de la bombe
 Bombe = pygame.image.load("images/bombe/bomb.png")
+
+
+#################################################################################
+##
+##  Importation des musiques :
+
+#importation de la musique du jeu
+
+pygame.mixer.music.load("son/bomberman_stage_theme.mp3")
+
+
+
+
 
 #################################################################################
 ##
@@ -140,7 +154,7 @@ def poseBombe(player):
 ##
 ##  Initialisation
 
-pygame.init()
+
 police = pygame.font.SysFont("arial", 22)
 font = pygame.font.SysFont("arial", 50)
 screenInfo = pygame.display.Info()
@@ -152,7 +166,7 @@ done = False
 clock = pygame.time.Clock()
 pygame.mouse.set_visible(True)
 temps = time.time()
-
+pygame.mixer.music.play()#activation de la musique
 JoueurBleu = Player(96,102,getSprite(Bleu))
 
 ZOOM = int((64/1920)*screeenWidth)   # Taille d'une case en pixels
@@ -178,7 +192,7 @@ while not done:
             ZOOM = int((64/1920)*screeenWidth)
             pygame.display.flip()
             dessine()
-        
+
 
 
     keysPressed = pygame.key.get_pressed()  # On retient les touches pressees
@@ -206,5 +220,5 @@ while not done:
     screen.fill(BLACK)
     dessine()   # On redessine l'affichage et on actualise
     clock.tick(30) # Limite d'image par seconde
-
+    #a mettre quand le personnage est mort : pygame.mixer.music.stop()
 pygame.quit() # Ferme la fenetre et quitte.
