@@ -118,7 +118,7 @@ def draw():
 	for i in range(LARGEUR):
 		for j in range(HAUTEUR):
 			if(TAB[j][i] == 4):
-				LIST_BOMB.append(Bombe(i*ZOOM+44,j*ZOOM+100,BOMBES, i, j))
+				LIST_BOMB.append(Bombe(i*ZOOM+44,j*ZOOM+100,BOMBES, i, j,TIME))
 				TAB[j][i] = 0
 			if(TAB[j][i] == 0): SCREEN.blit(GRASS,(i*ZOOM,j*ZOOM))
 			if(TAB[j][i] == 1): SCREEN.blit(BLOCK,(i*ZOOM,j*ZOOM))
@@ -294,11 +294,15 @@ while not DONE:
 
 	if(keysPressed[pygame.K_SPACE]):
 		poseBombe(JOUEUR_BLEU)
-
+	for bomb in LIST_BOMB:
+		print(TIME - bomb.timeBomb)
+		if(TIME - bomb.timeBomb > 4):
+			bomb.explode = True
+	
 	destroy()
 	removeBomb()
 	SCREEN.fill(BLACK)
-	TIME = time.time() - TIME
+	TIME = time.time()
 	draw()   # On redessine l'affichage et on actualise
 	CLOCK.tick(30) # Limite d'image par seconde
 

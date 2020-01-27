@@ -8,13 +8,14 @@
 import pygame
 from pygame import *
 class Bombe:
-    def __init__(self,startX, startY, bombes, caseX, caseY):
+    def __init__(self,startX, startY, bombes, caseX, caseY,times):
         self.explode = False
         self.game_frame = 0         # initialize the game_frame counter
         self.x = startX             # Position initiale en x
         self.y = startY             # Position initiale en y
         self.sprite = self.getSprite(bombes)     # Tableau de sprites en 2D
-        self.spriteDir = 0          # Selectionne le tableau de sprite (en 1D) correspondant a la direction du joueur
+        self.spriteDir = 0    
+        self.timeBomb = times      # Selectionne le tableau de sprite (en 1D) correspondant a la direction du joueur
         self.spriteCount = 0        # Selectionne le sprite du tableau correspondant au mouvement actuel
         self.spriteOffset = 0       # Permet de changer de sprite en fonction du decalage et non a chaque mouvement
         self.caseX = caseX
