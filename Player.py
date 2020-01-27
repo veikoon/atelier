@@ -30,7 +30,7 @@ class Player:
 	#   Met les sprite a l'echelle de la carte
 	#   Les rajoute dans un tableau en 2D tel que :
 	#   Tab = [[SpriteAvant_1, SpriteAvant_2, ...],[SpriteDroit_1, SpriteDroit_2, ...]]
-	def getSprite(self, Color, hauteur, zoom):	
+	def getSprite(self, Color, hauteur, zoom):
 		Tab = []
 		for j in range(4):
 			tabTemp = []
@@ -56,3 +56,20 @@ class Player:
 		else:
 			self.spriteOffset += 1
 
+
+
+#################################################################################
+#	Class Player from Bomberman													#
+#	Created by Manon : 27/01/2020												#
+#																				#
+#	Cette classe permet de definir toutes les propriete d'une IA				#
+#	Cette classe herite de la classe player										#
+#																				#
+#################################################################################
+
+
+class IA(Player):
+
+	def __init__(self,startX, startY, color, hauteur, zoom, direction):
+		super.__init__(startX, startY, color, hauteur, zoom)
+		self.dir = direction
