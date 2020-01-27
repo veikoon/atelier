@@ -54,6 +54,8 @@ GREEN = [0, 255, 0]
 WHITE = [255, 255, 255]
 BLACK = [0, 0, 0]
 actualTime = 0
+
+ListBomb = []
 #################################################################################
 ##
 ##  Importation des images :
@@ -72,7 +74,7 @@ Orange = pygame.image.load("images/ia/Orange/sprite.png")
 Vert = pygame.image.load("images/ia/Vert/sprite.png")
 
 #du sprite de la bombe
-Bombe = pygame.image.load("images/bombe/bomb.png")
+Bombes = pygame.image.load("images/bombe/bomb.png")
 
 
 #################################################################################
@@ -115,7 +117,8 @@ def dessine():
     for i in range(LARGEUR):
         for j in range(HAUTEUR):
             if(TAB[j][i] == 4):
-                screen.blit(Bombe,(i*ZOOM,j*ZOOM))
+                Bombe.addBomb(i*ZOOM+44,j*ZOOM+100,Bombes,ListBomb)
+                TAB[j][i] = 0
             if(TAB[j][i] == 3):
                 screen.blit(Brick,(i*ZOOM,j*ZOOM))
             if(TAB[j][i] == 2):
@@ -131,6 +134,11 @@ def dessine():
     JoueurRouge.draw(screen)
     JoueurOrange.draw(screen)
     screen.blit(font.render(str(actualTime // 1), True, WHITE), ((1920 // 2) - 25 , 64*HAUTEUR + 32))
+
+    for bomb in ListBomb : 
+        bomb.anim()
+        bomb.draw(screen)
+
     pygame.display.flip() # Rafraichis l'affichage de Pygame
 
 ## move():
@@ -277,6 +285,7 @@ while not done:
     if(keysPressed[pygame.K_SPACE]):
         poseBombe(JoueurBleu)
 
+    Bombe.removeBomb(ListBomb)
     actualTime = time.time() - temps
     screen.fill(BLACK)
     dessine()   # On redessine l'affichage et on actualise

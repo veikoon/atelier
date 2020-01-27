@@ -30,7 +30,7 @@ class Bombe:
         tabTemp = []
         for i in range(6):
             imTemp = imgBombe.subsurface((i*20),0,20,26)
-            imTemp = pygame.transform.scale(imTemp,(44,82))
+            imTemp = pygame.transform.scale(imTemp,(40,50))
             tabTemp.append(imTemp)
         Tab.append(tabTemp)
         return Tab
