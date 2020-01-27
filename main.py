@@ -56,9 +56,9 @@ pygame.mixer.music.load("son/bomberman_stage_theme.mp3")
 # 5 Explosion
 
 TAB = [ [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-		[1,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-		[1,0,2,3,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
-		[1,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+		[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+		[1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
+		[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
 		[1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
 		[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
 		[1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
@@ -98,31 +98,13 @@ LIST_BOMB = []
 LIST_IA = []
 LIST_JOUEUR = []
 
+POS_IA = [(HAUTEUR-2, LARGEUR-2), (HAUTEUR-2, 1), (1, LARGEUR-2)]
+print(POS_IA)
 JOUEUR_BLEU = Player(ZOOM + ZOOM//2, ZOOM + ZOOM//2, BLEU,int(ZOOM*(102/64)), ZOOM)
-JOUEUR_JAUNE = Player(720,350,JAUNE,int(ZOOM*(102/64)),ZOOM)
-JOUEUR_ORANGE = Player(1450,102,ORANGE,int(ZOOM*(102/64)),ZOOM)
-JOUEUR_ROUGE = Player(1450,700,ROUGE,int(ZOOM*(102/64)),ZOOM)
-JOUEUR_VERT= Player(96,700,VERT,int(ZOOM*(102/64)),ZOOM)
-
-#################################################################################
-##
-##  Initialisation
-
-pygame.mouse.set_visible(True)
-pygame.display.set_caption("ESIEE - BOMB HERMAN")
-pygame.mixer.music.play()   # Activation de la musique
-
-
-LIST_IA.append(JOUEUR_JAUNE)#JAUNE
-LIST_IA.append(JOUEUR_ORANGE)#ORANGE
-LIST_IA.append(JOUEUR_ROUGE)#ROUGE
-LIST_IA.append(JOUEUR_VERT)#VERT
-
-for ia in LIST_IA: LIST_JOUEUR.append(ia)
-LIST_JOUEUR.append(JOUEUR_BLEU)
-
-#Deplacement aléatoire des personnages
-dep = [(0,4), (0,-4), (4,0),(-4,0)]
+JOUEUR_JAUNE = Player(POS_IA[0][1] * ZOOM + ZOOM//2, POS_IA[0][0] * ZOOM + ZOOM//2, JAUNE,int(ZOOM*(102/64)), ZOOM)
+JOUEUR_ORANGE = Player(POS_IA[1][1] * ZOOM + ZOOM//2, POS_IA[1][0] * ZOOM + ZOOM//2, ORANGE,int(ZOOM*(102/64)), ZOOM)
+JOUEUR_ROUGE = Player(POS_IA[2][1] * ZOOM + ZOOM//2, POS_IA[2][0] * ZOOM + ZOOM//2, ROUGE,int(ZOOM*(102/64)), ZOOM)
+#JOUEUR_VERT= Player(96,700,VERT,int(ZOOM*(102/64)),ZOOM)
 
 #################################################################################
 ##
@@ -148,7 +130,7 @@ def draw():
 	for bomb in LIST_BOMB : 
 		bomb.anim()
 		bomb.draw(SCREEN)
-		
+
 	for j in LIST_JOUEUR: j.draw(SCREEN)
 
 	pygame.display.flip() # Rafraichis l'affichage de Pygame
@@ -161,6 +143,16 @@ def mort(Player):
     
 
 # removeBomb(LIST_BOMB)
+
+def generate():
+	for i in range(LARGEUR):
+		for j in range(HAUTEUR):
+			if(TAB[j][i] == 0 and random.randrange(2)): TAB[j][i] = 3
+	TAB[1][1] = 0; TAB[1][2] = 0; TAB[2][1] = 0
+	TAB[HAUTEUR-2][1] = 0; TAB[HAUTEUR-2][2] = 0; TAB[HAUTEUR-3][1] = 0
+	TAB[1][LARGEUR-2] = 0; TAB[1][LARGEUR-3] = 0; TAB[2][LARGEUR-2] = 0
+	TAB[HAUTEUR-2][LARGEUR-2] = 0; TAB[HAUTEUR-3][LARGEUR-2] = 0; TAB[HAUTEUR-2][LARGEUR-3] = 0
+
 # regarde chaque bombe de la liste et si la bombe explose, l'enleve de la liste des BOMBES
 def removeBomb():
 	for Bomb in LIST_BOMB:
@@ -212,6 +204,27 @@ def getPossibleMove(player):
 
 #################################################################################
 ##
+##  Initialisation
+
+pygame.mouse.set_visible(True)
+pygame.display.set_caption("ESIEE - BOMB HERMAN")
+pygame.mixer.music.play()   # Activation de la musique
+
+
+LIST_IA.append(JOUEUR_JAUNE)#JAUNE
+LIST_IA.append(JOUEUR_ORANGE)#ORANGE
+LIST_IA.append(JOUEUR_ROUGE)#ROUGE
+#LIST_IA.append(JOUEUR_VERT)#VERT
+
+for ia in LIST_IA: LIST_JOUEUR.append(ia)
+LIST_JOUEUR.append(JOUEUR_BLEU)
+
+#Deplacement aléatoire des personnages
+dep = [(0,4), (0,-4), (4,0),(-4,0)]
+
+generate()
+#################################################################################
+##
 ##   Boucle principale
 
 
@@ -256,7 +269,7 @@ while not DONE:
 		if deplacement_ia == 3:
 			ia.spriteDir = 1
 		ia.move(dep[deplacement_ia][0], dep[deplacement_ia][1])
-		time.sleep(0.00001)
+
 	keysPressed = pygame.key.get_pressed()  # On retient les touches pressees
 
 	## Mouvements du JOUEUR_
