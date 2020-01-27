@@ -71,11 +71,5 @@ class Player:
 class IA(Player):
 
 	def __init__(self,startX, startY, color, hauteur, zoom, direction):
-		self.x = startX				# Positions initiales
-		self.y = startY
-		self.sprite = self.getSprite(color, hauteur, zoom)	# Tableau de sprites en 2D
-		self.spriteDir = 0			# Selectionne le tableau de sprite (en 1D) correspondant a la direction du joueur
-		self.spriteCount = 0		# Selectionne le sprite du tableau correspondant au mouvement actuel
-		self.spriteOffset = 0		# Permet de changer de sprite en fonction du decalage et non a chaque mouvement
-		self.lives = 1
+		super.__init__(startX, startY, color, hauteur, zoom)
 		self.dir = direction
