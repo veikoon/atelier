@@ -134,22 +134,22 @@ dep = [(0,4), (0,-4), (4,0),(-4,0)]
 #   Puis place les JOUEUR_s
 def draw():
 	for i in range(LARGEUR):
-	for j in range(HAUTEUR):
+		for j in range(HAUTEUR):
+			if(TAB[j][i] == 4):
+				LIST_BOMB.append(Bombe(i*ZOOM+44,j*ZOOM+100,BOMBES, i, j))
+				TAB[j][i] = 0
 			if(TAB[j][i] == 0): SCREEN.blit(GRASS,(i*ZOOM,j*ZOOM))
 			if(TAB[j][i] == 1): SCREEN.blit(BLOCK,(i*ZOOM,j*ZOOM))
 			if(TAB[j][i] == 2): SCREEN.blit(BLOCK_MIDDLE,(i*ZOOM,j*ZOOM))
 			if(TAB[j][i] == 3): SCREEN.blit(BLOCK_BRICK,(i*ZOOM,j*ZOOM))
-			if(TAB[j][i] == 4):
-				LIST_BOMB.append(Bombe(i*ZOOM+44,j*ZOOM+100,BOMBES))
-				TAB[j][i] = 0
-
-	for j in LIST_JOUEUR: j.draw(SCREEN)
 
 	SCREEN.blit(FONT.render(str(TIME // 1), True, WHITE), ((1920 // 2) - 25 , 64*HAUTEUR + 32))
 
 	for bomb in LIST_BOMB : 
 		bomb.anim()
 		bomb.draw(SCREEN)
+		
+	for j in LIST_JOUEUR: j.draw(SCREEN)
 
 	pygame.display.flip() # Rafraichis l'affichage de Pygame
 
@@ -165,6 +165,21 @@ def poseBombe(player):
 	caseY = int(player.y/ZOOM)
 	if(TAB[caseY][caseX] == 0):
 		TAB[caseY][caseX] = 4
+
+def destroy():
+    for bomb in LIST_BOMB:
+        if bomb.Explode():
+            if TAB[bomb.caseY+1][bomb.caseX] == 3:
+                TAB[bomb.caseY+1][bomb.caseX] = 0
+
+            if TAB[bomb.caseY-1][bomb.caseX] == 3:
+                TAB[bomb.caseY-1][bomb.caseX] = 0
+
+            if TAB[bomb.caseY][bomb.caseX+1] == 3:
+                TAB[bomb.caseY][bomb.caseX+1] = 0
+
+            if TAB[bomb.caseY][bomb.caseX-1] == 3:
+                TAB[bomb.caseY][bomb.caseX-1] = 0
 
 def getTabPos(x,y):
 	posX = x // ZOOM
@@ -220,7 +235,7 @@ while not DONE:
 			BLOCK_MIDDLE = pygame.transform.scale(BLOCK_MIDDLE,(ZOOM,ZOOM))
 
 			pygame.display.flip()
-			dessine()
+			draw()
 
 	for ia in LIST_IA:
 		deplacement_ia = []
@@ -260,9 +275,10 @@ while not DONE:
 	if(keysPressed[pygame.K_SPACE]):
 		poseBombe(JOUEUR_BLEU)
 
+	destroy()
 	removeBomb()
-	TIME = time.time() - TIME
 	SCREEN.fill(BLACK)
+	TIME = time.time() - TIME
 	draw()   # On redessine l'affichage et on actualise
 	CLOCK.tick(30) # Limite d'image par seconde
 
