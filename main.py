@@ -158,6 +158,7 @@ JoueurBleu = Player(96,102,getSprite(Bleu))
 ZOOM = int((64/1920)*screeenWidth)   # Taille d'une case en pixels
 
 
+
 #################################################################################
 ##
 ##   Boucle principale
@@ -176,6 +177,12 @@ while not done:
             screenHeight = event.h
             screeenWidth = event.w
             ZOOM = int((64/1920)*screeenWidth)
+
+            Grass = pygame.transform.scale(Grass,(ZOOM,ZOOM))
+            Brick = pygame.transform.scale(Brick,(ZOOM,ZOOM))
+            Block = pygame.transform.scale(Block,(ZOOM,ZOOM))
+            BlockMiddle = pygame.transform.scale(BlockMiddle,(ZOOM,ZOOM))
+
             pygame.display.flip()
             dessine()
         
