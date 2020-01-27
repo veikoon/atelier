@@ -99,7 +99,7 @@ def draw():
     for i in range(LARGEUR):
         for j in range(HAUTEUR):
             if(TAB[j][i] == 4):
-                LIST_BOMB.append(Bombe(i*ZOOM+44,j*ZOOM+100,Bombes))
+                LIST_BOMB.append(Bombe(i*ZOOM+44,j*ZOOM+100,Bombes, i, j))
                 TAB[j][i] = 0
             if(TAB[j][i] == 3):
                 screen.blit(Brick,(i*ZOOM,j*ZOOM))
@@ -134,6 +134,21 @@ def poseBombe(player):
     caseY = int(player.y/ZOOM)
     if(TAB[caseY][caseX] == 0):
         TAB[caseY][caseX] = 4
+
+def Destroy():
+    for bomb in LIST_BOMB:
+        if bomb.Explode():
+            if TAB[bomb.caseY+1][bomb.caseX] == 3:
+                TAB[bomb.caseY+1][bomb.caseX] = 0
+
+            if TAB[bomb.caseY-1][bomb.caseX] == 3:
+                TAB[bomb.caseY-1][bomb.caseX] = 0
+
+            if TAB[bomb.caseY][bomb.caseX+1] == 3:
+                TAB[bomb.caseY][bomb.caseX+1] = 0
+
+            if TAB[bomb.caseY][bomb.caseX-1] == 3:
+                TAB[bomb.caseY][bomb.caseX-1] = 0
 
 def getTabPos(x,y):
     posX = x // ZOOM
@@ -267,7 +282,9 @@ while not done:
     if(keysPressed[pygame.K_SPACE]):
         poseBombe(JoueurBleu)
 
+    Destroy()
     removeBomb()
+
     TIME = time.time() - temps
     screen.fill(BLACK)
     draw()   # On redessine l'affichage et on actualise
