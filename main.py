@@ -200,6 +200,7 @@ def Meurt(player):
 	if(TAB[y][x]==5):
 		mort(player)
 		print("e")
+
 def getTabPos(x,y):
 	posX = x // ZOOM
 	posY = y // ZOOM

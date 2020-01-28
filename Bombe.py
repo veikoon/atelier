@@ -99,22 +99,33 @@ class Bombe:
                 e=0
             if(i==1):
                 e=60
-          
+            if(self.exploFin):
+                TAB[caseY][caseX]=0
             if(TAB[caseY][caseX+1+i]==0 or TAB[caseY][caseX+1+i]==3 or TAB[caseY][caseX+1+i]==5):
                 TAB[caseY][caseX+1+i]=5
+                if(self.exploFin):
+                    TAB[caseY][caseX+1+i]=0
                 surface.blit(self.sprite[1][self.spriteCount], (self.x+60+e- 100, self.y - 96))
 
             if(TAB[caseY+1+i][caseX]==0 or TAB[caseY+1+i][caseX]==3 or TAB[caseY+1+i][caseX]==5):
                 TAB[caseY+1+i][caseX]=5
+                if(self.exploFin):
+                   TAB[caseY+1+i][caseX]=0
                 rotatebas =pygame.transform.rotate(self.sprite[1][self.spriteCount],90)    
                 surface.blit(rotatebas, (self.x- 100, self.y+60+e - 96))  
 
             if(TAB[caseY][caseX-1-i]==0 or TAB[caseY][caseX-1-i]==3 or TAB[caseY][caseX-1-i]==5):
                 TAB[caseY][caseX-1-i]=5
+                if(self.exploFin):
+                    TAB[caseY][caseX-1-i]=0
                 rotategauche =pygame.transform.rotate(self.sprite[1][self.spriteCount],180)    
                 surface.blit(rotategauche, (self.x-60-e -100, self.y - 96))  
                 
-            if(TAB[caseY-1-i][caseX]==0 or TAB[caseY][caseX-1-i]==3 or TAB[caseY-1-i][caseX]==5):
+            if(TAB[caseY-1-i][caseX]==0 or TAB[caseY-1-i][caseX]==3 or TAB[caseY-1-i][caseX]==5):
+
+
                 TAB[caseY-1-i][caseX]=5
+                if(self.exploFin):
+                    TAB[caseY-1-i][caseX]=0
                 rotatehaut =pygame.transform.rotate(self.sprite[1][self.spriteCount],270)    
                 surface.blit(rotatehaut, (self.x-100, self.y-60-e - 96))  
