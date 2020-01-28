@@ -48,7 +48,6 @@ class Bombe:
         if (TIME - self.timeBomb > 1*self.spriteCount):
 
             self.spriteCount = (self.spriteCount + 1)
-            print(self.spriteCount)
         if(self.spriteCount == 5 and self.finexplode):
             
             self.exploFin = True
