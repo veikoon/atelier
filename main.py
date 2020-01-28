@@ -267,12 +267,10 @@ while not DONE:
 		if (ia.dir in possibleMove):
 			ia.move(ia.dir[0], ia.dir[1])
 		else:
-
 			Next_deplacement_ia = getPossibleMove(ia)
-
 			deplacement_ia = random.randrange(len(possibleMove))
-			print(deplacement_ia)
 			ia.dir = possibleMove[deplacement_ia]
+			ia.setRightDir()
 
 	keysPressed = pygame.key.get_pressed()  # On retient les touches pressees
 
