@@ -15,11 +15,12 @@ import pygame
 from pygame import *
 import os
 import random
+from random import randrange
 import copy
 import time
 from Player import Player
 from Bombe import Bombe
-
+from Player import IA
 pygame.init()
 
 #################################################################################
@@ -100,9 +101,9 @@ LIST_JOUEUR = []
 
 POS_IA = [(HAUTEUR-2, LARGEUR-2), (HAUTEUR-2, 1), (1, LARGEUR-2)]
 JOUEUR_BLEU = Player(ZOOM + ZOOM//2, ZOOM + ZOOM//2, BLEU,int(ZOOM*(102/64)), ZOOM)
-JOUEUR_JAUNE = Player(POS_IA[0][1] * ZOOM + ZOOM//2, POS_IA[0][0] * ZOOM + ZOOM//2, JAUNE,int(ZOOM*(102/64)), ZOOM)
-JOUEUR_ORANGE = Player(POS_IA[1][1] * ZOOM + ZOOM//2, POS_IA[1][0] * ZOOM + ZOOM//2, ORANGE,int(ZOOM*(102/64)), ZOOM)
-JOUEUR_ROUGE = Player(POS_IA[2][1] * ZOOM + ZOOM//2, POS_IA[2][0] * ZOOM + ZOOM//2, ROUGE,int(ZOOM*(102/64)), ZOOM)
+JOUEUR_JAUNE = IA(POS_IA[0][1] * ZOOM + ZOOM//2, POS_IA[0][0] * ZOOM + ZOOM//2, JAUNE,int(ZOOM*(102/64)), ZOOM, (0,-1))
+JOUEUR_ORANGE = IA(POS_IA[1][1] * ZOOM + ZOOM//2, POS_IA[1][0] * ZOOM + ZOOM//2, ORANGE,int(ZOOM*(102/64)), ZOOM,(1,0))
+JOUEUR_ROUGE = IA(POS_IA[2][1] * ZOOM + ZOOM//2, POS_IA[2][0] * ZOOM + ZOOM//2, ROUGE,int(ZOOM*(102/64)), ZOOM,(-1,0))
 #JOUEUR_VERT= Player(96,700,VERT,int(ZOOM*(102/64)),ZOOM)
 
 #################################################################################
@@ -126,7 +127,7 @@ def draw():
 
 	SCREEN.blit(FONT.render(str(TIME // 1), True, WHITE), ((1920 // 2) - 25 , 64*HAUTEUR + 32))
 
-	for bomb in LIST_BOMB : 
+	for bomb in LIST_BOMB :
 		bomb.anim()
 		bomb.draw(SCREEN)
 
@@ -139,7 +140,7 @@ def mort(Player):
     Player.lives -= 1
     if Player.lives == 0:
         LIST_JOUEUR.remove(Player)
-    
+
 
 # removeBomb(LIST_BOMB)
 
@@ -200,6 +201,10 @@ def getPossibleMove(player):
 
 	return possibleMove
 
+def isWall(x,y):
+	if (TAB[x][y] == 1 or TAB[x][y] == 2 or TAB[x][y] ==3 or TAB[x][y] ==4):
+		return True
+	else: return False
 
 #################################################################################
 ##
@@ -245,7 +250,7 @@ while not DONE:
 			JOUEUR_JAUNE.getSprite(JAUNE,int(ZOOM*(102/64)),ZOOM)
 			JOUEUR_ORANGE.getSprite(ORANGE,int(ZOOM*(102/64)),ZOOM)
 			JOUEUR_ROUGE.getSprite(ROUGE,int(ZOOM*(102/64)),ZOOM)
-			JOUEUR_VERT.getSprite(VERT,int(ZOOM*(102/64)),ZOOM)
+			#JOUEUR_VERT.getSprite(VERT,int(ZOOM*(102/64)),ZOOM)
 
 
 			GRASS = pygame.transform.scale(GRASS,(ZOOM,ZOOM))
@@ -257,17 +262,17 @@ while not DONE:
 			draw()
 
 	for ia in LIST_IA:
-		deplacement_ia = []
-		deplacement_ia = random.randrange(len(dep))
-		if deplacement_ia == 0:
-			ia.spriteDir = 0
-		if deplacement_ia == 1:
-			ia.spriteDir = 3
-		if deplacement_ia == 2:
-			ia.spriteDir = 2
-		if deplacement_ia == 3:
-			ia.spriteDir = 1
-		ia.move(dep[deplacement_ia][0], dep[deplacement_ia][1])
+		possibleMove = getPossibleMove(ia)
+		if (ia.dir in possibleMove):
+			ia.move(ia.dir[0], ia.dir[1])
+		else:
+
+			Next_deplacement_ia = getPossibleMove(ia)
+
+			deplacement_ia = random.randrange(len(possibleMove))
+			print(deplacement_ia)
+			ia.dir = possibleMove[deplacement_ia]
+
 
 	keysPressed = pygame.key.get_pressed()  # On retient les touches pressees
 
@@ -297,7 +302,7 @@ while not DONE:
 		print(TIME - bomb.timeBomb)
 		if(TIME - bomb.timeBomb > 4):
 			bomb.explode = True
-	
+
 	destroy()
 	removeBomb()
 	SCREEN.fill(BLACK)
