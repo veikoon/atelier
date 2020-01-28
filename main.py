@@ -168,6 +168,19 @@ def poseBombe(player):
 def destroy():
     for bomb in LIST_BOMB:
         if bomb.Explode():
+
+            if TAB[bomb.caseY][bomb.caseX+2] == 3 and TAB[bomb.caseY][bomb.caseX+1] == 0:
+                TAB[bomb.caseY][bomb.caseX+2] = 0
+
+            if TAB[bomb.caseY][bomb.caseX-2] == 3 and TAB[bomb.caseY][bomb.caseX-1] == 0:
+                TAB[bomb.caseY][bomb.caseX-2] = 0
+
+            if TAB[bomb.caseY+2][bomb.caseX] == 3 and TAB[bomb.caseY+1][bomb.caseX] == 0:
+                TAB[bomb.caseY+2][bomb.caseX] = 0
+
+            if TAB[bomb.caseY-2][bomb.caseX] == 3 and TAB[bomb.caseY-1][bomb.caseX] == 0:
+                TAB[bomb.caseY-2][bomb.caseX] = 0
+
             if TAB[bomb.caseY+1][bomb.caseX] == 3:
                 TAB[bomb.caseY+1][bomb.caseX] = 0
 
