@@ -38,7 +38,6 @@ BLEU = pygame.image.load("images/ia/Bleu/sprite.png")
 ROUGE = pygame.image.load("images/ia/Rouge/sprite.png")
 JAUNE = pygame.image.load("images/ia/Jaune/sprite.png")
 ORANGE = pygame.image.load("images/ia/Orange/sprite.png")
-VERT = pygame.image.load("images/ia/Vert/sprite.png")
 BOMBES = pygame.image.load("images/bombe/bomb.png")
 
 # Musique
@@ -104,7 +103,6 @@ JOUEUR_BLEU = Player(ZOOM + ZOOM//2, ZOOM + ZOOM//2, BLEU,int(ZOOM*(102/64)), ZO
 JOUEUR_JAUNE = IA(POS_IA[0][1] * ZOOM + ZOOM//2, POS_IA[0][0] * ZOOM + ZOOM//2, JAUNE,int(ZOOM*(102/64)), ZOOM, (0,-1))
 JOUEUR_ORANGE = IA(POS_IA[1][1] * ZOOM + ZOOM//2, POS_IA[1][0] * ZOOM + ZOOM//2, ORANGE,int(ZOOM*(102/64)), ZOOM,(1,0))
 JOUEUR_ROUGE = IA(POS_IA[2][1] * ZOOM + ZOOM//2, POS_IA[2][0] * ZOOM + ZOOM//2, ROUGE,int(ZOOM*(102/64)), ZOOM,(-1,0))
-#JOUEUR_VERT= Player(96,700,VERT,int(ZOOM*(102/64)),ZOOM)
 
 #################################################################################
 ##
@@ -131,7 +129,8 @@ def draw():
 		bomb.anim()
 		bomb.draw(SCREEN)
 
-	for j in LIST_JOUEUR: j.draw(SCREEN)
+	for joueur in LIST_JOUEUR: 
+		joueur.draw(SCREEN)
 
 	pygame.display.flip() # Rafraichis l'affichage de Pygame
 
@@ -140,9 +139,6 @@ def mort(Player):
     Player.lives -= 1
     if Player.lives == 0:
         LIST_JOUEUR.remove(Player)
-
-
-# removeBomb(LIST_BOMB)
 
 def generate():
 	for i in range(LARGEUR):
@@ -168,30 +164,14 @@ def poseBombe(player):
 def destroy():
     for bomb in LIST_BOMB:
         if bomb.Explode():
-
-            if TAB[bomb.caseY][bomb.caseX+2] == 3 and TAB[bomb.caseY][bomb.caseX+1] == 0:
-                TAB[bomb.caseY][bomb.caseX+2] = 0
-
-            if TAB[bomb.caseY][bomb.caseX-2] == 3 and TAB[bomb.caseY][bomb.caseX-1] == 0:
-                TAB[bomb.caseY][bomb.caseX-2] = 0
-
-            if TAB[bomb.caseY+2][bomb.caseX] == 3 and TAB[bomb.caseY+1][bomb.caseX] == 0:
-                TAB[bomb.caseY+2][bomb.caseX] = 0
-
-            if TAB[bomb.caseY-2][bomb.caseX] == 3 and TAB[bomb.caseY-1][bomb.caseX] == 0:
-                TAB[bomb.caseY-2][bomb.caseX] = 0
-
-            if TAB[bomb.caseY+1][bomb.caseX] == 3:
-                TAB[bomb.caseY+1][bomb.caseX] = 0
-
-            if TAB[bomb.caseY-1][bomb.caseX] == 3:
-                TAB[bomb.caseY-1][bomb.caseX] = 0
-
-            if TAB[bomb.caseY][bomb.caseX+1] == 3:
-                TAB[bomb.caseY][bomb.caseX+1] = 0
-
-            if TAB[bomb.caseY][bomb.caseX-1] == 3:
-                TAB[bomb.caseY][bomb.caseX-1] = 0
+            if TAB[bomb.caseY][bomb.caseX+2] == 3 and TAB[bomb.caseY][bomb.caseX+1] == 0: TAB[bomb.caseY][bomb.caseX+2] = 0
+            if TAB[bomb.caseY][bomb.caseX-2] == 3 and TAB[bomb.caseY][bomb.caseX-1] == 0: TAB[bomb.caseY][bomb.caseX-2] = 0
+            if TAB[bomb.caseY+2][bomb.caseX] == 3 and TAB[bomb.caseY+1][bomb.caseX] == 0: TAB[bomb.caseY+2][bomb.caseX] = 0
+            if TAB[bomb.caseY-2][bomb.caseX] == 3 and TAB[bomb.caseY-1][bomb.caseX] == 0: TAB[bomb.caseY-2][bomb.caseX] = 0
+            if TAB[bomb.caseY+1][bomb.caseX] == 3: TAB[bomb.caseY+1][bomb.caseX] = 0
+            if TAB[bomb.caseY-1][bomb.caseX] == 3: TAB[bomb.caseY-1][bomb.caseX] = 0
+            if TAB[bomb.caseY][bomb.caseX+1] == 3: TAB[bomb.caseY][bomb.caseX+1] = 0
+            if TAB[bomb.caseY][bomb.caseX-1] == 3: TAB[bomb.caseY][bomb.caseX-1] = 0
 
 def getTabPos(x,y):
 	posX = x // ZOOM
@@ -214,11 +194,6 @@ def getPossibleMove(player):
 
 	return possibleMove
 
-def isWall(x,y):
-	if (TAB[x][y] == 1 or TAB[x][y] == 2 or TAB[x][y] ==3 or TAB[x][y] ==4):
-		return True
-	else: return False
-
 #################################################################################
 ##
 ##  Initialisation
@@ -231,9 +206,11 @@ pygame.mixer.music.play()   # Activation de la musique
 LIST_IA.append(JOUEUR_JAUNE)#JAUNE
 LIST_IA.append(JOUEUR_ORANGE)#ORANGE
 LIST_IA.append(JOUEUR_ROUGE)#ROUGE
-#LIST_IA.append(JOUEUR_VERT)#VERT
 
-for ia in LIST_IA: LIST_JOUEUR.append(ia)
+for ia in LIST_IA: 
+	LIST_JOUEUR.append(ia)
+	ia.setRightDir()	# Defini la direction des sprites des ia a l'init
+
 LIST_JOUEUR.append(JOUEUR_BLEU)
 
 #Deplacement aléatoire des personnages
@@ -278,7 +255,7 @@ while not DONE:
 	for ia in LIST_IA:
 		possibleMove = getPossibleMove(ia)
 		if (ia.dir in possibleMove):
-			ia.move(ia.dir[0], ia.dir[1])
+			ia.move(ia.dir[0]*VIT, ia.dir[1]*VIT)
 		else:
 			Next_deplacement_ia = getPossibleMove(ia)
 			deplacement_ia = random.randrange(len(possibleMove))
