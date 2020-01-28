@@ -15,11 +15,12 @@ import pygame
 from pygame import *
 import os
 import random
+from random import randrange
 import copy
 import time
 from Player import Player
 from Bombe import Bombe
-
+from Player import IA
 pygame.init()
 
 #################################################################################
@@ -37,7 +38,6 @@ BLEU = pygame.image.load("images/ia/Bleu/sprite.png")
 ROUGE = pygame.image.load("images/ia/Rouge/sprite.png")
 JAUNE = pygame.image.load("images/ia/Jaune/sprite.png")
 ORANGE = pygame.image.load("images/ia/Orange/sprite.png")
-VERT = pygame.image.load("images/ia/Vert/sprite.png")
 BOMBES = pygame.image.load("images/bombe/bomb.png")
 FIRE =pygame.image.load("images/fire/explosion2.png")
 # Musique
@@ -100,10 +100,9 @@ LIST_JOUEUR = []
 
 POS_IA = [(HAUTEUR-2, LARGEUR-2), (HAUTEUR-2, 1), (1, LARGEUR-2)]
 JOUEUR_BLEU = Player(ZOOM + ZOOM//2, ZOOM + ZOOM//2, BLEU,int(ZOOM*(102/64)), ZOOM)
-JOUEUR_JAUNE = Player(POS_IA[0][1] * ZOOM + ZOOM//2, POS_IA[0][0] * ZOOM + ZOOM//2, JAUNE,int(ZOOM*(102/64)), ZOOM)
-JOUEUR_ORANGE = Player(POS_IA[1][1] * ZOOM + ZOOM//2, POS_IA[1][0] * ZOOM + ZOOM//2, ORANGE,int(ZOOM*(102/64)), ZOOM)
-JOUEUR_ROUGE = Player(POS_IA[2][1] * ZOOM + ZOOM//2, POS_IA[2][0] * ZOOM + ZOOM//2, ROUGE,int(ZOOM*(102/64)), ZOOM)
-#JOUEUR_VERT= Player(96,700,VERT,int(ZOOM*(102/64)),ZOOM)
+JOUEUR_JAUNE = IA(POS_IA[0][1] * ZOOM + ZOOM//2, POS_IA[0][0] * ZOOM + ZOOM//2, JAUNE,int(ZOOM*(102/64)), ZOOM, (0,-1))
+JOUEUR_ORANGE = IA(POS_IA[1][1] * ZOOM + ZOOM//2, POS_IA[1][0] * ZOOM + ZOOM//2, ORANGE,int(ZOOM*(102/64)), ZOOM,(1,0))
+JOUEUR_ROUGE = IA(POS_IA[2][1] * ZOOM + ZOOM//2, POS_IA[2][0] * ZOOM + ZOOM//2, ROUGE,int(ZOOM*(102/64)), ZOOM,(-1,0))
 
 #################################################################################
 ##
@@ -134,7 +133,8 @@ def draw():
 		bomb.anim(TIME)
 		bomb.draw(SCREEN)
 
-	for j in LIST_JOUEUR: j.draw(SCREEN)
+	for joueur in LIST_JOUEUR: 
+		joueur.draw(SCREEN)
 
 	pygame.display.flip() # Rafraichis l'affichage de Pygame
 
@@ -143,9 +143,6 @@ def mort(Player):
     Player.lives -= 1
     if Player.lives == 0:
         LIST_JOUEUR.remove(Player)
-    
-
-# removeBomb(LIST_BOMB)
 
 def generate():
 	for i in range(LARGEUR):
@@ -179,17 +176,14 @@ def poseBombe(player):
 def destroy():
     for bomb in LIST_BOMB:
         if bomb.Explode():
-            if TAB[bomb.caseY+1][bomb.caseX] == 3:
-                TAB[bomb.caseY+1][bomb.caseX] = 0
-
-            if TAB[bomb.caseY-1][bomb.caseX] == 3:
-                TAB[bomb.caseY-1][bomb.caseX] = 0
-
-            if TAB[bomb.caseY][bomb.caseX+1] == 3:
-                TAB[bomb.caseY][bomb.caseX+1] = 0
-
-            if TAB[bomb.caseY][bomb.caseX-1] == 3:
-                TAB[bomb.caseY][bomb.caseX-1] = 0
+            if TAB[bomb.caseY][bomb.caseX+2] == 3 and TAB[bomb.caseY][bomb.caseX+1] == 0: TAB[bomb.caseY][bomb.caseX+2] = 0
+            if TAB[bomb.caseY][bomb.caseX-2] == 3 and TAB[bomb.caseY][bomb.caseX-1] == 0: TAB[bomb.caseY][bomb.caseX-2] = 0
+            if TAB[bomb.caseY+2][bomb.caseX] == 3 and TAB[bomb.caseY+1][bomb.caseX] == 0: TAB[bomb.caseY+2][bomb.caseX] = 0
+            if TAB[bomb.caseY-2][bomb.caseX] == 3 and TAB[bomb.caseY-1][bomb.caseX] == 0: TAB[bomb.caseY-2][bomb.caseX] = 0
+            if TAB[bomb.caseY+1][bomb.caseX] == 3: TAB[bomb.caseY+1][bomb.caseX] = 0
+            if TAB[bomb.caseY-1][bomb.caseX] == 3: TAB[bomb.caseY-1][bomb.caseX] = 0
+            if TAB[bomb.caseY][bomb.caseX+1] == 3: TAB[bomb.caseY][bomb.caseX+1] = 0
+            if TAB[bomb.caseY][bomb.caseX-1] == 3: TAB[bomb.caseY][bomb.caseX-1] = 0
 
 def getTabPos(x,y):
 	posX = x // ZOOM
@@ -212,7 +206,6 @@ def getPossibleMove(player):
 
 	return possibleMove
 
-
 #################################################################################
 ##
 ##  Initialisation
@@ -225,9 +218,11 @@ pygame.mixer.music.play()   # Activation de la musique
 LIST_IA.append(JOUEUR_JAUNE)#JAUNE
 LIST_IA.append(JOUEUR_ORANGE)#ORANGE
 LIST_IA.append(JOUEUR_ROUGE)#ROUGE
-#LIST_IA.append(JOUEUR_VERT)#VERT
 
-for ia in LIST_IA: LIST_JOUEUR.append(ia)
+for ia in LIST_IA: 
+	LIST_JOUEUR.append(ia)
+	ia.setRightDir()	# Defini la direction des sprites des ia a l'init
+
 LIST_JOUEUR.append(JOUEUR_BLEU)
 
 #Deplacement aléatoire des personnages
@@ -257,7 +252,7 @@ while not DONE:
 			JOUEUR_JAUNE.getSprite(JAUNE,int(ZOOM*(102/64)),ZOOM)
 			JOUEUR_ORANGE.getSprite(ORANGE,int(ZOOM*(102/64)),ZOOM)
 			JOUEUR_ROUGE.getSprite(ROUGE,int(ZOOM*(102/64)),ZOOM)
-			#JOUEUR_VERT.getSprite(VERT,int(ZOOM*(102/64)),ZOOM)
+
 
 
 			GRASS = pygame.transform.scale(GRASS,(ZOOM,ZOOM))
@@ -269,17 +264,14 @@ while not DONE:
 			draw()
 
 	for ia in LIST_IA:
-		deplacement_ia = []
-		deplacement_ia = random.randrange(len(dep))
-		if deplacement_ia == 0:
-			ia.spriteDir = 0
-		if deplacement_ia == 1:
-			ia.spriteDir = 3
-		if deplacement_ia == 2:
-			ia.spriteDir = 2
-		if deplacement_ia == 3:
-			ia.spriteDir = 1
-		ia.move(dep[deplacement_ia][0], dep[deplacement_ia][1])
+		possibleMove = getPossibleMove(ia)
+		if (ia.dir in possibleMove):
+			ia.move(ia.dir[0]*VIT, ia.dir[1]*VIT)
+		else:
+			Next_deplacement_ia = getPossibleMove(ia)
+			deplacement_ia = random.randrange(len(possibleMove))
+			ia.dir = possibleMove[deplacement_ia]
+			ia.setRightDir()
 
 	keysPressed = pygame.key.get_pressed()  # On retient les touches pressees
 
@@ -305,9 +297,13 @@ while not DONE:
 
 	if(keysPressed[pygame.K_SPACE]):
 		poseBombe(JOUEUR_BLEU)
-	
 		
-	
+	for bomb in LIST_BOMB:
+		print(TIME - bomb.timeBomb)
+		if(TIME - bomb.timeBomb > 4):
+			bomb.explode = True
+
+
 	destroy()
 	removeBomb()
 	SCREEN.fill(BLACK)

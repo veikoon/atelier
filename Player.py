@@ -71,5 +71,11 @@ class Player:
 class IA(Player):
 
 	def __init__(self,startX, startY, color, hauteur, zoom, direction):
-		super.__init__(startX, startY, color, hauteur, zoom)
+		super(IA,self).__init__(startX, startY, color, hauteur, zoom)
 		self.dir = direction
+
+	def setRightDir(self):
+		if(self.dir == (0,1)): self.spriteDir = 0
+		if(self.dir == (0,-1)): self.spriteDir = 3
+		if(self.dir == (1,0)): self.spriteDir = 2
+		if(self.dir == (-1,0)): self.spriteDir = 1
