@@ -250,6 +250,7 @@ while not DONE:
 			JOUEUR_JAUNE.getSprite(JAUNE,int(ZOOM*(102/64)),ZOOM)
 			JOUEUR_ORANGE.getSprite(ORANGE,int(ZOOM*(102/64)),ZOOM)
 			JOUEUR_ROUGE.getSprite(ROUGE,int(ZOOM*(102/64)),ZOOM)
+
 			#JOUEUR_VERT.getSprite(VERT,int(ZOOM*(102/64)),ZOOM)
 
 
@@ -272,7 +273,6 @@ while not DONE:
 			deplacement_ia = random.randrange(len(possibleMove))
 			print(deplacement_ia)
 			ia.dir = possibleMove[deplacement_ia]
-
 
 	keysPressed = pygame.key.get_pressed()  # On retient les touches pressees
 
