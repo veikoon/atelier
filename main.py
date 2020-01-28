@@ -198,11 +198,12 @@ def getPossibleMove(player):
 	tab.append(TAB[getTabPos(player.x,player.y-VIT)[1]][getTabPos(player.x,player.y-VIT)[0]])
 	tab.append(TAB[getTabPos(player.x+VIT,player.y)[1]][getTabPos(player.x+VIT,player.y)[0]])
 	tab.append(TAB[getTabPos(player.x-VIT,player.y)[1]][getTabPos(player.x-VIT,player.y)[0]])
+	tab.append(TAB[getTabPos(player.x,player.y)[1]][getTabPos(player.x,player.y)[0]])
 
-	if(tab[0]  == 0 or tab[0]  == 5): possibleMove.append((0,1))
-	if(tab[1]  == 0 or tab[1]  == 5): possibleMove.append((0,-1))
-	if(tab[2]  == 0 or tab[2]  == 5): possibleMove.append((1,0))
-	if(tab[3]  == 0 or tab[3]  == 5): possibleMove.append((-1,0))
+	if(tab[0]  == 0 or tab[0]  == 5 or (tab[0]  == 4 and tab[4] == 4)): possibleMove.append((0,1))
+	if(tab[1]  == 0 or tab[1]  == 5 or (tab[1]  == 4 and tab[4] == 4)): possibleMove.append((0,-1))
+	if(tab[2]  == 0 or tab[2]  == 5 or (tab[2]  == 4 and tab[4] == 4)): possibleMove.append((1,0))
+	if(tab[3]  == 0 or tab[3]  == 5 or (tab[3]  == 4 and tab[4] == 4)): possibleMove.append((-1,0))
 
 	return possibleMove
 
@@ -268,6 +269,7 @@ while not DONE:
 		if (ia.dir in possibleMove):
 			ia.move(ia.dir[0]*VIT, ia.dir[1]*VIT)
 		else:
+			#poseBombe(ia)
 			Next_deplacement_ia = getPossibleMove(ia)
 			deplacement_ia = random.randrange(len(possibleMove))
 			ia.dir = possibleMove[deplacement_ia]
