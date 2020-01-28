@@ -122,7 +122,7 @@ def draw():
 
 				if(sauvegarde): LIST_BOMB.append(Bombe(i*ZOOM+44,j*ZOOM+100,BOMBES, i, j,TIME))
 		
-			if(TAB[j][i] == 0 or TAB[j][i] == 4): SCREEN.blit(GRASS,(i*ZOOM,j*ZOOM))
+			if(TAB[j][i] == 0 or TAB[j][i] == 4 or TAB[j][i] ==  5): SCREEN.blit(GRASS,(i*ZOOM,j*ZOOM))
 			if(TAB[j][i] == 1): SCREEN.blit(BLOCK,(i*ZOOM,j*ZOOM))
 			if(TAB[j][i] == 2): SCREEN.blit(BLOCK_MIDDLE,(i*ZOOM,j*ZOOM))
 			if(TAB[j][i] == 3): SCREEN.blit(BLOCK_BRICK,(i*ZOOM,j*ZOOM))
@@ -161,7 +161,7 @@ def removeBomb():
 			Bomb.spriteCount = 0
 			Bomb.spriteDir=0
 			Bomb.sprite= Bomb.getSpriteExplo(FIRE)
-			TAB[Bomb.caseY][Bomb.caseX] = 0
+			TAB[Bomb.caseY][Bomb.caseX] = 5
 			Bomb.explode = False
 
 		if(Bomb.exploFin):
@@ -302,8 +302,8 @@ while not DONE:
 		
 	for bomb in LIST_BOMB:
 		print(TIME - bomb.timeBomb)
-		if(TIME - bomb.timeBomb > 4):
-			bomb.explode = True
+		#if(TIME - bomb.timeBomb > 4):
+		#	bomb.explode = True
 
 
 	destroy()
