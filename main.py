@@ -135,6 +135,10 @@ def draw():
 	for bomb in LIST_BOMB: 
 		bomb.anim(TIME)
 		bomb.draw(SCREEN)
+		destroy()
+		removeBomb()
+		bomb.drawExplo(SCREEN,TAB,0)
+		bomb.drawExplo(SCREEN,TAB,1)
 
 	for joueur in LIST_JOUEUR: 
 		joueur.draw(SCREEN)
@@ -180,10 +184,10 @@ def poseBombe(player):
 def destroy():
 	for bomb in LIST_BOMB:
 		if bomb.Explode():
-			#if TAB[bomb.caseY][bomb.caseX+2] == 3 and TAB[bomb.caseY][bomb.caseX+1] == 0: TAB[bomb.caseY][bomb.caseX+2] = 0
-			#if TAB[bomb.caseY][bomb.caseX-2] == 3 and TAB[bomb.caseY][bomb.caseX-1] == 0: TAB[bomb.caseY][bomb.caseX-2] = 0
-			#if TAB[bomb.caseY+2][bomb.caseX] == 3 and TAB[bomb.caseY+1][bomb.caseX] == 0: TAB[bomb.caseY+2][bomb.caseX] = 0
-			#if TAB[bomb.caseY-2][bomb.caseX] == 3 and TAB[bomb.caseY-1][bomb.caseX] == 0: TAB[bomb.caseY-2][bomb.caseX] = 0
+			if TAB[bomb.caseY][bomb.caseX+2] == 3 and TAB[bomb.caseY][bomb.caseX+1] == 0: TAB[bomb.caseY][bomb.caseX+2] = 0
+			if TAB[bomb.caseY][bomb.caseX-2] == 3 and TAB[bomb.caseY][bomb.caseX-1] == 0: TAB[bomb.caseY][bomb.caseX-2] = 0
+			if TAB[bomb.caseY+2][bomb.caseX] == 3 and TAB[bomb.caseY+1][bomb.caseX] == 0: TAB[bomb.caseY+2][bomb.caseX] = 0
+			if TAB[bomb.caseY-2][bomb.caseX] == 3 and TAB[bomb.caseY-1][bomb.caseX] == 0: TAB[bomb.caseY-2][bomb.caseX] = 0
 			if TAB[bomb.caseY+1][bomb.caseX] == 3: TAB[bomb.caseY+1][bomb.caseX] = 0
 			if TAB[bomb.caseY-1][bomb.caseX] == 3: TAB[bomb.caseY-1][bomb.caseX] = 0
 			if TAB[bomb.caseY][bomb.caseX+1] == 3: TAB[bomb.caseY][bomb.caseX+1] = 0
@@ -279,7 +283,7 @@ while not DONE:
 		if (ia.dir in possibleMove):
 			ia.move(ia.dir[0]*VIT, ia.dir[1]*VIT)
 		else:
-			poseBombe(ia)
+			#poseBombe(ia)
 			Next_deplacement_ia = getPossibleMove(ia)
 			deplacement_ia = random.randrange(len(possibleMove))
 			ia.dir = possibleMove[deplacement_ia]
@@ -310,12 +314,6 @@ while not DONE:
 	if(keysPressed[pygame.K_SPACE]):
 		poseBombe(JOUEUR_BLEU)
 		
-	for bomb in LIST_BOMB:
-		if(TIME - bomb.timeBomb > 4):
-			bomb.explode = True
-
-	destroy()
-	removeBomb()
 	SCREEN.fill(BLACK)
 	TIME = time.time()
 	draw()   # On redessine l'affichage et on actualise

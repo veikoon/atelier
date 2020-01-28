@@ -86,4 +86,26 @@ class Bombe:
     # (largeurPerso / 2 = 32 et hauteurPerso = 102)
     def draw(self, surface):
         surface.blit(self.sprite[self.spriteDir][self.spriteCount], (self.x - 32, self.y - 102))
-    
+    def drawExplo(self, surface,TAB,i):
+        if(self.finexplode ==True):
+            caseX = self.caseX
+            caseY = self.caseY
+            if(i==0):
+                e=0
+            if(i==1):
+                e=60
+          
+            if(TAB[caseY][caseX+1+i]==0 or TAB[caseY][caseX+1+i]==3):
+                surface.blit(self.sprite[1][self.spriteCount], (self.x+60+e- 32, self.y - 102))
+
+            if(TAB[caseY+1][caseX]==0 or TAB[caseY+1+i][caseX]==3):
+                rotatebas =pygame.transform.rotate(self.sprite[1][self.spriteCount],90)    
+                surface.blit(rotatebas, (self.x- 32, self.y+60+e - 102))  
+
+            if((TAB[caseY][caseX-1-i]==0 or TAB[caseY][caseX-1-i]==3) and (TAB[caseY][caseX-1]!=1 or TAB[caseY][caseX-1]!= 2)):
+                rotategauche =pygame.transform.rotate(self.sprite[1][self.spriteCount],180)    
+                surface.blit(rotategauche, (self.x-60-e -32, self.y - 102))  
+                
+            if(TAB[caseY-1-i][caseX]==0 or TAB[caseY][caseX-1-i]==3):
+                rotatehaut =pygame.transform.rotate(self.sprite[1][self.spriteCount],270)    
+                surface.blit(rotatehaut, (self.x-32, self.y-60-e - 102))  
