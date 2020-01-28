@@ -41,8 +41,11 @@ ORANGE = pygame.image.load("images/ia/Orange/sprite.png")
 BOMBES = pygame.image.load("images/bombe/bomb.png")
 FIRE =pygame.image.load("images/fire/explosion2.png")
 # Musique
-pygame.mixer.music.load("son/bomberman_stage_theme.mp3")
+pygame.mixer.init()
+SON_FOND = pygame.mixer.Sound("son/bomberman.wav")
+SON_BOMBE = pygame.mixer.Sound("son/bombe.wav")
 
+SON_FOND.play(loops=-1, maxtime = 0, fade_ms=0)
 #################################################################################
 ##
 ##  Variables globales
@@ -56,20 +59,20 @@ pygame.mixer.music.load("son/bomberman_stage_theme.mp3")
 # 5 Explosion
 
 TAB = [ [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-		[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-		[1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
-		[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-		[1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
-		[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-		[1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
-		[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-		[1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
-		[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-		[1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
-		[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-		[1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
-		[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-		[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
 
 
 HAUTEUR = len(TAB)     # Nombre de cases en hauteur
@@ -113,30 +116,30 @@ JOUEUR_ROUGE = IA(POS_IA[2][1] * ZOOM + ZOOM//2, POS_IA[2][0] * ZOOM + ZOOM//2, 
 #   en fonction de la valeur des cases du tableau
 #   Puis place les JOUEUR_s
 def draw():
-	for i in range(LARGEUR):
-		for j in range(HAUTEUR):
-			if(TAB[j][i] == 4):
-				sauvegarde = True
-				for bomb in LIST_BOMB:
-					if(bomb.caseX == i and bomb.caseY ==j): sauvegarde = False
+    for i in range(LARGEUR):
+        for j in range(HAUTEUR):
+            if(TAB[j][i] == 4):
+                sauvegarde = True
+                for bomb in LIST_BOMB:
+                    if(bomb.caseX == i and bomb.caseY ==j): sauvegarde = False
 
-				if(sauvegarde): LIST_BOMB.append(Bombe(i*ZOOM+44,j*ZOOM+100,BOMBES, i, j,TIME))
-		
-			if(TAB[j][i] == 0 or TAB[j][i] == 4 or TAB[j][i] ==  5): SCREEN.blit(GRASS,(i*ZOOM,j*ZOOM))
-			if(TAB[j][i] == 1): SCREEN.blit(BLOCK,(i*ZOOM,j*ZOOM))
-			if(TAB[j][i] == 2): SCREEN.blit(BLOCK_MIDDLE,(i*ZOOM,j*ZOOM))
-			if(TAB[j][i] == 3): SCREEN.blit(BLOCK_BRICK,(i*ZOOM,j*ZOOM))
+                if(sauvegarde): LIST_BOMB.append(Bombe(i*ZOOM+44,j*ZOOM+100,BOMBES, i, j,TIME))
+        
+            if(TAB[j][i] == 0 or TAB[j][i] == 4 or TAB[j][i] ==  5): SCREEN.blit(GRASS,(i*ZOOM,j*ZOOM))
+            if(TAB[j][i] == 1): SCREEN.blit(BLOCK,(i*ZOOM,j*ZOOM))
+            if(TAB[j][i] == 2): SCREEN.blit(BLOCK_MIDDLE,(i*ZOOM,j*ZOOM))
+            if(TAB[j][i] == 3): SCREEN.blit(BLOCK_BRICK,(i*ZOOM,j*ZOOM))
 
-	SCREEN.blit(FONT.render(str(TIME // 1), True, WHITE), ((1920 // 2) - 25 , 64*HAUTEUR + 32))
+    SCREEN.blit(FONT.render(str(TIME // 1), True, WHITE), ((1920 // 2) - 25 , 64*HAUTEUR + 32))
 
-	for bomb in LIST_BOMB: 
-		bomb.anim(TIME)
-		bomb.draw(SCREEN)
+    for bomb in LIST_BOMB: 
+        bomb.anim(TIME)
+        bomb.draw(SCREEN)
 
-	for joueur in LIST_JOUEUR: 
-		joueur.draw(SCREEN)
+    for joueur in LIST_JOUEUR: 
+        joueur.draw(SCREEN)
 
-	pygame.display.flip() # Rafraichis l'affichage de Pygame
+    pygame.display.flip() # Rafraichis l'affichage de Pygame
 
 
 def mort(Player):
@@ -145,33 +148,34 @@ def mort(Player):
         LIST_JOUEUR.remove(Player)
 
 def generate():
-	for i in range(LARGEUR):
-		for j in range(HAUTEUR):
-			if(TAB[j][i] == 0 and random.randrange(2)): TAB[j][i] = 3
-	TAB[1][1] = 0; TAB[1][2] = 0; TAB[2][1] = 0
-	TAB[HAUTEUR-2][1] = 0; TAB[HAUTEUR-2][2] = 0; TAB[HAUTEUR-3][1] = 0
-	TAB[1][LARGEUR-2] = 0; TAB[1][LARGEUR-3] = 0; TAB[2][LARGEUR-2] = 0
-	TAB[HAUTEUR-2][LARGEUR-2] = 0; TAB[HAUTEUR-3][LARGEUR-2] = 0; TAB[HAUTEUR-2][LARGEUR-3] = 0
+    for i in range(LARGEUR):
+        for j in range(HAUTEUR):
+            if(TAB[j][i] == 0 and random.randrange(2)): TAB[j][i] = 3
+    TAB[1][1] = 0; TAB[1][2] = 0; TAB[2][1] = 0
+    TAB[HAUTEUR-2][1] = 0; TAB[HAUTEUR-2][2] = 0; TAB[HAUTEUR-3][1] = 0
+    TAB[1][LARGEUR-2] = 0; TAB[1][LARGEUR-3] = 0; TAB[2][LARGEUR-2] = 0
+    TAB[HAUTEUR-2][LARGEUR-2] = 0; TAB[HAUTEUR-3][LARGEUR-2] = 0; TAB[HAUTEUR-2][LARGEUR-3] = 0
 
 # regarde chaque bombe de la liste et si la bombe explose, l'enleve de la liste des BOMBES
 def removeBomb():
-	for Bomb in LIST_BOMB:
-		if (Bomb.Explode() == True):
+    for Bomb in LIST_BOMB:
+        if (Bomb.Explode() == True):
 
-			Bomb.spriteCount = 0
-			Bomb.spriteDir=0
-			Bomb.sprite= Bomb.getSpriteExplo(FIRE)
-			TAB[Bomb.caseY][Bomb.caseX] = 5
-			Bomb.explode = False
+            Bomb.spriteCount = 0
+            Bomb.spriteDir=0
+            Bomb.sprite= Bomb.getSpriteExplo(FIRE)
+            SON_BOMBE.play()
+            TAB[Bomb.caseY][Bomb.caseX] = 5
+            Bomb.explode = False
 
-		if(Bomb.exploFin):
-			
-			LIST_BOMB.remove(Bomb)
+        if(Bomb.exploFin):
+            
+            LIST_BOMB.remove(Bomb)
 def poseBombe(player):
-	caseX = int(player.x/ZOOM)
-	caseY = int(player.y/ZOOM)
-	if(TAB[caseY][caseX] == 0):
-		TAB[caseY][caseX] = 4
+    caseX = int(player.x/ZOOM)
+    caseY = int(player.y/ZOOM)
+    if(TAB[caseY][caseX] == 0):
+        TAB[caseY][caseX] = 4
 
 def destroy():
     for bomb in LIST_BOMB:
@@ -186,26 +190,26 @@ def destroy():
             if TAB[bomb.caseY][bomb.caseX-1] == 3: TAB[bomb.caseY][bomb.caseX-1] = 0
 
 def getTabPos(x,y):
-	posX = x // ZOOM
-	posY = y // ZOOM
-	return (posX,posY)
+    posX = x // ZOOM
+    posY = y // ZOOM
+    return (posX,posY)
 
 def getPossibleMove(player):
-	possibleMove = []
-	tab = []
+    possibleMove = []
+    tab = []
 
-	tab.append(TAB[getTabPos(player.x,player.y+VIT)[1]][getTabPos(player.x,player.y+VIT)[0]])
-	tab.append(TAB[getTabPos(player.x,player.y-VIT)[1]][getTabPos(player.x,player.y-VIT)[0]])
-	tab.append(TAB[getTabPos(player.x+VIT,player.y)[1]][getTabPos(player.x+VIT,player.y)[0]])
-	tab.append(TAB[getTabPos(player.x-VIT,player.y)[1]][getTabPos(player.x-VIT,player.y)[0]])
-	tab.append(TAB[getTabPos(player.x,player.y)[1]][getTabPos(player.x,player.y)[0]])
+    tab.append(TAB[getTabPos(player.x,player.y+VIT)[1]][getTabPos(player.x,player.y+VIT)[0]])
+    tab.append(TAB[getTabPos(player.x,player.y-VIT)[1]][getTabPos(player.x,player.y-VIT)[0]])
+    tab.append(TAB[getTabPos(player.x+VIT,player.y)[1]][getTabPos(player.x+VIT,player.y)[0]])
+    tab.append(TAB[getTabPos(player.x-VIT,player.y)[1]][getTabPos(player.x-VIT,player.y)[0]])
+    tab.append(TAB[getTabPos(player.x,player.y)[1]][getTabPos(player.x,player.y)[0]])
 
-	if(tab[0]  == 0 or tab[0]  == 5 or (tab[0]  == 4 and tab[4] == 4)): possibleMove.append((0,1))
-	if(tab[1]  == 0 or tab[1]  == 5 or (tab[1]  == 4 and tab[4] == 4)): possibleMove.append((0,-1))
-	if(tab[2]  == 0 or tab[2]  == 5 or (tab[2]  == 4 and tab[4] == 4)): possibleMove.append((1,0))
-	if(tab[3]  == 0 or tab[3]  == 5 or (tab[3]  == 4 and tab[4] == 4)): possibleMove.append((-1,0))
+    if(tab[0]  == 0 or tab[0]  == 5 or (tab[0]  == 4 and tab[4] == 4)): possibleMove.append((0,1))
+    if(tab[1]  == 0 or tab[1]  == 5 or (tab[1]  == 4 and tab[4] == 4)): possibleMove.append((0,-1))
+    if(tab[2]  == 0 or tab[2]  == 5 or (tab[2]  == 4 and tab[4] == 4)): possibleMove.append((1,0))
+    if(tab[3]  == 0 or tab[3]  == 5 or (tab[3]  == 4 and tab[4] == 4)): possibleMove.append((-1,0))
 
-	return possibleMove
+    return possibleMove
 
 #################################################################################
 ##
@@ -213,7 +217,7 @@ def getPossibleMove(player):
 
 pygame.mouse.set_visible(True)
 pygame.display.set_caption("ESIEE - BOMB HERMAN")
-pygame.mixer.music.play()   # Activation de la musique
+#pygame.mixer.music.play()   # Activation de la musique
 
 
 LIST_IA.append(JOUEUR_JAUNE)#JAUNE
@@ -221,8 +225,8 @@ LIST_IA.append(JOUEUR_ORANGE)#ORANGE
 LIST_IA.append(JOUEUR_ROUGE)#ROUGE
 
 for ia in LIST_IA: 
-	LIST_JOUEUR.append(ia)
-	ia.setRightDir()	# Defini la direction des sprites des ia a l'init
+    LIST_JOUEUR.append(ia)
+    ia.setRightDir()    # Defini la direction des sprites des ia a l'init
 
 LIST_JOUEUR.append(JOUEUR_BLEU)
 
@@ -237,82 +241,82 @@ generate()
 
 # --------  Main -----------
 while not DONE:
-	event = pygame.event.Event(pygame.USEREVENT)
-	pygame.event.pump()
+    event = pygame.event.Event(pygame.USEREVENT)
+    pygame.event.pump()
 
-	for event in pygame.event.get():
-		if event.type == pygame.QUIT:
-			DONE = True
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            DONE = True
 
-		if event.type == pygame.VIDEORESIZE:
-			SCREEN_HEIGHT = event.h
-			SCREEN_WIDTH = event.w
-			ZOOM = int((64/1920)*SCREEN_WIDTH)
+        if event.type == pygame.VIDEORESIZE:
+            SCREEN_HEIGHT = event.h
+            SCREEN_WIDTH = event.w
+            ZOOM = int((64/1920)*SCREEN_WIDTH)
 
-			JOUEUR_BLEU.getSprite(BLEU,int(ZOOM*(102/64)),ZOOM)
-			JOUEUR_JAUNE.getSprite(JAUNE,int(ZOOM*(102/64)),ZOOM)
-			JOUEUR_ORANGE.getSprite(ORANGE,int(ZOOM*(102/64)),ZOOM)
-			JOUEUR_ROUGE.getSprite(ROUGE,int(ZOOM*(102/64)),ZOOM)
-
-
-
-			GRASS = pygame.transform.scale(GRASS,(ZOOM,ZOOM))
-			BLOCK_BRICK = pygame.transform.scale(BLOCK_BRICK,(ZOOM,ZOOM))
-			BLOCK = pygame.transform.scale(BLOCK,(ZOOM,ZOOM))
-			BLOCK_MIDDLE = pygame.transform.scale(BLOCK_MIDDLE,(ZOOM,ZOOM))
-
-			pygame.display.flip()
-			draw()
-
-	for ia in LIST_IA:
-		possibleMove = getPossibleMove(ia)
-		if (ia.dir in possibleMove):
-			ia.move(ia.dir[0]*VIT, ia.dir[1]*VIT)
-		else:
-			#poseBombe(ia)
-			Next_deplacement_ia = getPossibleMove(ia)
-			deplacement_ia = random.randrange(len(possibleMove))
-			ia.dir = possibleMove[deplacement_ia]
-			ia.setRightDir()
-
-	keysPressed = pygame.key.get_pressed()  # On retient les touches pressees
-
-	## Mouvements du JOUEUR_
-	#   On choisit la direction du sprite en fonction de sa position dans le tableau des sprites
-	#   On fait appelle a la fonction move pour changer les coordonnees et les sprites
-	possibleMove = getPossibleMove(JOUEUR_BLEU)
-	if(keysPressed[pygame.K_DOWN]  and (0,1) in possibleMove):
-		JOUEUR_BLEU.spriteDir = 0
-		JOUEUR_BLEU.move(0,VIT)
-
-	if(keysPressed[pygame.K_UP] and (0,-1) in possibleMove):
-		JOUEUR_BLEU.move(0,-VIT)
-		JOUEUR_BLEU.spriteDir = 3
-
-	if(keysPressed[pygame.K_RIGHT] and (1,0) in possibleMove):
-		JOUEUR_BLEU.move(VIT,0)
-		JOUEUR_BLEU.spriteDir = 2
-
-	if(keysPressed[pygame.K_LEFT] and (-1,0) in possibleMove):
-		JOUEUR_BLEU.move(-VIT,0)
-		JOUEUR_BLEU.spriteDir = 1
-
-	if(keysPressed[pygame.K_SPACE]):
-		poseBombe(JOUEUR_BLEU)
-		
-	for bomb in LIST_BOMB:
-		print(TIME - bomb.timeBomb)
-		#if(TIME - bomb.timeBomb > 4):
-		#	bomb.explode = True
+            JOUEUR_BLEU.getSprite(BLEU,int(ZOOM*(102/64)),ZOOM)
+            JOUEUR_JAUNE.getSprite(JAUNE,int(ZOOM*(102/64)),ZOOM)
+            JOUEUR_ORANGE.getSprite(ORANGE,int(ZOOM*(102/64)),ZOOM)
+            JOUEUR_ROUGE.getSprite(ROUGE,int(ZOOM*(102/64)),ZOOM)
 
 
-	destroy()
-	removeBomb()
-	SCREEN.fill(BLACK)
-	TIME = time.time()
-	draw()   # On redessine l'affichage et on actualise
-	CLOCK.tick(30) # Limite d'image par seconde
 
-	#a mettre quand le personnage est mort : pygame.mixer.music.stop()
+            GRASS = pygame.transform.scale(GRASS,(ZOOM,ZOOM))
+            BLOCK_BRICK = pygame.transform.scale(BLOCK_BRICK,(ZOOM,ZOOM))
+            BLOCK = pygame.transform.scale(BLOCK,(ZOOM,ZOOM))
+            BLOCK_MIDDLE = pygame.transform.scale(BLOCK_MIDDLE,(ZOOM,ZOOM))
+
+            pygame.display.flip()
+            draw()
+
+    for ia in LIST_IA:
+        possibleMove = getPossibleMove(ia)
+        if (ia.dir in possibleMove):
+            ia.move(ia.dir[0]*VIT, ia.dir[1]*VIT)
+        else:
+            #poseBombe(ia)
+            Next_deplacement_ia = getPossibleMove(ia)
+            deplacement_ia = random.randrange(len(possibleMove))
+            ia.dir = possibleMove[deplacement_ia]
+            ia.setRightDir()
+
+    keysPressed = pygame.key.get_pressed()  # On retient les touches pressees
+
+    ## Mouvements du JOUEUR_
+    #   On choisit la direction du sprite en fonction de sa position dans le tableau des sprites
+    #   On fait appelle a la fonction move pour changer les coordonnees et les sprites
+    possibleMove = getPossibleMove(JOUEUR_BLEU)
+    if(keysPressed[pygame.K_DOWN]  and (0,1) in possibleMove):
+        JOUEUR_BLEU.spriteDir = 0
+        JOUEUR_BLEU.move(0,VIT)
+
+    if(keysPressed[pygame.K_UP] and (0,-1) in possibleMove):
+        JOUEUR_BLEU.move(0,-VIT)
+        JOUEUR_BLEU.spriteDir = 3
+
+    if(keysPressed[pygame.K_RIGHT] and (1,0) in possibleMove):
+        JOUEUR_BLEU.move(VIT,0)
+        JOUEUR_BLEU.spriteDir = 2
+
+    if(keysPressed[pygame.K_LEFT] and (-1,0) in possibleMove):
+        JOUEUR_BLEU.move(-VIT,0)
+        JOUEUR_BLEU.spriteDir = 1
+
+    if(keysPressed[pygame.K_SPACE]):
+        poseBombe(JOUEUR_BLEU)
+        
+    for bomb in LIST_BOMB:
+        print(TIME - bomb.timeBomb)
+        #if(TIME - bomb.timeBomb > 4):
+        #   bomb.explode = True
+
+
+    destroy()
+    removeBomb()
+    SCREEN.fill(BLACK)
+    TIME = time.time()
+    draw()   # On redessine l'affichage et on actualise
+    CLOCK.tick(30) # Limite d'image par seconde
+
+    #a mettre quand le personnage est mort : pygame.mixer.music.stop()
 
 pygame.quit() # Ferme la fenetre et quitte.
