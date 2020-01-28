@@ -41,8 +41,11 @@ ORANGE = pygame.image.load("images/ia/Orange/sprite.png")
 BOMBES = pygame.image.load("images/bombe/bomb.png")
 FIRE =pygame.image.load("images/fire/explosion2.png")
 # Musique
-pygame.mixer.music.load("son/bomberman_stage_theme.mp3")
+pygame.mixer.init()
+SON_FOND = pygame.mixer.Sound("son/bomberman.wav")
+SON_BOMBE = pygame.mixer.Sound("son/bombe.wav")
 
+SON_FOND.play(loops=-1, maxtime = 0, fade_ms=0)
 #################################################################################
 ##
 ##  Variables globales
@@ -122,7 +125,7 @@ def draw():
 
 				if(sauvegarde): LIST_BOMB.append(Bombe(i*ZOOM+44,j*ZOOM+100,BOMBES, i, j,TIME))
 		
-			if(TAB[j][i] == 0 or TAB[j][i] == 4): SCREEN.blit(GRASS,(i*ZOOM,j*ZOOM))
+			if(TAB[j][i] == 0 or TAB[j][i] == 4 or TAB[j][i] ==  5): SCREEN.blit(GRASS,(i*ZOOM,j*ZOOM))
 			if(TAB[j][i] == 1): SCREEN.blit(BLOCK,(i*ZOOM,j*ZOOM))
 			if(TAB[j][i] == 2): SCREEN.blit(BLOCK_MIDDLE,(i*ZOOM,j*ZOOM))
 			if(TAB[j][i] == 3): SCREEN.blit(BLOCK_BRICK,(i*ZOOM,j*ZOOM))
@@ -140,9 +143,9 @@ def draw():
 
 
 def mort(Player):
-    Player.lives -= 1
-    if Player.lives == 0:
-        LIST_JOUEUR.remove(Player)
+	Player.lives -= 1
+	if Player.lives == 0:
+		LIST_JOUEUR.remove(Player)
 
 def generate():
 	for i in range(LARGEUR):
@@ -161,7 +164,8 @@ def removeBomb():
 			Bomb.spriteCount = 0
 			Bomb.spriteDir=0
 			Bomb.sprite= Bomb.getSpriteExplo(FIRE)
-			TAB[Bomb.caseY][Bomb.caseX] = 0
+			SON_BOMBE.play()
+			TAB[Bomb.caseY][Bomb.caseX] = 5
 			Bomb.explode = False
 
 		if(Bomb.exploFin):
@@ -172,19 +176,18 @@ def poseBombe(player):
 	caseY = int(player.y/ZOOM)
 	if(TAB[caseY][caseX] == 0):
 		TAB[caseY][caseX] = 4
-	player.lastBombPos = (caseX, caseY)
 
 def destroy():
-    for bomb in LIST_BOMB:
-        if bomb.Explode():
-            #if TAB[bomb.caseY][bomb.caseX+2] == 3 and TAB[bomb.caseY][bomb.caseX+1] == 0: TAB[bomb.caseY][bomb.caseX+2] = 0
-            #if TAB[bomb.caseY][bomb.caseX-2] == 3 and TAB[bomb.caseY][bomb.caseX-1] == 0: TAB[bomb.caseY][bomb.caseX-2] = 0
-            #if TAB[bomb.caseY+2][bomb.caseX] == 3 and TAB[bomb.caseY+1][bomb.caseX] == 0: TAB[bomb.caseY+2][bomb.caseX] = 0
-            #if TAB[bomb.caseY-2][bomb.caseX] == 3 and TAB[bomb.caseY-1][bomb.caseX] == 0: TAB[bomb.caseY-2][bomb.caseX] = 0
-            if TAB[bomb.caseY+1][bomb.caseX] == 3: TAB[bomb.caseY+1][bomb.caseX] = 0
-            if TAB[bomb.caseY-1][bomb.caseX] == 3: TAB[bomb.caseY-1][bomb.caseX] = 0
-            if TAB[bomb.caseY][bomb.caseX+1] == 3: TAB[bomb.caseY][bomb.caseX+1] = 0
-            if TAB[bomb.caseY][bomb.caseX-1] == 3: TAB[bomb.caseY][bomb.caseX-1] = 0
+	for bomb in LIST_BOMB:
+		if bomb.Explode():
+			#if TAB[bomb.caseY][bomb.caseX+2] == 3 and TAB[bomb.caseY][bomb.caseX+1] == 0: TAB[bomb.caseY][bomb.caseX+2] = 0
+			#if TAB[bomb.caseY][bomb.caseX-2] == 3 and TAB[bomb.caseY][bomb.caseX-1] == 0: TAB[bomb.caseY][bomb.caseX-2] = 0
+			#if TAB[bomb.caseY+2][bomb.caseX] == 3 and TAB[bomb.caseY+1][bomb.caseX] == 0: TAB[bomb.caseY+2][bomb.caseX] = 0
+			#if TAB[bomb.caseY-2][bomb.caseX] == 3 and TAB[bomb.caseY-1][bomb.caseX] == 0: TAB[bomb.caseY-2][bomb.caseX] = 0
+			if TAB[bomb.caseY+1][bomb.caseX] == 3: TAB[bomb.caseY+1][bomb.caseX] = 0
+			if TAB[bomb.caseY-1][bomb.caseX] == 3: TAB[bomb.caseY-1][bomb.caseX] = 0
+			if TAB[bomb.caseY][bomb.caseX+1] == 3: TAB[bomb.caseY][bomb.caseX+1] = 0
+			if TAB[bomb.caseY][bomb.caseX-1] == 3: TAB[bomb.caseY][bomb.caseX-1] = 0
 
 def getTabPos(x,y):
 	posX = x // ZOOM
@@ -220,7 +223,7 @@ def getPossibleMove(player):
 
 pygame.mouse.set_visible(True)
 pygame.display.set_caption("ESIEE - BOMB HERMAN")
-pygame.mixer.music.play()   # Activation de la musique
+#pygame.mixer.music.play()   # Activation de la musique
 
 
 LIST_IA.append(JOUEUR_JAUNE)#JAUNE
@@ -229,7 +232,7 @@ LIST_IA.append(JOUEUR_ROUGE)#ROUGE
 
 for ia in LIST_IA: 
 	LIST_JOUEUR.append(ia)
-	ia.setRightDir()	# Defini la direction des sprites des ia a l'init
+	ia.setRightDir()    # Defini la direction des sprites des ia a l'init
 
 LIST_JOUEUR.append(JOUEUR_BLEU)
 

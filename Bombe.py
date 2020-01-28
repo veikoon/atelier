@@ -52,7 +52,7 @@ class Bombe:
             
             self.exploFin = True
 
-        if(self.spriteCount == 5):
+        if(self.spriteCount == 5 and not self.finexplode):
             self.finexplode = True
             self.timeBomb = TIME
             self.explode = True
