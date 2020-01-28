@@ -123,7 +123,7 @@ def draw():
 				for bomb in LIST_BOMB:
 					if(bomb.caseX == i and bomb.caseY ==j): sauvegarde = False
 
-				if(sauvegarde): LIST_BOMB.append(Bombe(i*ZOOM+44,j*ZOOM+100,BOMBES, i, j,TIME))
+				if(sauvegarde): LIST_BOMB.append(Bombe(i*ZOOM+100,j*ZOOM+96,BOMBES, i, j,TIME))
 		
 			if(TAB[j][i] == 0 or TAB[j][i] == 4 or TAB[j][i] ==  5): SCREEN.blit(GRASS,(i*ZOOM,j*ZOOM))
 			if(TAB[j][i] == 1): SCREEN.blit(BLOCK,(i*ZOOM,j*ZOOM))
@@ -141,6 +141,7 @@ def draw():
 		bomb.drawExplo(SCREEN,TAB,1)
 
 	for joueur in LIST_JOUEUR: 
+		
 		joueur.draw(SCREEN)
 
 	pygame.display.flip() # Rafraichis l'affichage de Pygame
@@ -168,12 +169,13 @@ def removeBomb():
 			Bomb.spriteCount = 0
 			Bomb.spriteDir=0
 			Bomb.sprite= Bomb.getSpriteExplo(FIRE)
-			SON_BOMBE.play()
+			#SON_BOMBE.play()
 			TAB[Bomb.caseY][Bomb.caseX] = 5
+			Bombe.boost = 0,4
 			Bomb.explode = False
 
 		if(Bomb.exploFin):
-			
+			TAB[Bomb.caseY][Bomb.caseX] = 0
 			LIST_BOMB.remove(Bomb)
 def poseBombe(player):
 	caseX = int(player.x/ZOOM)
@@ -192,7 +194,12 @@ def destroy():
 			if TAB[bomb.caseY-1][bomb.caseX] == 3: TAB[bomb.caseY-1][bomb.caseX] = 0
 			if TAB[bomb.caseY][bomb.caseX+1] == 3: TAB[bomb.caseY][bomb.caseX+1] = 0
 			if TAB[bomb.caseY][bomb.caseX-1] == 3: TAB[bomb.caseY][bomb.caseX-1] = 0
-
+def Meurt(player):
+	x =getTabPos(player.x,player.y)[0]
+	y=getTabPos(player.x,player.y)[1]
+	if(TAB[y][x]==5):
+		mort(player)
+		print("e")
 def getTabPos(x,y):
 	posX = x // ZOOM
 	posY = y // ZOOM
@@ -313,7 +320,7 @@ while not DONE:
 
 	if(keysPressed[pygame.K_SPACE]):
 		poseBombe(JOUEUR_BLEU)
-		
+	Meurt(JOUEUR_BLEU)	
 	SCREEN.fill(BLACK)
 	TIME = time.time()
 	draw()   # On redessine l'affichage et on actualise
