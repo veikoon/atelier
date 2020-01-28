@@ -39,7 +39,7 @@ JAUNE = pygame.image.load("images/ia/Jaune/sprite.png")
 ORANGE = pygame.image.load("images/ia/Orange/sprite.png")
 VERT = pygame.image.load("images/ia/Vert/sprite.png")
 BOMBES = pygame.image.load("images/bombe/bomb.png")
-
+FIRE =pygame.image.load("images/fire/explosion2.png")
 # Musique
 pygame.mixer.music.load("son/bomberman_stage_theme.mp3")
 
@@ -117,17 +117,21 @@ def draw():
 	for i in range(LARGEUR):
 		for j in range(HAUTEUR):
 			if(TAB[j][i] == 4):
-				LIST_BOMB.append(Bombe(i*ZOOM+44,j*ZOOM+100,BOMBES, i, j,TIME))
-				TAB[j][i] = 0
-			if(TAB[j][i] == 0): SCREEN.blit(GRASS,(i*ZOOM,j*ZOOM))
+				sauvegarde = True
+				for bomb in LIST_BOMB:
+					if(bomb.caseX == i and bomb.caseY ==j): sauvegarde = False
+
+				if(sauvegarde): LIST_BOMB.append(Bombe(i*ZOOM+44,j*ZOOM+100,BOMBES, i, j,TIME))
+		
+			if(TAB[j][i] == 0 or TAB[j][i] == 4): SCREEN.blit(GRASS,(i*ZOOM,j*ZOOM))
 			if(TAB[j][i] == 1): SCREEN.blit(BLOCK,(i*ZOOM,j*ZOOM))
 			if(TAB[j][i] == 2): SCREEN.blit(BLOCK_MIDDLE,(i*ZOOM,j*ZOOM))
 			if(TAB[j][i] == 3): SCREEN.blit(BLOCK_BRICK,(i*ZOOM,j*ZOOM))
 
 	SCREEN.blit(FONT.render(str(TIME // 1), True, WHITE), ((1920 // 2) - 25 , 64*HAUTEUR + 32))
 
-	for bomb in LIST_BOMB : 
-		bomb.anim()
+	for bomb in LIST_BOMB: 
+		bomb.anim(TIME)
 		bomb.draw(SCREEN)
 
 	for j in LIST_JOUEUR: j.draw(SCREEN)
@@ -156,8 +160,16 @@ def generate():
 def removeBomb():
 	for Bomb in LIST_BOMB:
 		if (Bomb.Explode() == True):
-			LIST_BOMB.remove(Bomb)
 
+			Bomb.spriteCount = 0
+			Bomb.spriteDir=0
+			Bomb.sprite= Bomb.getSpriteExplo(FIRE)
+			TAB[Bomb.caseY][Bomb.caseX] = 0
+			Bomb.explode = False
+
+		if(Bomb.exploFin):
+			
+			LIST_BOMB.remove(Bomb)
 def poseBombe(player):
 	caseX = int(player.x/ZOOM)
 	caseY = int(player.y/ZOOM)
@@ -245,7 +257,7 @@ while not DONE:
 			JOUEUR_JAUNE.getSprite(JAUNE,int(ZOOM*(102/64)),ZOOM)
 			JOUEUR_ORANGE.getSprite(ORANGE,int(ZOOM*(102/64)),ZOOM)
 			JOUEUR_ROUGE.getSprite(ROUGE,int(ZOOM*(102/64)),ZOOM)
-			JOUEUR_VERT.getSprite(VERT,int(ZOOM*(102/64)),ZOOM)
+			#JOUEUR_VERT.getSprite(VERT,int(ZOOM*(102/64)),ZOOM)
 
 
 			GRASS = pygame.transform.scale(GRASS,(ZOOM,ZOOM))
@@ -293,10 +305,8 @@ while not DONE:
 
 	if(keysPressed[pygame.K_SPACE]):
 		poseBombe(JOUEUR_BLEU)
-	for bomb in LIST_BOMB:
-		print(TIME - bomb.timeBomb)
-		if(TIME - bomb.timeBomb > 4):
-			bomb.explode = True
+	
+		
 	
 	destroy()
 	removeBomb()

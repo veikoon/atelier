@@ -7,20 +7,22 @@
 #################################################################################
 import pygame
 from pygame import *
+import time
 class Bombe:
     def __init__(self,startX, startY, bombes, caseX, caseY,times):
         self.explode = False
         self.game_frame = 0         # initialize the game_frame counter
         self.x = startX             # Position initiale en x
         self.y = startY             # Position initiale en y
-        self.sprite = self.getSprite(bombes)     # Tableau de sprites en 2D
+        self.sprite = self.getSprite(bombes)   # Tableau de sprites en 2D
         self.spriteDir = 0    
         self.timeBomb = times      # Selectionne le tableau de sprite (en 1D) correspondant a la direction du joueur
         self.spriteCount = 0        # Selectionne le sprite du tableau correspondant au mouvement actuel
         self.spriteOffset = 0       # Permet de changer de sprite en fonction du decalage et non a chaque mouvement
         self.caseX = caseX
         self.caseY = caseY
-
+        self.exploFin = False
+        self.finexplode = False
 # getSpriteBombe(imgBombe):
 #   Decoupe l'image imgBombe en sprite
 #   Met les sprite a l'echelle de la carte
@@ -36,17 +38,43 @@ class Bombe:
         Tab.append(tabTemp)
         return Tab
 
-
+    
 # Passe au sprite suivant en parcourant le tableau
-    def anim(self):
-        if (self.game_frame % 20 == 0):
-            self.spriteCount = (self.spriteCount + 1) % 6
-            self.spriteOffset = 0
+    def anim(self,TIME):
+        finexplode = False
+        # print(TIME - self.timeBomb)
+        # print("verifi")
+        # print(1*self.spriteCount)
+        if (TIME - self.timeBomb > 1*self.spriteCount):
 
-        self.game_frame += 1
-        if(self.spriteCount==5):
+            self.spriteCount = (self.spriteCount + 1)
+            print(self.spriteCount)
+        if(self.spriteCount == 5 and self.finexplode):
+            
+            self.exploFin = True
+
+        if(self.spriteCount == 5):
+            self.finexplode = True
+            self.timeBomb = TIME
             self.explode = True
+            self.spriteCount = 0
 
+
+    # def animExplo(self):
+    #     TIME2 = time.time()    
+    #     if (TIME2 > 1):
+    #         self.spriteCountEx = (self.spriteCountEx + 1)
+    #         self.game_frame += 1
+    def getSpriteExplo(self,ImgFire):
+        Tab = []
+        for j in range(3):
+            tabTemp = []
+            for i in range(7):
+                imTemp = ImgFire.subsurface((i*48),(j*48),48,48)
+                imTemp = pygame.transform.scale(imTemp,((64,64)))
+                tabTemp.append(imTemp)
+            Tab.append(tabTemp)
+        return Tab
 
 
 # Accesseur pour l'explosion
@@ -59,3 +87,4 @@ class Bombe:
     # (largeurPerso / 2 = 32 et hauteurPerso = 102)
     def draw(self, surface):
         surface.blit(self.sprite[self.spriteDir][self.spriteCount], (self.x - 32, self.y - 102))
+    
