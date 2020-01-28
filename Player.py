@@ -71,5 +71,5 @@ class Player:
 class IA(Player):
 
 	def __init__(self,startX, startY, color, hauteur, zoom, direction):
-		super.__init__(startX, startY, color, hauteur, zoom)
+		super(IA,self).__init__(startX, startY, color, hauteur, zoom)
 		self.dir = direction
