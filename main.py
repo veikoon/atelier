@@ -17,6 +17,7 @@ import os
 import random
 from random import randrange
 import copy
+from copy import deepcopy
 import time
 from Player import Player
 from Bombe import Bombe
@@ -107,6 +108,8 @@ JOUEUR_JAUNE = IA(POS_IA[0][1] * ZOOM + ZOOM//2, POS_IA[0][0] * ZOOM + ZOOM//2, 
 JOUEUR_ORANGE = IA(POS_IA[1][1] * ZOOM + ZOOM//2, POS_IA[1][0] * ZOOM + ZOOM//2, ORANGE,int(ZOOM*(102/64)), ZOOM,(1,0))
 JOUEUR_ROUGE = IA(POS_IA[2][1] * ZOOM + ZOOM//2, POS_IA[2][0] * ZOOM + ZOOM//2, ROUGE,int(ZOOM*(102/64)), ZOOM,(-1,0))
 
+# grille contenant les distances aux bombes sur la map
+GRILLE_BOMBE = None
 #################################################################################
 ##
 ##  Fonctions principales
@@ -135,7 +138,9 @@ def draw():
 			if(bomb.caseY == HAUTEUR-2):
 				bomb.BorderY = True
 
-			bomb.drawExplo(SCREEN,TAB,i)
+			bomb.drawExplo(SCREEN,TAB,i,(1+i))
+			bomb.drawExplo(SCREEN,TAB,i,-(1+i))
+
 
 
 	for joueur in LIST_JOUEUR:
@@ -255,6 +260,29 @@ def getPossibleMovePlayer(player):
 
 	return possibleMove
 
+def grilleBombe():
+	global GRILLE_BOMBE
+	GRILLE_BOMBE = copy.deepcopy(TAB)
+	for x in range(LARGEUR):
+		for y in range(HAUTEUR):
+			if (TAB[y][x] == 4): GRILLE_BOMBE[y][x] = 0
+			if (TAB[y][x] == 1 or TAB[y][x] == 2 or TAB[y][x] == 3): GRILLE_BOMBE[y][x] = 1000
+			if (TAB[y][x] == 0): GRILLE_BOMBE[y][x] = 100
+
+def miseDistance():
+	global GRILLE_BOMBE
+	done = True
+	while done:
+		done = False
+		for y in range(HAUTEUR):
+			for x in range(LARGEUR):
+				if (GRILLE_BOMBE[y][x] == 1000): continue
+				if (GRILLE_BOMBE[y][x] >= 0):
+					mini = min (GRILLE_BOMBE[y][x+1], GRILLE_BOMBE[y][x-1], GRILLE_BOMBE[y+1][x], GRILLE_BOMBE[y-1][x])
+					if (mini +1 < GRILLE_BOMBE[y][x]):
+						GRILLE_BOMBE[y][x] = mini +1
+						done = True
+
 #################################################################################
 ##
 ##  Initialisation
@@ -285,6 +313,7 @@ generate()
 
 # --------  Main -----------
 while not DONE:
+
 	event = pygame.event.Event(pygame.USEREVENT)
 	pygame.event.pump()
 
@@ -312,6 +341,9 @@ while not DONE:
 			pygame.display.flip()
 			draw()
 
+	grilleBombe()
+	miseDistance()
+
 	for ia in LIST_IA:
 		possibleMove = getPossibleMoveIA(ia)
 		if (ia.dir in possibleMove):
@@ -324,7 +356,7 @@ while not DONE:
 				ia.setRightDir()
 			else:
 				ia.dir = (0,0)
-			
+
 
 	keysPressed = pygame.key.get_pressed()  # On retient les touches pressees
 
@@ -358,6 +390,7 @@ while not DONE:
 	TIME = time.time()
 	draw()   # On redessine l'affichage et on actualise
 	CLOCK.tick(30) # Limite d'image par seconde
+
 
 	#a mettre quand le personnage est mort : pygame.mixer.music.stop()
 

@@ -54,10 +54,9 @@ class Bombe:
 			decompte = 0.4
 		
 		if (TIME - self.timeBomb > decompte*self.spriteCount):
-
 			self.spriteCount = (self.spriteCount + 1)
-		if(self.spriteCount == 5 and self.finexplode):
 			
+		if(self.spriteCount == 4 and self.finexplode):
 			self.exploFin = True
 
 		if(self.spriteCount == 5 and not self.finexplode):
@@ -94,40 +93,33 @@ class Bombe:
 	# (largeurPerso / 2 = 32 et hauteurPerso = 102)
 	def draw(self, surface):
 		surface.blit(self.sprite[self.spriteDir][self.spriteCount], (self.x - 100, self.y - 96))
-	def drawExplo(self, surface,TAB,i):
+	def drawExplo(self, surface,TAB,i,direction):
 		if(self.finexplode ==True):
 			caseX = self.caseX
 			caseY = self.caseY
-			e = 64*i
+			e = 64*i+64
+			testcase =-1
 
+			if(direction <0):
+				e = -e
+				testcase = 1 
 			if(self.exploFin):
 				TAB[caseY][caseX]=0
+	  
+		
 			if(self.BorderX==False):
-				if(TAB[caseY][caseX+1+i]==0 or TAB[caseY][caseX+1+i]==3 or TAB[caseY][caseX+1+i]==5):
-					TAB[caseY][caseX+1+i]=5
-					if(self.exploFin):
-						TAB[caseY][caseX+1+i]=0
-					surface.blit(self.sprite[1][self.spriteCount], (self.x+60+e- 100, self.y - 96))
+				if(TAB[caseY][caseX+direction]==0 or TAB[caseY][caseX+direction]==3 or TAB[caseY][caseX+direction]==5 or TAB[caseY][caseX+direction]==4):
+					if( TAB[caseY][caseX+direction+testcase] !=2):
+						TAB[caseY][caseX+direction]=5
+						if(self.exploFin):
+							TAB[caseY][caseX+direction]=0
+						surface.blit(self.sprite[1][self.spriteCount], (self.x+e- 100, self.y - 96))
 			if(self.BorderY==False):
-				if(TAB[caseY+1+i][caseX]==0 or TAB[caseY+1+i][caseX]==3 or TAB[caseY+1+i][caseX]==5):
-					TAB[caseY+1+i][caseX]=5
-					if(self.exploFin):
-					   TAB[caseY+1+i][caseX]=0
-					rotatebas =pygame.transform.rotate(self.sprite[1][self.spriteCount],90)    
-					surface.blit(rotatebas, (self.x- 100, self.y+60+e - 96))  
+				if(TAB[caseY+direction][caseX]==0 or TAB[caseY+direction][caseX]==3 or TAB[caseY+direction][caseX]==5 or TAB[caseY+direction][caseX]==4):
+					if( TAB[caseY+direction+testcase][caseX]!=2):         
+						TAB[caseY+direction][caseX]=5
+						if(self.exploFin):
+						   TAB[caseY+direction][caseX]=0
+						rotatebas =pygame.transform.rotate(self.sprite[1][self.spriteCount],90)    
+						surface.blit(rotatebas, (self.x-100, self.y+e- 96))  
 
-			if(TAB[caseY][caseX-1-i]==0 or TAB[caseY][caseX-1-i]==3 or TAB[caseY][caseX-1-i]==5):
-				TAB[caseY][caseX-1-i]=5
-				if(self.exploFin):
-					TAB[caseY][caseX-1-i]=0
-				rotategauche =pygame.transform.rotate(self.sprite[1][self.spriteCount],180)    
-				surface.blit(rotategauche, (self.x-60-e -100, self.y - 96))  
-				
-			if(TAB[caseY-1-i][caseX]==0 or TAB[caseY-1-i][caseX]==3 or TAB[caseY-1-i][caseX]==5):
-
-
-				TAB[caseY-1-i][caseX]=5
-				if(self.exploFin):
-					TAB[caseY-1-i][caseX]=0
-				rotatehaut =pygame.transform.rotate(self.sprite[1][self.spriteCount],270)    
-				surface.blit(rotatehaut, (self.x-100, self.y-60-e - 96))  

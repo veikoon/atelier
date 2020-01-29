@@ -7,6 +7,7 @@
 #################################################################################
 
 import pygame
+import copy
 
 class Player:
 	def __init__(self,startX, startY, color, hauteur, zoom):
@@ -19,7 +20,7 @@ class Player:
 		self.lives = 1
 		self.nbBombe = 0
 		self.nbBombeMax = 1
-		self.rayonBombe = 1
+		self.rayonBombe = 2
 
 	##	draw():
 	# Permet de dessiner le personnage dont les coordonnees sont au milieu de ses pieds
@@ -59,7 +60,7 @@ class Player:
 		else:
 			self.spriteOffset += 1
 
-
+	
 
 #################################################################################
 #	Class Player from Bomberman													#
@@ -72,6 +73,7 @@ class Player:
 
 
 class IA(Player):
+	GRILLE_BOMBE = None
 
 	def __init__(self,startX, startY, color, hauteur, zoom, direction):
 		super(IA,self).__init__(startX, startY, color, hauteur, zoom)
