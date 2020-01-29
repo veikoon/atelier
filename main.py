@@ -150,13 +150,7 @@ def draw():
 	pygame.display.flip() # Rafraichis l'affichage de Pygame
 
 
-def mort(Player):
-	Player.lives -= 1
-	if Player.lives == 0:
-		if(Player in LIST_JOUEUR):
-			LIST_JOUEUR.remove(Player)
-		if(Player in LIST_IA):
-			LIST_IA.remove(Player)
+
 def generate():
 	for i in range(LARGEUR):
 		for j in range(HAUTEUR):
@@ -205,7 +199,12 @@ def Meurt(player):
 	x =getTabPos(player.x,player.y)[0]
 	y=getTabPos(player.x,player.y)[1]
 	if(TAB[y][x]==5):
-		mort(player)
+		player.lives -= 1
+		if player.lives == 0:
+			if(player in LIST_JOUEUR):
+				LIST_JOUEUR.remove(player)
+			if(player in LIST_IA):
+				LIST_IA.remove(player)
 
 def iaDanger(ia): return GRILLE_BOMBE[getTabPos(ia.x,ia.y)[1]][getTabPos(ia.x,ia.y)[0]] <= 2
 
