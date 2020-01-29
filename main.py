@@ -324,11 +324,14 @@ while not DONE:
 		if (ia.dir in possibleMove):
 			ia.move(ia.dir[0]*VIT, ia.dir[1]*VIT)
 		else:
-			#poseBombe(ia)
-			Next_deplacement_ia = getPossibleMoveIA(ia)
-			deplacement_ia = random.randrange(len(possibleMove))
-			ia.dir = possibleMove[deplacement_ia]
-			ia.setRightDir()
+			poseBombe(ia)
+			if(len(possibleMove) !=0 ):
+				deplacement_ia = random.randrange(len(possibleMove))
+				ia.dir = possibleMove[deplacement_ia]
+				ia.setRightDir()
+			else:
+				ia.dir = (0,0)
+			
 
 	keysPressed = pygame.key.get_pressed()  # On retient les touches pressees
 
