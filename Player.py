@@ -7,6 +7,7 @@
 #################################################################################
 
 import pygame
+import copy
 
 class Player:
 	def __init__(self,startX, startY, color, hauteur, zoom):
@@ -56,7 +57,7 @@ class Player:
 		else:
 			self.spriteOffset += 1
 
-
+	
 
 #################################################################################
 #	Class Player from Bomberman													#
@@ -69,6 +70,7 @@ class Player:
 
 
 class IA(Player):
+	GRILLE_BOMBE = None
 
 	def __init__(self,startX, startY, color, hauteur, zoom, direction):
 		super(IA,self).__init__(startX, startY, color, hauteur, zoom)

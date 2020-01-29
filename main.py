@@ -17,6 +17,7 @@ import os
 import random
 from random import randrange
 import copy
+from copy import deepcopy
 import time
 from Player import Player
 from Bombe import Bombe
@@ -107,6 +108,8 @@ JOUEUR_JAUNE = IA(POS_IA[0][1] * ZOOM + ZOOM//2, POS_IA[0][0] * ZOOM + ZOOM//2, 
 JOUEUR_ORANGE = IA(POS_IA[1][1] * ZOOM + ZOOM//2, POS_IA[1][0] * ZOOM + ZOOM//2, ORANGE,int(ZOOM*(102/64)), ZOOM,(1,0))
 JOUEUR_ROUGE = IA(POS_IA[2][1] * ZOOM + ZOOM//2, POS_IA[2][0] * ZOOM + ZOOM//2, ROUGE,int(ZOOM*(102/64)), ZOOM,(-1,0))
 
+# grille contenant les distances aux bombes sur la map
+GRILLE_BOMBE = None
 #################################################################################
 ##
 ##  Fonctions principales
@@ -124,7 +127,7 @@ def draw():
 					if(bomb.caseX == i and bomb.caseY ==j): sauvegarde = False
 
 				if(sauvegarde): LIST_BOMB.append(Bombe(i*ZOOM+100,j*ZOOM+96,BOMBES, i, j,TIME,2))
-		
+
 			if(TAB[j][i] == 0 or TAB[j][i] == 4 or TAB[j][i] ==  5): SCREEN.blit(GRASS,(i*ZOOM,j*ZOOM))
 			if(TAB[j][i] == 1): SCREEN.blit(BLOCK,(i*ZOOM,j*ZOOM))
 			if(TAB[j][i] == 2): SCREEN.blit(BLOCK_MIDDLE,(i*ZOOM,j*ZOOM))
@@ -132,21 +135,21 @@ def draw():
 
 	SCREEN.blit(FONT.render(str(TIME // 1), True, WHITE), ((1920 // 2) - 25 , 64*HAUTEUR + 32))
 
-	for bomb in LIST_BOMB: 
+	for bomb in LIST_BOMB:
 		bomb.anim(TIME)
 		bomb.draw(SCREEN)
 		removeBomb()
 		for i in range(bomb.rayon):
-			if(bomb.caseX == LARGEUR-2):			
+			if(bomb.caseX == LARGEUR-2):
 				bomb.BorderX = True
 			if(bomb.caseY == HAUTEUR-2):
 				bomb.BorderY = True
 
 			bomb.drawExplo(SCREEN,TAB,i)
-			
 
-	for joueur in LIST_JOUEUR: 
-		
+
+	for joueur in LIST_JOUEUR:
+
 		joueur.draw(SCREEN)
 
 	pygame.display.flip() # Rafraichis l'affichage de Pygame
@@ -206,7 +209,7 @@ def Meurt(player):
 	y=getTabPos(player.x,player.y)[1]
 	if(TAB[y][x]==5):
 		mort(player)
-	
+
 
 def getTabPos(x,y):
 	posX = x // ZOOM
@@ -236,6 +239,29 @@ def getPossibleMove(player):
 
 	return possibleMove
 
+def grilleBombe():
+	global GRILLE_BOMBE
+	GRILLE_BOMBE = copy.deepcopy(TAB)
+	for x in range(LARGEUR):
+		for y in range(HAUTEUR):
+			if (TAB[y][x] == 4): GRILLE_BOMBE[y][x] = 0
+			if (TAB[y][x] == 1 or TAB[y][x] == 2 or TAB[y][x] == 3): GRILLE_BOMBE[y][x] = 1000
+			if (TAB[y][x] == 0): GRILLE_BOMBE[y][x] = 100
+
+def miseDistance():
+	global GRILLE_BOMBE
+	done = True
+	while done:
+		done = False
+		for y in range(HAUTEUR):
+			for x in range(LARGEUR):
+				if (GRILLE_BOMBE[y][x] == 1000): continue
+				if (GRILLE_BOMBE[y][x] >= 0):
+					mini = min (GRILLE_BOMBE[y][x+1], GRILLE_BOMBE[y][x-1], GRILLE_BOMBE[y+1][x], GRILLE_BOMBE[y-1][x])
+					if (mini +1 < GRILLE_BOMBE[y][x]):
+						GRILLE_BOMBE[y][x] = mini +1
+						done = True
+
 #################################################################################
 ##
 ##  Initialisation
@@ -249,7 +275,7 @@ LIST_IA.append(JOUEUR_JAUNE)#JAUNE
 LIST_IA.append(JOUEUR_ORANGE)#ORANGE
 LIST_IA.append(JOUEUR_ROUGE)#ROUGE
 
-for ia in LIST_IA: 
+for ia in LIST_IA:
 	LIST_JOUEUR.append(ia)
 	ia.setRightDir()    # Defini la direction des sprites des ia a l'init
 
@@ -266,6 +292,7 @@ generate()
 
 # --------  Main -----------
 while not DONE:
+
 	event = pygame.event.Event(pygame.USEREVENT)
 	pygame.event.pump()
 
@@ -292,6 +319,9 @@ while not DONE:
 
 			pygame.display.flip()
 			draw()
+
+	grilleBombe()
+	miseDistance()
 
 	for ia in LIST_IA:
 		possibleMove = getPossibleMove(ia)
@@ -336,6 +366,7 @@ while not DONE:
 	TIME = time.time()
 	draw()   # On redessine l'affichage et on actualise
 	CLOCK.tick(30) # Limite d'image par seconde
+
 
 	#a mettre quand le personnage est mort : pygame.mixer.music.stop()
 
