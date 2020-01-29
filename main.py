@@ -133,13 +133,9 @@ def draw():
 		bomb.draw(SCREEN)
 		removeBomb()
 		for i in range(bomb.rayon):
-			if(bomb.caseX == LARGEUR-2):
-				bomb.BorderX = True
-			if(bomb.caseY == HAUTEUR-2):
-				bomb.BorderY = True
 
-			bomb.drawExplo(SCREEN,TAB,i,(1+i))
-			bomb.drawExplo(SCREEN,TAB,i,-(1+i))
+			bomb.drawExplo(SCREEN,TAB,i,(1+i),ZOOM)
+			bomb.drawExplo(SCREEN,TAB,i,-(1+i),ZOOM)
 
 
 
@@ -167,7 +163,7 @@ def removeBomb():
 
 			Bomb.spriteCount = 0
 			Bomb.spriteDir=0
-			Bomb.sprite= Bomb.getSpriteExplo(FIRE)
+			Bomb.sprite= Bomb.getSpriteExplo(FIRE, ZOOM)
 			#SON_BOMBE.play()
 			TAB[Bomb.caseY][Bomb.caseX] = 5
 			Bomb.explode = False
@@ -181,7 +177,8 @@ def poseBombe(player):
 	caseX = int(player.x/ZOOM)
 	caseY = int(player.y/ZOOM)
 	if(TAB[caseY][caseX] == 0 and player.nbBombe < player.nbBombeMax):
-		LIST_BOMB.append(Bombe(caseX*ZOOM+100,caseY*ZOOM+96,BOMBES, caseX, caseY,TIME,player))
+		LIST_BOMB.append(Bombe(caseX*ZOOM+100,caseY*ZOOM+96,BOMBES, ZOOM, TIME,player))
+		TAB[caseY][caseX] = 4
 		player.nbBombe += 1
 
 # def destroy():
@@ -356,18 +353,16 @@ while not DONE:
 			SCREEN_WIDTH = event.w
 			ZOOM = int((64/1920)*SCREEN_WIDTH)
 
-			JOUEUR_BLEU.getSprite(BLEU,int(ZOOM*(102/64)),ZOOM)
-			JOUEUR_JAUNE.getSprite(JAUNE,int(ZOOM*(102/64)),ZOOM)
-			JOUEUR_ORANGE.getSprite(ORANGE,int(ZOOM*(102/64)),ZOOM)
-			JOUEUR_ROUGE.getSprite(ROUGE,int(ZOOM*(102/64)),ZOOM)
+			color = [BLEU,JAUNE,ORANGE,ROUGE]
+			for player in LIST_JOUEUR:
+				player.x = ZOOM*2
+				player.y = ZOOM*2
+				player.getSprite(int(ZOOM*(102/64)),ZOOM)
 
-
-
-			GRASS = pygame.transform.scale(GRASS,(ZOOM,ZOOM))
-			BLOCK_BRICK = pygame.transform.scale(BLOCK_BRICK,(ZOOM,ZOOM))
-			BLOCK = pygame.transform.scale(BLOCK,(ZOOM,ZOOM))
-			BLOCK_MIDDLE = pygame.transform.scale(BLOCK_MIDDLE,(ZOOM,ZOOM))
-
+			GRASS = pygame.transform.scale(pygame.image.load("images/blocks/grass.png"),(ZOOM,ZOOM))
+			BLOCK_BRICK = pygame.transform.scale(pygame.image.load("images/blocks/brick.png"),(ZOOM,ZOOM))
+			BLOCK = pygame.transform.scale(pygame.image.load("images/blocks/stone.png"),(ZOOM,ZOOM))
+			BLOCK_MIDDLE = pygame.transform.scale(pygame.image.load("images/blocks/stone2.png"),(ZOOM,ZOOM))	
 			pygame.display.flip()
 			draw()
 
@@ -411,7 +406,6 @@ while not DONE:
 	TIME = time.time()
 	draw()   # On redessine l'affichage et on actualise
 	CLOCK.tick(30) # Limite d'image par seconde
-
 
 	#a mettre quand le personnage est mort : pygame.mixer.music.stop()
 
