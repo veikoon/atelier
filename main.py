@@ -118,13 +118,6 @@ JOUEUR_ROUGE = IA(POS_IA[2][1] * ZOOM + ZOOM//2, POS_IA[2][0] * ZOOM + ZOOM//2, 
 def draw():
 	for i in range(LARGEUR):
 		for j in range(HAUTEUR):
-			if(TAB[j][i] == 4):
-				sauvegarde = True
-				for bomb in LIST_BOMB:
-					if(bomb.caseX == i and bomb.caseY ==j): sauvegarde = False
-
-				if(sauvegarde): LIST_BOMB.append(Bombe(i*ZOOM+100,j*ZOOM+96,BOMBES, i, j,TIME,2))
-		
 			if(TAB[j][i] == 0 or TAB[j][i] == 4 or TAB[j][i] ==  5): SCREEN.blit(GRASS,(i*ZOOM,j*ZOOM))
 			if(TAB[j][i] == 1): SCREEN.blit(BLOCK,(i*ZOOM,j*ZOOM))
 			if(TAB[j][i] == 2): SCREEN.blit(BLOCK_MIDDLE,(i*ZOOM,j*ZOOM))
@@ -132,20 +125,23 @@ def draw():
 
 	SCREEN.blit(FONT.render(str(TIME // 1), True, WHITE), ((1920 // 2) - 25 , 64*HAUTEUR + 32))
 
-	for bomb in LIST_BOMB: 
+	for bomb in LIST_BOMB:
 		bomb.anim(TIME)
 		bomb.draw(SCREEN)
 		removeBomb()
 		for i in range(bomb.rayon):
-			if(bomb.caseX == LARGEUR-2):			
+			if(bomb.caseX == LARGEUR-2):
 				bomb.BorderX = True
 			if(bomb.caseY == HAUTEUR-2):
 				bomb.BorderY = True
+
 			bomb.drawExplo(SCREEN,TAB,i,(1+i))
 			bomb.drawExplo(SCREEN,TAB,i,-(1+i))
 
-	for joueur in LIST_JOUEUR: 
-		
+
+
+	for joueur in LIST_JOUEUR:
+
 		joueur.draw(SCREEN)
 
 	pygame.display.flip() # Rafraichis l'affichage de Pygame
@@ -187,7 +183,7 @@ def poseBombe(player):
 	caseX = int(player.x/ZOOM)
 	caseY = int(player.y/ZOOM)
 	if(TAB[caseY][caseX] == 0):
-		TAB[caseY][caseX] = 4
+		LIST_BOMB.append(Bombe(caseX*ZOOM+100,caseY*ZOOM+96,BOMBES, caseX, caseY,TIME,2))
 
 # def destroy():
 # 	for bomb in LIST_BOMB:
@@ -205,14 +201,38 @@ def Meurt(player):
 	y=getTabPos(player.x,player.y)[1]
 	if(TAB[y][x]==5):
 		mort(player)
-	
+
 
 def getTabPos(x,y):
 	posX = x // ZOOM
 	posY = y // ZOOM
 	return (posX,posY)
 
-def getPossibleMove(player):
+def getPossibleMoveIA(player):
+	possibleMove = []
+	tab = []
+	dist = ZOOM//2+1
+	tab.append(TAB[getTabPos(player.x,player.y+dist)[1]][getTabPos(player.x,player.y+dist)[0]])
+	tab.append(TAB[getTabPos(player.x,player.y-dist)[1]][getTabPos(player.x,player.y-dist)[0]])
+	tab.append(TAB[getTabPos(player.x+dist,player.y)[1]][getTabPos(player.x+dist,player.y)[0]])
+	tab.append(TAB[getTabPos(player.x-dist,player.y)[1]][getTabPos(player.x-dist,player.y)[0]])
+
+	tab.append((getTabPos(player.x,player.y+dist)[0],getTabPos(player.x,player.y+dist)[1]))
+	tab.append((getTabPos(player.x,player.y-dist)[0],getTabPos(player.x,player.y-dist)[1]))
+	tab.append((getTabPos(player.x+dist,player.y)[0],getTabPos(player.x+dist,player.y)[1]))
+	tab.append((getTabPos(player.x-dist,player.y)[0],getTabPos(player.x-dist,player.y)[1]))
+
+	tab.append((getTabPos(player.x,player.y)[0],getTabPos(player.x,player.y)[1]))
+
+	if(tab[0]  == 0 or tab[0]  == 5 or (tab[0]  == 4 and tab[4] == tab[8])): possibleMove.append((0,1))
+	if(tab[1]  == 0 or tab[1]  == 5 or (tab[1]  == 4 and tab[5] == tab[8])): possibleMove.append((0,-1))
+	if(tab[2]  == 0 or tab[2]  == 5 or (tab[2]  == 4 and tab[6] == tab[8])): possibleMove.append((1,0))
+	if(tab[3]  == 0 or tab[3]  == 5 or (tab[3]  == 4 and tab[7] == tab[8])): possibleMove.append((-1,0))
+
+	return possibleMove
+
+
+def getPossibleMovePlayer(player):
 	possibleMove = []
 	tab = []
 
@@ -248,7 +268,7 @@ LIST_IA.append(JOUEUR_JAUNE)#JAUNE
 LIST_IA.append(JOUEUR_ORANGE)#ORANGE
 LIST_IA.append(JOUEUR_ROUGE)#ROUGE
 
-for ia in LIST_IA: 
+for ia in LIST_IA:
 	LIST_JOUEUR.append(ia)
 	ia.setRightDir()    # Defini la direction des sprites des ia a l'init
 
@@ -293,22 +313,25 @@ while not DONE:
 			draw()
 
 	for ia in LIST_IA:
-		possibleMove = getPossibleMove(ia)
+		possibleMove = getPossibleMoveIA(ia)
 		if (ia.dir in possibleMove):
 			ia.move(ia.dir[0]*VIT, ia.dir[1]*VIT)
 		else:
 			poseBombe(ia)
-			Next_deplacement_ia = getPossibleMove(ia)
-			deplacement_ia = random.randrange(len(possibleMove))
-			ia.dir = possibleMove[deplacement_ia]
-			ia.setRightDir()
+			if(len(possibleMove) !=0 ):
+				deplacement_ia = random.randrange(len(possibleMove))
+				ia.dir = possibleMove[deplacement_ia]
+				ia.setRightDir()
+			else:
+				ia.dir = (0,0)
+			
 
 	keysPressed = pygame.key.get_pressed()  # On retient les touches pressees
 
 	## Mouvements du JOUEUR_
 	#   On choisit la direction du sprite en fonction de sa position dans le tableau des sprites
 	#   On fait appelle a la fonction move pour changer les coordonnees et les sprites
-	possibleMove = getPossibleMove(JOUEUR_BLEU)
+	possibleMove = getPossibleMovePlayer(JOUEUR_BLEU)
 	if(keysPressed[pygame.K_DOWN]  and (0,1) in possibleMove):
 		JOUEUR_BLEU.spriteDir = 0
 		JOUEUR_BLEU.move(0,VIT)
