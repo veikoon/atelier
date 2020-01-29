@@ -171,17 +171,19 @@ def removeBomb():
 			Bomb.sprite= Bomb.getSpriteExplo(FIRE)
 			#SON_BOMBE.play()
 			TAB[Bomb.caseY][Bomb.caseX] = 5
-			Bombe.boost = 0,4
 			Bomb.explode = False
+			Bomb.player.nbBombe -= 1
 
 		if(Bomb.exploFin):
 			TAB[Bomb.caseY][Bomb.caseX] = 0
 			LIST_BOMB.remove(Bomb)
+
 def poseBombe(player):
 	caseX = int(player.x/ZOOM)
 	caseY = int(player.y/ZOOM)
-	if(TAB[caseY][caseX] == 0):
-		LIST_BOMB.append(Bombe(caseX*ZOOM+100,caseY*ZOOM+96,BOMBES, caseX, caseY,TIME,2))
+	if(TAB[caseY][caseX] == 0 and player.nbBombe < player.nbBombeMax):
+		LIST_BOMB.append(Bombe(caseX*ZOOM+100,caseY*ZOOM+96,BOMBES, caseX, caseY,TIME,player))
+		player.nbBombe += 1
 
 # def destroy():
 # 	for bomb in LIST_BOMB:

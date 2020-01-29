@@ -17,7 +17,9 @@ class Player:
 		self.spriteCount = 0		# Selectionne le sprite du tableau correspondant au mouvement actuel
 		self.spriteOffset = 0		# Permet de changer de sprite en fonction du decalage et non a chaque mouvement
 		self.lives = 1
-		self.nbBombe = 1
+		self.nbBombe = 0
+		self.nbBombeMax = 1
+		self.rayonBombe = 1
 
 	##	draw():
 	# Permet de dessiner le personnage dont les coordonnees sont au milieu de ses pieds
