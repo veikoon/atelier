@@ -60,7 +60,7 @@ class Player:
 		else:
 			self.spriteOffset += 1
 
-	
+
 
 #################################################################################
 #	Class Player from Bomberman													#

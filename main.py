@@ -207,6 +207,37 @@ def Meurt(player):
 	if(TAB[y][x]==5):
 		mort(player)
 
+def iaDanger(ia): return GRILLE_BOMBE[getTabPos(ia.x,ia.y)[1]][getTabPos(ia.x,ia.y)[0]] <= 2
+
+def iaFuite(ia) :
+	possibleMove = getPossibleMoveIA(ia)
+	caseMax = (getTabPos(ia.x,ia.y)[0],getTabPos(ia.x,ia.y)[1])
+	max = 0
+	for case in possibleMove :
+		if GRILLE_BOMBE[case[1]][case[0]] > max :
+			max = GRILLE_BOMBE[case[1]][case[0]]
+			caseMax = case
+	ia.move(ia.x + caseMax[1], ia.y + caseMax[0])
+
+
+
+def moveIA(ia):
+
+	if iaDanger(ia) : iaFuite(ia)
+	else :
+		possibleMove = getPossibleMoveIA(ia)
+		if (ia.dir in possibleMove):
+			ia.move(ia.dir[0]*VIT, ia.dir[1]*VIT)
+		else:
+			#poseBombe(ia)
+			if(len(possibleMove) !=0 ):
+				deplacement_ia = random.randrange(len(possibleMove))
+				ia.dir = possibleMove[deplacement_ia]
+				ia.setRightDir()
+			else:
+				ia.dir = (0,0)
+
+
 
 def getTabPos(x,y):
 	posX = x // ZOOM
@@ -265,7 +296,7 @@ def grilleBombe():
 	GRILLE_BOMBE = copy.deepcopy(TAB)
 	for x in range(LARGEUR):
 		for y in range(HAUTEUR):
-			if (TAB[y][x] == 4): GRILLE_BOMBE[y][x] = 0
+			if (TAB[y][x] == 4 or TAB[y][x] == 5): GRILLE_BOMBE[y][x] = 0
 			if (TAB[y][x] == 1 or TAB[y][x] == 2 or TAB[y][x] == 3): GRILLE_BOMBE[y][x] = 1000
 			if (TAB[y][x] == 0): GRILLE_BOMBE[y][x] = 100
 
@@ -345,17 +376,8 @@ while not DONE:
 	miseDistance()
 
 	for ia in LIST_IA:
-		possibleMove = getPossibleMoveIA(ia)
-		if (ia.dir in possibleMove):
-			ia.move(ia.dir[0]*VIT, ia.dir[1]*VIT)
-		else:
-			poseBombe(ia)
-			if(len(possibleMove) !=0 ):
-				deplacement_ia = random.randrange(len(possibleMove))
-				ia.dir = possibleMove[deplacement_ia]
-				ia.setRightDir()
-			else:
-				ia.dir = (0,0)
+		moveIA(ia)
+
 
 
 	keysPressed = pygame.key.get_pressed()  # On retient les touches pressees
@@ -381,8 +403,8 @@ while not DONE:
 		JOUEUR_BLEU.spriteDir = 1
 
 	if(keysPressed[pygame.K_SPACE]):
-		for player in LIST_JOUEUR:
-			poseBombe(player)
+		if JOUEUR_BLEU in LIST_JOUEUR :
+			poseBombe(JOUEUR_BLEU)
 	for ia in LIST_IA:
 		Meurt(ia)
 	Meurt(JOUEUR_BLEU)
