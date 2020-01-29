@@ -9,19 +9,19 @@ import pygame
 from pygame import *
 import time
 class Bombe:
-	def __init__(self,startX, startY, bombes, caseX, caseY,times,player):
+	def __init__(self,startX, startY, bombes, zoom, times, player):
 		self.player = player
 		self.explode = False
 		self.rayon = player.rayonBombe  # initialize the game_frame counter
 		self.x = startX             # Position initiale en x
 		self.y = startY             # Position initiale en y
-		self.sprite = self.getSprite(bombes)   # Tableau de sprites en 2D
+		self.sprite = self.getSprite(bombes, zoom)   # Tableau de sprites en 2D
 		self.spriteDir = 0    
 		self.timeBomb = times      # Selectionne le tableau de sprite (en 1D) correspondant a la direction du joueur
 		self.spriteCount = 0        # Selectionne le sprite du tableau correspondant au mouvement actuel
 		self.spriteOffset = 0       # Permet de changer de sprite en fonction du decalage et non a chaque mouvement
-		self.caseX = caseX
-		self.caseY = caseY
+		self.caseX = player.x // zoom
+		self.caseY = player.y // zoom
 		self.exploFin = False
 		self.finexplode = False
 		self.BorderX=False
@@ -32,12 +32,12 @@ class Bombe:
 #   Met les sprite a l'echelle de la carte
 #   Les rajoute dans un tableau en 2D tel que :
 #   Tab = [bombe1,bombe2...]
-	def getSprite(self, imgBombe):
+	def getSprite(self, imgBombe, zoom):
 		Tab = []
 		tabTemp = []
 		for i in range(6):
 			imTemp = imgBombe.subsurface((i*20),0,20,26)
-			imTemp = pygame.transform.scale(imTemp,(40,50))
+			imTemp = pygame.transform.scale(imTemp,(int(zoom * (40/64)),int(zoom * (50/64))))
 			tabTemp.append(imTemp)
 		Tab.append(tabTemp)
 		return Tab
@@ -71,13 +71,13 @@ class Bombe:
 	#     if (TIME2 > 1):
 	#         self.spriteCountEx = (self.spriteCountEx + 1)
 	#         self.game_frame += 1
-	def getSpriteExplo(self,ImgFire):
+	def getSpriteExplo(self,ImgFire, zoom):
 		Tab = []
 		for j in range(3):
 			tabTemp = []
 			for i in range(7):
 				imTemp = ImgFire.subsurface((i*48),(j*48),48,48)
-				imTemp = pygame.transform.scale(imTemp,((64,64)))
+				imTemp = pygame.transform.scale(imTemp,((zoom,zoom)))
 				tabTemp.append(imTemp)
 			Tab.append(tabTemp)
 		return Tab
@@ -93,11 +93,12 @@ class Bombe:
 	# (largeurPerso / 2 = 32 et hauteurPerso = 102)
 	def draw(self, surface):
 		surface.blit(self.sprite[self.spriteDir][self.spriteCount], (self.x - 100, self.y - 96))
-	def drawExplo(self, surface,TAB,i,direction):
+
+	def drawExplo(self, surface,TAB,i,direction, zoom):
 		if(self.finexplode ==True):
 			caseX = self.caseX
 			caseY = self.caseY
-			e = 64*i+64
+			e = zoom*i+zoom
 			testcase =-1
 
 			if(direction <0):
