@@ -184,6 +184,7 @@ def poseBombe(player):
 	caseY = int(player.y/ZOOM)
 	if(TAB[caseY][caseX] == 0 and player.nbBombe < player.nbBombeMax):
 		LIST_BOMB.append(Bombe(caseX*ZOOM+100,caseY*ZOOM+96,BOMBES, ZOOM, TIME,player))
+		TAB[caseY][caseX] = 4
 		player.nbBombe += 1
 
 # def destroy():
