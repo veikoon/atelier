@@ -141,9 +141,8 @@ def draw():
 				bomb.BorderX = True
 			if(bomb.caseY == HAUTEUR-2):
 				bomb.BorderY = True
-
-			bomb.drawExplo(SCREEN,TAB,i)
-			
+			bomb.drawExplo(SCREEN,TAB,i,(1+i))
+			bomb.drawExplo(SCREEN,TAB,i,-(1+i))
 
 	for joueur in LIST_JOUEUR: 
 		
