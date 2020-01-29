@@ -9,10 +9,11 @@ import pygame
 from pygame import *
 import time
 class Bombe:
-    def __init__(self,startX, startY, bombes, caseX, caseY,times):
+    def __init__(self,startX, startY, bombes, caseX, caseY,times,rayon):
         self.explode = False
         self.game_frame = 0  
-        self.boost = 1       # initialize the game_frame counter
+        self.boost = 1   
+        self.rayon =rayon  # initialize the game_frame counter
         self.x = startX             # Position initiale en x
         self.y = startY             # Position initiale en y
         self.sprite = self.getSprite(bombes)   # Tableau de sprites en 2D
@@ -24,6 +25,8 @@ class Bombe:
         self.caseY = caseY
         self.exploFin = False
         self.finexplode = False
+        self.BorderX=False
+        self.BorderY=False
 # getSpriteBombe(imgBombe):
 #   Decoupe l'image imgBombe en sprite
 #   Met les sprite a l'echelle de la carte
@@ -95,24 +98,23 @@ class Bombe:
         if(self.finexplode ==True):
             caseX = self.caseX
             caseY = self.caseY
-            if(i==0):
-                e=0
-            if(i==1):
-                e=60
+            e = 64*i
+
             if(self.exploFin):
                 TAB[caseY][caseX]=0
-            if(TAB[caseY][caseX+1+i]==0 or TAB[caseY][caseX+1+i]==3 or TAB[caseY][caseX+1+i]==5):
-                TAB[caseY][caseX+1+i]=5
-                if(self.exploFin):
-                    TAB[caseY][caseX+1+i]=0
-                surface.blit(self.sprite[1][self.spriteCount], (self.x+60+e- 100, self.y - 96))
-
-            if(TAB[caseY+1+i][caseX]==0 or TAB[caseY+1+i][caseX]==3 or TAB[caseY+1+i][caseX]==5):
-                TAB[caseY+1+i][caseX]=5
-                if(self.exploFin):
-                   TAB[caseY+1+i][caseX]=0
-                rotatebas =pygame.transform.rotate(self.sprite[1][self.spriteCount],90)    
-                surface.blit(rotatebas, (self.x- 100, self.y+60+e - 96))  
+            if(self.BorderX==False):
+                if(TAB[caseY][caseX+1+i]==0 or TAB[caseY][caseX+1+i]==3 or TAB[caseY][caseX+1+i]==5):
+                    TAB[caseY][caseX+1+i]=5
+                    if(self.exploFin):
+                        TAB[caseY][caseX+1+i]=0
+                    surface.blit(self.sprite[1][self.spriteCount], (self.x+60+e- 100, self.y - 96))
+            if(self.BorderY==False):
+                if(TAB[caseY+1+i][caseX]==0 or TAB[caseY+1+i][caseX]==3 or TAB[caseY+1+i][caseX]==5):
+                    TAB[caseY+1+i][caseX]=5
+                    if(self.exploFin):
+                       TAB[caseY+1+i][caseX]=0
+                    rotatebas =pygame.transform.rotate(self.sprite[1][self.spriteCount],90)    
+                    surface.blit(rotatebas, (self.x- 100, self.y+60+e - 96))  
 
             if(TAB[caseY][caseX-1-i]==0 or TAB[caseY][caseX-1-i]==3 or TAB[caseY][caseX-1-i]==5):
                 TAB[caseY][caseX-1-i]=5

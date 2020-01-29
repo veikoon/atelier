@@ -123,7 +123,7 @@ def draw():
 				for bomb in LIST_BOMB:
 					if(bomb.caseX == i and bomb.caseY ==j): sauvegarde = False
 
-				if(sauvegarde): LIST_BOMB.append(Bombe(i*ZOOM+100,j*ZOOM+96,BOMBES, i, j,TIME))
+				if(sauvegarde): LIST_BOMB.append(Bombe(i*ZOOM+100,j*ZOOM+96,BOMBES, i, j,TIME,2))
 		
 			if(TAB[j][i] == 0 or TAB[j][i] == 4 or TAB[j][i] ==  5): SCREEN.blit(GRASS,(i*ZOOM,j*ZOOM))
 			if(TAB[j][i] == 1): SCREEN.blit(BLOCK,(i*ZOOM,j*ZOOM))
@@ -135,10 +135,15 @@ def draw():
 	for bomb in LIST_BOMB: 
 		bomb.anim(TIME)
 		bomb.draw(SCREEN)
-		destroy()
 		removeBomb()
-		bomb.drawExplo(SCREEN,TAB,0)
-		bomb.drawExplo(SCREEN,TAB,1)
+		for i in range(bomb.rayon):
+			if(bomb.caseX == LARGEUR-2):			
+				bomb.BorderX = True
+			if(bomb.caseY == HAUTEUR-2):
+				bomb.BorderY = True
+
+			bomb.drawExplo(SCREEN,TAB,i)
+			
 
 	for joueur in LIST_JOUEUR: 
 		
@@ -150,8 +155,10 @@ def draw():
 def mort(Player):
 	Player.lives -= 1
 	if Player.lives == 0:
-		LIST_JOUEUR.remove(Player)
-
+		if(Player in LIST_JOUEUR):
+			LIST_JOUEUR.remove(Player)
+		if(Player in LIST_IA):
+			LIST_IA.remove(Player)
 def generate():
 	for i in range(LARGEUR):
 		for j in range(HAUTEUR):
@@ -183,23 +190,23 @@ def poseBombe(player):
 	if(TAB[caseY][caseX] == 0):
 		TAB[caseY][caseX] = 4
 
-def destroy():
-	for bomb in LIST_BOMB:
-		if bomb.Explode():
-			if TAB[bomb.caseY][bomb.caseX+2] == 3 and TAB[bomb.caseY][bomb.caseX+1] == 0: TAB[bomb.caseY][bomb.caseX+2] = 0
-			if TAB[bomb.caseY][bomb.caseX-2] == 3 and TAB[bomb.caseY][bomb.caseX-1] == 0: TAB[bomb.caseY][bomb.caseX-2] = 0
-			if TAB[bomb.caseY+2][bomb.caseX] == 3 and TAB[bomb.caseY+1][bomb.caseX] == 0: TAB[bomb.caseY+2][bomb.caseX] = 0
-			if TAB[bomb.caseY-2][bomb.caseX] == 3 and TAB[bomb.caseY-1][bomb.caseX] == 0: TAB[bomb.caseY-2][bomb.caseX] = 0
-			if TAB[bomb.caseY+1][bomb.caseX] == 3: TAB[bomb.caseY+1][bomb.caseX] = 0
-			if TAB[bomb.caseY-1][bomb.caseX] == 3: TAB[bomb.caseY-1][bomb.caseX] = 0
-			if TAB[bomb.caseY][bomb.caseX+1] == 3: TAB[bomb.caseY][bomb.caseX+1] = 0
-			if TAB[bomb.caseY][bomb.caseX-1] == 3: TAB[bomb.caseY][bomb.caseX-1] = 0
+# def destroy():
+# 	for bomb in LIST_BOMB:
+# 		if bomb.Explode():
+# 			# if TAB[bomb.caseY][bomb.caseX+2] == 3 and TAB[bomb.caseY][bomb.caseX+1] == 0: TAB[bomb.caseY][bomb.caseX+2] = 0
+# 			# if TAB[bomb.caseY][bomb.caseX-2] == 3 and TAB[bomb.caseY][bomb.caseX-1] == 0: TAB[bomb.caseY][bomb.caseX-2] = 0
+# 			# if TAB[bomb.caseY+2][bomb.caseX] == 3 and TAB[bomb.caseY+1][bomb.caseX] == 0: TAB[bomb.caseY+2][bomb.caseX] = 0
+# 			# if TAB[bomb.caseY-2][bomb.caseX] == 3 and TAB[bomb.caseY-1][bomb.caseX] == 0: TAB[bomb.caseY-2][bomb.caseX] = 0
+# 			if TAB[bomb.caseY+1][bomb.caseX] == 3: TAB[bomb.caseY+1][bomb.caseX] = 0
+# 			if TAB[bomb.caseY-1][bomb.caseX] == 3: TAB[bomb.caseY-1][bomb.caseX] = 0
+# 			if TAB[bomb.caseY][bomb.caseX+1] == 3: TAB[bomb.caseY][bomb.caseX+1] = 0
+# 			if TAB[bomb.caseY][bomb.caseX-1] == 3: TAB[bomb.caseY][bomb.caseX-1] = 0
 def Meurt(player):
 	x =getTabPos(player.x,player.y)[0]
 	y=getTabPos(player.x,player.y)[1]
 	if(TAB[y][x]==5):
 		mort(player)
-		print("e")
+	
 
 def getTabPos(x,y):
 	posX = x // ZOOM
@@ -291,7 +298,7 @@ while not DONE:
 		if (ia.dir in possibleMove):
 			ia.move(ia.dir[0]*VIT, ia.dir[1]*VIT)
 		else:
-			#poseBombe(ia)
+			poseBombe(ia)
 			Next_deplacement_ia = getPossibleMove(ia)
 			deplacement_ia = random.randrange(len(possibleMove))
 			ia.dir = possibleMove[deplacement_ia]
@@ -320,8 +327,11 @@ while not DONE:
 		JOUEUR_BLEU.spriteDir = 1
 
 	if(keysPressed[pygame.K_SPACE]):
-		poseBombe(JOUEUR_BLEU)
-	Meurt(JOUEUR_BLEU)	
+		for player in LIST_JOUEUR:
+			poseBombe(player)
+	for ia in LIST_IA:
+		Meurt(ia)
+	Meurt(JOUEUR_BLEU)
 	SCREEN.fill(BLACK)
 	TIME = time.time()
 	draw()   # On redessine l'affichage et on actualise
