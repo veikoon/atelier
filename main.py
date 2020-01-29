@@ -133,10 +133,6 @@ def draw():
 		bomb.draw(SCREEN)
 		removeBomb()
 		for i in range(bomb.rayon):
-			if(bomb.caseX == LARGEUR-2):
-				bomb.BorderX = True
-			if(bomb.caseY == HAUTEUR-2):
-				bomb.BorderY = True
 
 			bomb.drawExplo(SCREEN,TAB,i,(1+i),ZOOM)
 			bomb.drawExplo(SCREEN,TAB,i,-(1+i),ZOOM)
