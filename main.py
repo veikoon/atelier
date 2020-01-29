@@ -118,15 +118,6 @@ JOUEUR_ROUGE = IA(POS_IA[2][1] * ZOOM + ZOOM//2, POS_IA[2][0] * ZOOM + ZOOM//2, 
 def draw():
 	for i in range(LARGEUR):
 		for j in range(HAUTEUR):
-			if(TAB[j][i] == 4):
-				sauvegarde = True
-				for bomb in LIST_BOMB:
-					if(bomb.caseX == i and bomb.caseY ==j): sauvegarde = False
-
-
-				if(sauvegarde): LIST_BOMB.append(Bombe(i*ZOOM+100,j*ZOOM+96,BOMBES, i, j,TIME,2))
-
-
 			if(TAB[j][i] == 0 or TAB[j][i] == 4 or TAB[j][i] ==  5): SCREEN.blit(GRASS,(i*ZOOM,j*ZOOM))
 			if(TAB[j][i] == 1): SCREEN.blit(BLOCK,(i*ZOOM,j*ZOOM))
 			if(TAB[j][i] == 2): SCREEN.blit(BLOCK_MIDDLE,(i*ZOOM,j*ZOOM))
@@ -190,7 +181,7 @@ def poseBombe(player):
 	caseX = int(player.x/ZOOM)
 	caseY = int(player.y/ZOOM)
 	if(TAB[caseY][caseX] == 0):
-		TAB[caseY][caseX] = 4
+		LIST_BOMB.append(Bombe(caseX*ZOOM+100,caseY*ZOOM+96,BOMBES, caseX, caseY,TIME,2))
 
 # def destroy():
 # 	for bomb in LIST_BOMB:
