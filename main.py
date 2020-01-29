@@ -182,6 +182,7 @@ def poseBombe(player):
 	caseY = int(player.y/ZOOM)
 	if(TAB[caseY][caseX] == 0 and player.nbBombe < player.nbBombeMax):
 		LIST_BOMB.append(Bombe(caseX*ZOOM+100,caseY*ZOOM+96,BOMBES, caseX, caseY,TIME,player))
+		TAB[caseY][caseX]=4
 		player.nbBombe += 1
 
 # def destroy():
@@ -206,29 +207,31 @@ def Meurt(player):
 			if(player in LIST_IA):
 				LIST_IA.remove(player)
 
-def iaDanger(ia): return GRILLE_BOMBE[getTabPos(ia.x,ia.y)[1]][getTabPos(ia.x,ia.y)[0]] <= 2
+def iaDanger(ia): return GRILLE_BOMBE[getTabPos(ia.x,ia.y)[1]][getTabPos(ia.x,ia.y)[0]] <= 4
 
 def iaFuite(ia) :
 	possibleMove = getPossibleMoveIA(ia)
-	caseMax = (getTabPos(ia.x,ia.y)[0],getTabPos(ia.x,ia.y)[1])
+	posIA = getTabPos(ia.x,ia.y)
 	max = 0
+	caseMax = None
 	for case in possibleMove :
-		if GRILLE_BOMBE[case[1]][case[0]] > max :
-			max = GRILLE_BOMBE[case[1]][case[0]]
+		if GRILLE_BOMBE[posIA[1] + case[1]][posIA[0] + case[0]] > max and  GRILLE_BOMBE[posIA[1] + case[1]][posIA[0] + case[0]] != 1000:
+			max = GRILLE_BOMBE[posIA[1] + case[1]][posIA[0] + case[0]]
 			caseMax = case
-	ia.move(ia.x + caseMax[1], ia.y + caseMax[0])
+	if(caseMax != None):
+		ia.dir = caseMax
+		ia.move(caseMax[1]*VIT, caseMax[0]*VIT)
 
 
 
 def moveIA(ia):
-
 	if iaDanger(ia) : iaFuite(ia)
 	else :
 		possibleMove = getPossibleMoveIA(ia)
 		if (ia.dir in possibleMove):
 			ia.move(ia.dir[0]*VIT, ia.dir[1]*VIT)
 		else:
-			#poseBombe(ia)
+			poseBombe(ia)
 			if(len(possibleMove) !=0 ):
 				deplacement_ia = random.randrange(len(possibleMove))
 				ia.dir = possibleMove[deplacement_ia]
@@ -308,7 +311,7 @@ def miseDistance():
 			for x in range(LARGEUR):
 				if (GRILLE_BOMBE[y][x] == 1000): continue
 				if (GRILLE_BOMBE[y][x] >= 0):
-					mini = min (GRILLE_BOMBE[y][x+1], GRILLE_BOMBE[y][x-1], GRILLE_BOMBE[y+1][x], GRILLE_BOMBE[y-1][x])
+					mini = min(GRILLE_BOMBE[y][x+1], GRILLE_BOMBE[y][x-1], GRILLE_BOMBE[y+1][x], GRILLE_BOMBE[y-1][x])
 					if (mini +1 < GRILLE_BOMBE[y][x]):
 						GRILLE_BOMBE[y][x] = mini +1
 						done = True
