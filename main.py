@@ -141,7 +141,7 @@ def draw():
 
 	for joueur in LIST_JOUEUR:
 
-		joueur.draw(SCREEN)
+		joueur.draw(SCREEN, ZOOM//2, int(ZOOM*(102/ZOOM)))
 
 	pygame.display.flip() # Rafraichis l'affichage de Pygame
 
@@ -353,12 +353,12 @@ while not DONE:
 		if event.type == pygame.VIDEORESIZE:
 			SCREEN_HEIGHT = event.h
 			SCREEN_WIDTH = event.w
+			oldZoom = ZOOM
 			ZOOM = int((64/1920)*SCREEN_WIDTH)
 
-			color = [BLEU,JAUNE,ORANGE,ROUGE]
 			for player in LIST_JOUEUR:
-				player.x = ZOOM*2
-				player.y = ZOOM*2
+				player.x = int(ZOOM * (player.x/oldZoom))
+				player.y = int(ZOOM * (player.y/oldZoom))
 				player.getSprite(int(ZOOM*(102/64)),ZOOM)
 
 			GRASS = pygame.transform.scale(pygame.image.load("images/blocks/grass.png"),(ZOOM,ZOOM))
