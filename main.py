@@ -141,7 +141,7 @@ def draw():
 
 	for joueur in LIST_JOUEUR:
 
-		joueur.draw(SCREEN)
+		joueur.draw(SCREEN, ZOOM//2, int(ZOOM*(102/ZOOM)))
 
 	pygame.display.flip() # Rafraichis l'affichage de Pygame
 
@@ -169,6 +169,7 @@ def removeBomb():
 			Bomb.explode = False
 			Bomb.player.nbBombe -= 1
 
+
 		if(Bomb.exploFin):
 			TAB[Bomb.caseY][Bomb.caseX] = 0
 			LIST_BOMB.remove(Bomb)
@@ -181,17 +182,18 @@ def poseBombe(player):
 		TAB[caseY][caseX] = 4
 		player.nbBombe += 1
 
+
 # def destroy():
-# 	for bomb in LIST_BOMB:
-# 		if bomb.Explode():
-# 			# if TAB[bomb.caseY][bomb.caseX+2] == 3 and TAB[bomb.caseY][bomb.caseX+1] == 0: TAB[bomb.caseY][bomb.caseX+2] = 0
-# 			# if TAB[bomb.caseY][bomb.caseX-2] == 3 and TAB[bomb.caseY][bomb.caseX-1] == 0: TAB[bomb.caseY][bomb.caseX-2] = 0
-# 			# if TAB[bomb.caseY+2][bomb.caseX] == 3 and TAB[bomb.caseY+1][bomb.caseX] == 0: TAB[bomb.caseY+2][bomb.caseX] = 0
-# 			# if TAB[bomb.caseY-2][bomb.caseX] == 3 and TAB[bomb.caseY-1][bomb.caseX] == 0: TAB[bomb.caseY-2][bomb.caseX] = 0
-# 			if TAB[bomb.caseY+1][bomb.caseX] == 3: TAB[bomb.caseY+1][bomb.caseX] = 0
-# 			if TAB[bomb.caseY-1][bomb.caseX] == 3: TAB[bomb.caseY-1][bomb.caseX] = 0
-# 			if TAB[bomb.caseY][bomb.caseX+1] == 3: TAB[bomb.caseY][bomb.caseX+1] = 0
-# 			if TAB[bomb.caseY][bomb.caseX-1] == 3: TAB[bomb.caseY][bomb.caseX-1] = 0
+#   for bomb in LIST_BOMB:
+#       if bomb.Explode():
+#           # if TAB[bomb.caseY][bomb.caseX+2] == 3 and TAB[bomb.caseY][bomb.caseX+1] == 0: TAB[bomb.caseY][bomb.caseX+2] = 0
+#           # if TAB[bomb.caseY][bomb.caseX-2] == 3 and TAB[bomb.caseY][bomb.caseX-1] == 0: TAB[bomb.caseY][bomb.caseX-2] = 0
+#           # if TAB[bomb.caseY+2][bomb.caseX] == 3 and TAB[bomb.caseY+1][bomb.caseX] == 0: TAB[bomb.caseY+2][bomb.caseX] = 0
+#           # if TAB[bomb.caseY-2][bomb.caseX] == 3 and TAB[bomb.caseY-1][bomb.caseX] == 0: TAB[bomb.caseY-2][bomb.caseX] = 0
+#           if TAB[bomb.caseY+1][bomb.caseX] == 3: TAB[bomb.caseY+1][bomb.caseX] = 0
+#           if TAB[bomb.caseY-1][bomb.caseX] == 3: TAB[bomb.caseY-1][bomb.caseX] = 0
+#           if TAB[bomb.caseY][bomb.caseX+1] == 3: TAB[bomb.caseY][bomb.caseX+1] = 0
+#           if TAB[bomb.caseY][bomb.caseX-1] == 3: TAB[bomb.caseY][bomb.caseX-1] = 0
 def Meurt(player):
 	x =getTabPos(player.x,player.y)[0]
 	y=getTabPos(player.x,player.y)[1]
@@ -203,7 +205,7 @@ def Meurt(player):
 			if(player in LIST_IA):
 				LIST_IA.remove(player)
 
-def iaDanger(ia): return GRILLE_BOMBE[getTabPos(ia.x,ia.y)[1]][getTabPos(ia.x,ia.y)[0]] <= 4
+def iaDanger(ia): return GRILLE_BOMBE[getTabPos(ia.x,ia.y)[1]][getTabPos(ia.x,ia.y)[0]] <= 2
 
 def iaFuite(ia) :
 	possibleMove = getPossibleMoveIA(ia)
@@ -211,12 +213,12 @@ def iaFuite(ia) :
 	max = 0
 	caseMax = None
 	for case in possibleMove :
-		if GRILLE_BOMBE[posIA[1] + case[1]][posIA[0] + case[0]] > max and  GRILLE_BOMBE[posIA[1] + case[1]][posIA[0] + case[0]] != 1000:
+		if GRILLE_BOMBE[posIA[1] + case[1]][posIA[0] + case[0]] > max and GRILLE_BOMBE[posIA[1] + case[1]][posIA[0] + case[0]] < 100:
 			max = GRILLE_BOMBE[posIA[1] + case[1]][posIA[0] + case[0]]
 			caseMax = case
 	if(caseMax != None):
 		ia.dir = caseMax
-		ia.move(caseMax[1]*VIT, caseMax[0]*VIT)
+		ia.move(caseMax[0]*VIT, caseMax[1]*VIT)
 
 
 
@@ -345,20 +347,19 @@ while not DONE:
 
 	event = pygame.event.Event(pygame.USEREVENT)
 	pygame.event.pump()
-
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			DONE = True
-
+			
 		if event.type == pygame.VIDEORESIZE:
 			SCREEN_HEIGHT = event.h
 			SCREEN_WIDTH = event.w
+			oldZoom = ZOOM
 			ZOOM = int((64/1920)*SCREEN_WIDTH)
 
-			color = [BLEU,JAUNE,ORANGE,ROUGE]
 			for player in LIST_JOUEUR:
-				player.x = ZOOM*2
-				player.y = ZOOM*2
+				player.x = int(ZOOM * (player.x/oldZoom))
+				player.y = int(ZOOM * (player.y/oldZoom))
 				player.getSprite(int(ZOOM*(102/64)),ZOOM)
 
 			GRASS = pygame.transform.scale(pygame.image.load("images/blocks/grass.png"),(ZOOM,ZOOM))
@@ -367,6 +368,7 @@ while not DONE:
 			BLOCK_MIDDLE = pygame.transform.scale(pygame.image.load("images/blocks/stone2.png"),(ZOOM,ZOOM))
 			pygame.display.flip()
 			draw()
+
 
 	grilleBombe()
 	miseDistance()
@@ -410,5 +412,6 @@ while not DONE:
 	CLOCK.tick(30) # Limite d'image par seconde
 
 	#a mettre quand le personnage est mort : pygame.mixer.music.stop()
+
 
 pygame.quit() # Ferme la fenetre et quitte.

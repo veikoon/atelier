@@ -14,7 +14,7 @@ class Player:
 		self.x = startX				# Positions initiales
 		self.y = startY
 		self.color = color
-		self.sprite = self.getSprite(hauteur, zoom)	# Tableau de sprites en 2D
+		self.sprite = []	# Tableau de sprites en 2D
 		self.spriteDir = 0			# Selectionne le tableau de sprite (en 1D) correspondant a la direction du joueur
 		self.spriteCount = 0		# Selectionne le sprite du tableau correspondant au mouvement actuel
 		self.spriteOffset = 0		# Permet de changer de sprite en fonction du decalage et non a chaque mouvement
@@ -22,13 +22,8 @@ class Player:
 		self.nbBombe = 0
 		self.nbBombeMax = 1
 		self.rayonBombe = 2
+		self.getSprite(hauteur, zoom)
 
-	##	draw():
-	# Permet de dessiner le personnage dont les coordonnees sont au milieu de ses pieds
-	# tandis que le jeu dessine les images depuis leur coin superieur gauche:
-	# (largeurPerso / 2 = 32 et hauteurPerso = 102)
-	def draw(self, surface):
-		surface.blit(self.sprite[self.spriteDir][self.spriteCount], (self.x - 32, self.y - 102))
 
 	# getSprite(Color):
 	#   Decoupe l'image Color en sprite
@@ -44,7 +39,15 @@ class Player:
 				imTemp = pygame.transform.scale(imTemp,(zoom,hauteur))
 				tabTemp.append(imTemp)
 			Tab.append(tabTemp)
-		return Tab
+		self.sprite = Tab
+
+	##	draw():
+	# Permet de dessiner le personnage dont les coordonnees sont au milieu de ses pieds
+	# tandis que le jeu dessine les images depuis leur coin superieur gauche:
+	# (largeurPerso / 2 = 32 et hauteurPerso = 102)
+	def draw(self, surface, largeurPerso, hauteurPerso):
+		surface.blit(self.sprite[self.spriteDir][self.spriteCount], (self.x - largeurPerso, self.y - hauteurPerso))
+
 
 	## move():
 	#   On change les coordonnees du joueur selon son deplacement
