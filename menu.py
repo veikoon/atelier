@@ -1,5 +1,7 @@
 import pygame
 import time
+#import main
+import os
 pygame.init()
 pygame.font.init()
 
@@ -21,47 +23,7 @@ def gerer_events_principale():
             RUNNING = False
 
 
-    # j1 = pygame.image.load("sprite/start.png")
-    # j1_x = 262
-    # j1_y = 280
-    # fenetre.blit(j1 ,(j1_x,j1_y))
 
-   ##   j2 = pygame.image.load("sprite/commandes.png")
-    # j2_x = 246
-    # j2_y = 380
-    # fenetre.blit(j2 ,(j2_x,j2_y))
-
-
-
-    # arrow_x = 150
-    # arrow_y = 430
-    # fenetre.blit(arrow_sprite,(arrow_x,arrow_y))
-
-
-
-
-
-def gerer_mouse_jeu(rectangle):
-    global afficher
-
-    mouse = pygame.mouse.get_pressed()
-    if mouse[0]: # UP
-        mouse_pos = pygame.mouse.get_pos()
-
-        if rectangle.collidepoint(mouse_pos):
-            print('Cliqué sur:', rectangle)
-            afficher = menu
-
-def gerer_mouse_menu(rectangle):
-    global afficher
-
-    mouse = pygame.mouse.get_pressed()
-    if mouse[0]: # UP
-        mouse_pos = pygame.mouse.get_pos()
-
-        if rectangle.collidepoint(mouse_pos):
-            print('Cliqué sur:', rectangle)
-            afficher = jeu
 def MenuScreen():
     global screen,done,clock, arrow_sprite
     done2 = False
@@ -108,9 +70,12 @@ def MenuScreen():
                 arrow['choice'] = yes
 
         if KeysPressed[pygame.K_SPACE]:
+
             if arrow['choice'] == yes:
                 done2 = True
                 pygame.quit()
+                os.system('python main.py')
+
             if arrow['choice'] == no:
                 done = True
                 done2 = True
@@ -121,8 +86,6 @@ def MenuScreen():
         pygame.display.flip()
         clock.tick(30)
 ## Affecte la fonction menu
-    #afficher = menu
-
 def boucle_principale():
     while RUNNING:
         fenetre.fill( (0,0,0) )
