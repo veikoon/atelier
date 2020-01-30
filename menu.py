@@ -85,21 +85,18 @@ def MenuScreen():
 
         pygame.display.flip()
         clock.tick(30)
+        
 ## Affecte la fonction menu
-def boucle_principale():
-    while RUNNING:
-        fenetre.fill( (0,0,0) )
+#def boucle_principale():
+#    while RUNNING:
+#        fenetre.fill( (0,0,0) )
+#        gerer_events_principale()
+#
+#        ## Exécute la fonction affecté à afficher (menu/jeu)
+#        #afficher()
+#        MenuScreen()
+#
+#        pygame.display.update()
 
-        gerer_events_principale()
-
-        ## Exécute la fonction affecté à afficher (menu/jeu)
-        #afficher()
-        MenuScreen()
-
-        pygame.display.update()
-
-    pygame.quit()
-
-
-
-boucle_principale()
+MenuScreen()
+pygame.quit()

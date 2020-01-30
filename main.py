@@ -145,8 +145,6 @@ def draw():
 
     pygame.display.flip() # Rafraichis l'affichage de Pygame
 
-
-
 def generate():
     for i in range(LARGEUR):
         for j in range(HAUTEUR):
@@ -182,18 +180,6 @@ def poseBombe(player):
         TAB[caseY][caseX] = 4
         player.nbBombe += 1
 
-
-# def destroy():
-#   for bomb in LIST_BOMB:
-#       if bomb.Explode():
-#           # if TAB[bomb.caseY][bomb.caseX+2] == 3 and TAB[bomb.caseY][bomb.caseX+1] == 0: TAB[bomb.caseY][bomb.caseX+2] = 0
-#           # if TAB[bomb.caseY][bomb.caseX-2] == 3 and TAB[bomb.caseY][bomb.caseX-1] == 0: TAB[bomb.caseY][bomb.caseX-2] = 0
-#           # if TAB[bomb.caseY+2][bomb.caseX] == 3 and TAB[bomb.caseY+1][bomb.caseX] == 0: TAB[bomb.caseY+2][bomb.caseX] = 0
-#           # if TAB[bomb.caseY-2][bomb.caseX] == 3 and TAB[bomb.caseY-1][bomb.caseX] == 0: TAB[bomb.caseY-2][bomb.caseX] = 0
-#           if TAB[bomb.caseY+1][bomb.caseX] == 3: TAB[bomb.caseY+1][bomb.caseX] = 0
-#           if TAB[bomb.caseY-1][bomb.caseX] == 3: TAB[bomb.caseY-1][bomb.caseX] = 0
-#           if TAB[bomb.caseY][bomb.caseX+1] == 3: TAB[bomb.caseY][bomb.caseX+1] = 0
-#           if TAB[bomb.caseY][bomb.caseX-1] == 3: TAB[bomb.caseY][bomb.caseX-1] = 0
 def Meurt(player):
     x =getTabPos(player.x,player.y)[0]
     y=getTabPos(player.x,player.y)[1]
@@ -221,8 +207,6 @@ def iaFuite(ia) :
         ia.move(caseMax[0]*VIT, caseMax[1]*VIT)
         ia.setRightDir()
 
-
-
 def moveIA(ia):
     if iaDanger(ia) : iaFuite(ia)
     else :
@@ -237,8 +221,6 @@ def moveIA(ia):
                 ia.setRightDir()
             else:
                 ia.dir = (0,0)
-
-
 
 def getTabPos(x,y):
     posX = x // ZOOM
@@ -357,6 +339,7 @@ while not DONE:
             SCREEN_WIDTH = event.w
             oldZoom = ZOOM
             ZOOM = int((64/1920)*SCREEN_WIDTH)
+            VIT = int(ZOOM / 16)
 
             for player in LIST_JOUEUR:
                 player.x = int(ZOOM * (player.x/oldZoom))
@@ -373,6 +356,7 @@ while not DONE:
 
     grilleBombe()
     miseDistance()
+    print(VIT)
 
     for ia in LIST_IA:
         moveIA(ia)
@@ -404,9 +388,12 @@ while not DONE:
     if(keysPressed[pygame.K_SPACE]):
         if JOUEUR_BLEU in LIST_JOUEUR :
             poseBombe(JOUEUR_BLEU)
+
     for ia in LIST_IA:
         Meurt(ia)
+
     Meurt(JOUEUR_BLEU)
+
     SCREEN.fill(BLACK)
     TIME = time.time()
     draw()   # On redessine l'affichage et on actualise
