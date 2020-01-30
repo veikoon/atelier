@@ -1,31 +1,36 @@
 #################################################################################
-#	Class Player from Bomberman													#
-#	Created by Vincent : 24/01/2020												#
-#																				#
-#	Cette classe permet de definir toutes les propriete d'un Joueur				#
-#																				#
-#################################################################################
+##
+## Import
 
 import pygame
 import copy
 
+
+#################################################################################
+#	Class Player from Bomberman													#
+#	Created by Vincent : 24/01/2020												#
+#																				#
+#	Cette classe permet de definir toutes les proprietes d'un Joueur			#
+#																				#
+#################################################################################
+
 class Player:
 	def __init__(self,startX, startY, color, hauteur, zoom):
-		self.x = startX				# Positions initiales
+		self.x = startX					# Positions initiales
 		self.y = startY
-		self.color = color
-		self.sprite = []	# Tableau de sprites en 2D
-		self.spriteDir = 0			# Selectionne le tableau de sprite (en 1D) correspondant a la direction du joueur
-		self.spriteCount = 0		# Selectionne le sprite du tableau correspondant au mouvement actuel
-		self.spriteOffset = 0		# Permet de changer de sprite en fonction du decalage et non a chaque mouvement
-		self.lives = 1
-		self.nbBombe = 0
-		self.nbBombeMax = 1
-		self.rayonBombe = 2
-		self.getSprite(hauteur, zoom)
+		self.color = color				# Couleur du personnage
+		self.sprite = []				# Tableau de sprites en 2D
+		self.spriteDir = 0				# Selectionne le tableau de sprite (en 1D) correspondant a la direction du joueur
+		self.spriteCount = 0			# Selectionne le sprite du tableau correspondant au mouvement actuel
+		self.spriteOffset = 0			# Permet de changer de sprite en fonction du decalage et non a chaque mouvement
+		self.lives = 1					# Nombre de vie du personnage dans une partie de jeu
+		self.nbBombe = 0				# Nombre de bombes déjà posé par le personnage
+		self.nbBombeMax = 1				# Nombre de bombes maximal que peut poser le personnage en meme temps
+		self.rayonBombe = 2				# Rayon d'explosion de la bombe
+		self.getSprite(hauteur, zoom) 	# Avoir le spoite du personnage de la bonne taille
 
 
-	# getSprite(Color):
+	## getSprite(self, hauteur, zoom):
 	#   Decoupe l'image Color en sprite
 	#   Met les sprite a l'echelle de la carte
 	#   Les rajoute dans un tableau en 2D tel que :
@@ -41,15 +46,16 @@ class Player:
 			Tab.append(tabTemp)
 		self.sprite = Tab
 
-	##	draw():
-	# Permet de dessiner le personnage dont les coordonnees sont au milieu de ses pieds
-	# tandis que le jeu dessine les images depuis leur coin superieur gauche:
-	# (largeurPerso / 2 = 32 et hauteurPerso = 102)
+
+	##	draw(self, surface, largeurPerso, hauteurPerso):
+	#	Permet de dessiner le personnage dont les coordonnees sont au milieu de ses pieds
+	#	tandis que le jeu dessine les images depuis leur coin superieur gauche:
+	#	(largeurPerso / 2 = 32 et hauteurPerso = 102)
 	def draw(self, surface, largeurPerso, hauteurPerso):
 		surface.blit(self.sprite[self.spriteDir][self.spriteCount], (self.x - largeurPerso, self.y - hauteurPerso))
 
 
-	## move():
+	## move(self, posX, posY):
 	#   On change les coordonnees du joueur selon son deplacement
 	#   On regarde la retenu de sprite est complete ou non:
 	#       * Si oui on change de sprite (+1 %Nombre de sprite pour ne pas sortir du tableau) et et on reset la retenu de sprite
@@ -75,14 +81,19 @@ class Player:
 #																				#
 #################################################################################
 
-
 class IA(Player):
+	## Variable globale
 	GRILLE_BOMBE = None
 
-	def __init__(self,startX, startY, color, hauteur, zoom, direction):
-		super(IA,self).__init__(startX, startY, color, hauteur, zoom)
-		self.dir = direction
 
+	def __init__(self,startX, startY, color, hauteur, zoom, direction):
+		super(IA,self).__init__(startX, startY, color, hauteur, zoom) 		# Reutilisation de l'instanciation de Player()
+		self.dir = direction												# Initiation d'un direction par defaut de l'IA
+
+
+	## setRightDir(self):
+	#	Permet de determiner le bon sprite
+	#	en fonction de la direction de deplacement de l'IA
 	def setRightDir(self):
 		if(self.dir == (0,1)): self.spriteDir = 0
 		if(self.dir == (0,-1)): self.spriteDir = 3
