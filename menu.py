@@ -1,6 +1,5 @@
 import pygame
 import time
-#import main
 import os
 pygame.init()
 pygame.font.init()
@@ -8,7 +7,7 @@ pygame.font.init()
 RUNNING = True
 
 fenetre = pygame.display.set_mode((1100,875))
-
+jouer = False
 myfont = pygame.font.SysFont('Helvetic', 20)
 clock = pygame.time.Clock()
 arrow_sprite = pygame.image.load("sprite/arrow.png")
@@ -69,16 +68,19 @@ def MenuScreen():
                 arrow['y']= 430
                 arrow['choice'] = yes
 
-        if KeysPressed[pygame.K_SPACE]:
+        if KeysPressed[pygame.K_RETURN]:
 
             if arrow['choice'] == yes:
                 done2 = True
-                pygame.quit()
-                os.system('python main.py')
+                jouer = True
+                return jouer
+
 
             if arrow['choice'] == no:
                 done = True
                 done2 = True
+                jouer = False
+                return jouer
 
         fenetre.blit(fond ,(0,0))
         fenetre.blit(arrow['sprite'],(arrow['x'],arrow['y']))
@@ -87,16 +89,9 @@ def MenuScreen():
         clock.tick(30)
         
 ## Affecte la fonction menu
-#def boucle_principale():
-#    while RUNNING:
-#        fenetre.fill( (0,0,0) )
-#        gerer_events_principale()
-#
-#        ## Exécute la fonction affecté à afficher (menu/jeu)
-#        #afficher()
-#        MenuScreen()
-#
-#        pygame.display.update()
 
-MenuScreen()
+jouer = MenuScreen()
+if jouer == True:
+    pygame.quit()
+    os.system('python3 main.py')
 pygame.quit()

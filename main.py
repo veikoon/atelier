@@ -316,9 +316,6 @@ for ia in LIST_IA:
 
 LIST_JOUEUR.append(JOUEUR_BLEU)
 
-#Deplacement aléatoire des personnages
-dep = [(0,4), (0,-4), (4,0),(-4,0)]
-
 generate()
 #################################################################################
 ##
@@ -356,7 +353,6 @@ while not DONE:
 
     grilleBombe()
     miseDistance()
-    print(VIT)
 
     for ia in LIST_IA:
         moveIA(ia)
