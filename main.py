@@ -134,8 +134,8 @@ def draw():
         removeBomb()
         for i in range(bomb.rayon):
 
-            bomb.drawExplo(SCREEN,TAB,i,(1+i),ZOOM)
-            bomb.drawExplo(SCREEN,TAB,i,-(1+i),ZOOM)
+            bomb.drawExplo(SCREEN,TAB,LIST_BOMB, i,(1+i),ZOOM)
+            bomb.drawExplo(SCREEN,TAB, LIST_BOMB, i,-(1+i),ZOOM)
 
 
 
