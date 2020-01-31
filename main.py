@@ -33,6 +33,10 @@ BLOCK = pygame.image.load("images/blocks/stone.png")
 BLOCK_MIDDLE = pygame.image.load("images/blocks/stone2.png")
 GRASS = pygame.image.load("images/blocks/grass.png")
 BLOCK_BRICK = pygame.image.load("images/blocks/brick.png")
+arrow_sprite = pygame.image.load("sprite/arrow.png")
+fond = pygame.image.load("sprite/menu2.png")
+arrow_sprite = pygame.image.load("sprite/arrow.png")
+fond = pygame.image.load("sprite/menu2.png")
 
 # Sprites
 BLEU = pygame.image.load("images/ia/Bleu/sprite.png")
@@ -84,11 +88,11 @@ SCREEN_HEIGHT = pygame.display.Info().current_h - 100
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT), RESIZABLE)
 
 ZOOM = int((64/1920)*SCREEN_WIDTH)   # Taille d'une case en pixels
-
+clock = pygame.time.Clock()
 GREEN = [0, 255, 0]
 WHITE = [255, 255, 255]
 BLACK = [0, 0, 0]
-
+GAME_OVER = pygame.image.load("sprite/gameover.png").convert()
 TIME = 0
 VIT = 4
 
@@ -96,7 +100,7 @@ FONT = pygame.font.SysFont("arial", 50)
 CLOCK = pygame.time.Clock()
 TIME = time.time()
 DONE = False
-
+jeu_fini = False
 #info_ia = [(720,350,JAUNE),(1450,102,ROUGE),(1450,700,VERT),(96,700,ORANGE)]
 LIST_BOMB = []
 LIST_IA = []
@@ -190,6 +194,96 @@ def Meurt(player):
                 LIST_JOUEUR.remove(player)
             if(player in LIST_IA):
                 LIST_IA.remove(player)
+
+def MenuScreen():
+    global screen,done,clock, arrow_sprite
+    done2 = False
+    start = 1
+    commandes = 2
+    yes = True
+    no = False
+    arrow = {}
+    arrow['x']= 150
+    arrow['y']= 430
+    arrow['sprite'] = arrow_sprite
+    arrow['choice'] = yes
+
+    last_time = 0
+
+    while not done2:
+
+        time = int( pygame.time.get_ticks() / 100 )
+
+        event = pygame.event.Event(pygame.USEREVENT)
+        for event in pygame.event.get():  # User did something
+            if event.type == pygame.QUIT:  # If user clicked close
+                 done = True
+                 done2 = True
+
+        KeysPressed = pygame.key.get_pressed()
+
+        if KeysPressed[pygame.K_DOWN] and time - last_time > 3:
+            last_time = time
+            if arrow['y'] == 430:
+                arrow['y']= 560
+                arrow['choice'] = no
+            else:
+                arrow['y']= 430
+                arrow['choice'] = yes
+
+        if KeysPressed[pygame.K_UP] and time - last_time > 3:
+            last_time = time
+            if arrow['y'] == 430:
+                arrow['y']= 560
+                arrow['choice'] = no
+            else:
+                arrow['y']= 430
+                arrow['choice'] = yes
+
+        if KeysPressed[pygame.K_RETURN]:
+
+            if arrow['choice'] == yes:
+                done2 = True
+
+
+            if arrow['choice'] == no:
+                done = True
+                done2 = True
+
+        SCREEN.blit(fond ,(0,0))
+        SCREEN.blit(arrow['sprite'],(arrow['x'],arrow['y']))
+
+        pygame.display.flip()
+        clock.tick(30)
+def GameOver():
+    done2 = False
+    pressed = False
+    press_time = 0
+    press_speed = 5
+    jeu_fini = False
+    while not done2:
+
+        event = pygame.event.Event(pygame.USEREVENT)
+        for event in pygame.event.get():  # User did something
+            if event.type == pygame.QUIT:  # If user clicked close
+                done = True
+                done2 = True
+
+        KeysPressed = pygame.key.get_pressed()
+
+        if KeysPressed[pygame.K_RETURN]:
+            pressed = True
+            press_time = int( pygame.time.get_ticks() / 100 )
+
+        if pressed and int( pygame.time.get_ticks() / 100 ) - press_time >= press_speed:
+            done2 = True
+            jeu_fini = True
+            return jeu_fini
+
+        SCREEN.blit(GAME_OVER,(0,0))
+
+        pygame.display.flip()
+        clock.tick(30)
 
 def iaDanger(ia): return GRILLE_BOMBE[getTabPos(ia.x,ia.y)[1]][getTabPos(ia.x,ia.y)[0]] <= 2
 
@@ -300,29 +394,32 @@ def miseDistance():
 #################################################################################
 ##
 ##  Initialisation
+def Init():
+    SCREEN.fill(BLACK)
+    MenuScreen()
+    pygame.mouse.set_visible(True)
+    pygame.display.set_caption("ESIEE - BOMB HERMAN")
+    #pygame.mixer.music.play()   # Activation de la musique
 
-pygame.mouse.set_visible(True)
-pygame.display.set_caption("ESIEE - BOMB HERMAN")
-#pygame.mixer.music.play()   # Activation de la musique
 
+    LIST_IA.append(JOUEUR_JAUNE)#JAUNE
+    LIST_IA.append(JOUEUR_ORANGE)#ORANGE
+    LIST_IA.append(JOUEUR_ROUGE)#ROUGE
 
-LIST_IA.append(JOUEUR_JAUNE)#JAUNE
-LIST_IA.append(JOUEUR_ORANGE)#ORANGE
-LIST_IA.append(JOUEUR_ROUGE)#ROUGE
+    for ia in LIST_IA:
+        LIST_JOUEUR.append(ia)
+        ia.setRightDir()    # Defini la direction des sprites des ia a l'init
 
-for ia in LIST_IA:
-    LIST_JOUEUR.append(ia)
-    ia.setRightDir()    # Defini la direction des sprites des ia a l'init
+    LIST_JOUEUR.append(JOUEUR_BLEU)
 
-LIST_JOUEUR.append(JOUEUR_BLEU)
-
-generate()
+    generate()
 #################################################################################
 ##
 ##   Boucle principale
-
+Init()
 
 # --------  Main -----------
+
 while not DONE:
 
     event = pygame.event.Event(pygame.USEREVENT)
@@ -330,7 +427,7 @@ while not DONE:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             DONE = True
-            
+
         if event.type == pygame.VIDEORESIZE:
             SCREEN_HEIGHT = event.h
             SCREEN_WIDTH = event.w
@@ -356,8 +453,6 @@ while not DONE:
 
     for ia in LIST_IA:
         moveIA(ia)
-
-
 
     keysPressed = pygame.key.get_pressed()  # On retient les touches pressees
 
@@ -389,11 +484,19 @@ while not DONE:
         Meurt(ia)
 
     Meurt(JOUEUR_BLEU)
-
+    if (JOUEUR_BLEU not in LIST_JOUEUR):
+        print("hey")
+        SCREEN.fill(BLACK)
+        jeu_fini = GameOver()
     SCREEN.fill(BLACK)
     TIME = time.time()
     draw()   # On redessine l'affichage et on actualise
     CLOCK.tick(30) # Limite d'image par seconde
+    if jeu_fini == True:
+        jeu_fini = False
+        Init()
+        continue
+
 
     #a mettre quand le personnage est mort : pygame.mixer.music.stop()
 
