@@ -198,4 +198,4 @@ class Bombe:
             if(sens =='y'):
                  if(bombe.caseX == self.caseX and bombe.caseY == self.caseY+direction ): bombe.timeBomb = 0  
             if(sens =='x'):
-                if(bombe.caseX == self.caseX +direction and bombe.caseY == self.caseY ): bombe.timeBomb = 0  
+                if(bombe.caseX == self.caseX +direction and bombe.caseY == self.caseY ): bombe.timeBomb = 0   
