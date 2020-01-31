@@ -52,21 +52,13 @@ def MenuScreen():
 
         if KeysPressed[pygame.K_DOWN] and time - last_time > 3:
             last_time = time
-            if arrow['y'] == 430:
-                arrow['y']= 560
-                arrow['choice'] = no
-            else:
-                arrow['y']= 430
-                arrow['choice'] = yes
+            arrow['y']= 560
+            arrow['choice'] = no
 
         if KeysPressed[pygame.K_UP] and time - last_time > 3:
             last_time = time
-            if arrow['y'] == 430:
-                arrow['y']= 560
-                arrow['choice'] = no
-            else:
-                arrow['y']= 430
-                arrow['choice'] = yes
+            arrow['y']= 430
+            arrow['choice'] = yes
 
         if KeysPressed[pygame.K_RETURN]:
 
@@ -81,7 +73,7 @@ def MenuScreen():
                 done2 = True
                 jouer = False
                 return jouer
-
+                
         fenetre.blit(fond ,(0,0))
         fenetre.blit(arrow['sprite'],(arrow['x'],arrow['y']))
 
