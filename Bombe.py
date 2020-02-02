@@ -133,8 +133,8 @@ class Bombe:
             if(self.exploFin):
                 TAB[caseY][caseX] = 0
             
-            
-            if(self.caseX >= LARGEUR-self.rayon and direction >0):
+           
+            if( i > LARGEUR-self.caseX-2 and direction >0):
                 b= 2
             else:
                 
@@ -161,7 +161,7 @@ class Bombe:
                     surface.blit(rotateXimg, (self.x + place- 100 , self.y - 96))
                 self.throughWall(TAB,caseX,caseY,'x',direction)
                     
-            if(self.caseY >= HAUTEUR-self.rayon and direction >0):
+            if(i > HAUTEUR-self.caseY-2 and direction >0):
                 a = 3
             else:
                 caseTesteY = TAB[caseY+direction][caseX]
