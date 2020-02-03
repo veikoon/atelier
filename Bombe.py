@@ -138,12 +138,14 @@ class Bombe:
             if(self.exploFin):     # Reinitialise la case de la bombe
                 TAB[caseY][caseX] = 0            
            
-            if( i > LARGEUR-self.caseX-2 and direction >0):
+            #if( i > LARGEUR-self.caseX-2 and direction >0):
+            if( (self.caseX+direction <0 )or (i > LARGEUR-self.caseX-2 and direction >0)):
                 b= 2
             else:
                 
                 caseTesteX = TAB[caseY][caseX+direction]
                 if(self.animStop(TAB,direction,testcase,'x',caseX,caseY) and (caseTesteX == 3 and not explX)):
+                        
                         TAB[caseY][caseX+direction]=5
                         if(direction>0):
                             self.explX= True
@@ -159,8 +161,8 @@ class Bombe:
 
                     if(TAB[caseY][caseX+direction]==4):
                         self.explMulti(listeBombe,direction,'x')
-
-                    TAB[caseY][caseX+direction]=5
+                    if((caseX +direction)>0):
+                        TAB[caseY][caseX+direction]=5
                     if(self.exploFin):                     
                         TAB[caseY][caseX+direction]=0
 
@@ -168,7 +170,7 @@ class Bombe:
                     surface.blit(rotateXimg, (self.x + place- 100 , self.y - 96))
                 self.throughWall(TAB,caseX,caseY,'x',direction)
                     
-            if(i > HAUTEUR-self.caseY-2 and direction >0):
+            if((i > HAUTEUR-self.caseY-2 and direction >0) or (self.caseY+direction <0)):
                 a = 3
 
             else:
