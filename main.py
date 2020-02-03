@@ -36,8 +36,7 @@ GRASS = pygame.image.load("images/blocks/grass.png")
 BLOCK_BRICK = pygame.image.load("images/blocks/brick.png")
 arrow_sprite = pygame.image.load("sprite/arrow.png")
 fond = pygame.image.load("sprite/menu2.png")
-arrow_sprite = pygame.image.load("sprite/arrow.png")
-fond = pygame.image.load("sprite/menu2.png")
+
 
 # Sprites
 BLEU = pygame.image.load("images/ia/Bleu/sprite.png")
@@ -81,7 +80,13 @@ LARGEUR = len(TAB[0])  # Nombre de cases en largeur
 SCREEN_WIDTH = pygame.display.Info().current_w      # L'ecran de jeu s'ajuste à la taille de l'ecran de l'ordinateur
 SCREEN_HEIGHT = pygame.display.Info().current_h - 100
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT), RESIZABLE)
-
+scrrec = SCREEN.get_rect()
+fond = pygame.image.load("sprite/menu2.png").convert()
+VICTOIRE = pygame.image.load("sprite/VICTOIRE.png").convert()
+arrow_sprite = pygame.image.load("sprite/arrow.png")
+VICTOIRE = pygame.transform.scale(VICTOIRE, (scrrec.right, scrrec.bottom))
+fond = pygame.transform.scale(fond, (scrrec.right, scrrec.bottom))
+#arrow_sprite = pygame.transform.scale(arrow_sprite, (scrrec.right, scrrec.bottom))
 ZOOM = int((64/1920)*SCREEN_WIDTH)   # Taille d'une case en pixels
 jeu_fini = False
 clock = pygame.time.Clock()
@@ -322,6 +327,33 @@ def GameOver():
         pygame.display.flip()
         clock.tick(30)
 
+def victory():
+    done2 = False
+    pressed = False
+    press_time = 0
+    press_speed = 5
+    jeu_fini = False
+    while not done2:
+        event = pygame.event.Event(pygame.USEREVENT)
+        for event in pygame.event.get():  # User did something
+            if event.type == pygame.QUIT:  # If user clicked close
+                done = True
+                done2 = True
+
+        KeysPressed = pygame.key.get_pressed()
+
+        if KeysPressed[pygame.K_RETURN]:
+            pressed = True
+            press_time = int( pygame.time.get_ticks() / 100 )
+
+        if pressed and int( pygame.time.get_ticks() / 100 ) - press_time >= press_speed:
+            done2 = True
+            jeu_fini = True
+            return jeu_fini
+
+        SCREEN.blit(VICTOIRE,(0,0))
+        pygame.display.flip()
+        clock.tick(30)
 
 
 ## iaDanger(ia):
@@ -367,12 +399,6 @@ def moveIA(ia):
                 ia.setRightDir()
             else:
                 ia.dir = (0,0)
-
-def tryBombe(){
-    
-}
-
-
 
 ## getTabPos(x,y):
 #   Prendre la position en pixels du joueur
@@ -571,9 +597,11 @@ while not DONE:
     if (JOUEUR_BLEU not in LIST_JOUEUR):
         SCREEN.fill(BLACK)
         jeu_fini = GameOver()
+    if (JOUEUR_ROUGE not in LIST_JOUEUR and JOUEUR_ORANGE not in LIST_JOUEUR and JOUEUR_JAUNE not in LIST_JOUEUR):
+        SCREEN.fill(BLACK)
+        jeu_fini = victory()
     SCREEN.fill(BLACK)
     TIME = time.time()
-    print(JOUEUR_BLEU.lives)
     draw()   # On redessine l'affichage et on actualise
     CLOCK.tick(30) # Limite d'image par seconde
     if jeu_fini == True:
