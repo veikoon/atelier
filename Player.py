@@ -16,8 +16,10 @@ import copy
 
 class Player:
 	def __init__(self,startX, startY, color, hauteur, zoom):
-		self.x = startX					# Positions initiales
-		self.y = startY
+		self.x = 0						# Positions initiales
+		self.y = 0
+		self.caseX = startX
+		self.caseY = startY
 		self.color = color				# Couleur du personnage
 		self.sprite = []				# Tableau de sprites en 2D
 		self.spriteDir = 0				# Selectionne le tableau de sprite (en 1D) correspondant a la direction du joueur
@@ -25,7 +27,7 @@ class Player:
 		self.spriteOffset = 0			# Permet de changer de sprite en fonction du decalage et non a chaque mouvement
 		self.lives = 1					# Nombre de vie du personnage dans une partie de jeu
 		self.nbBombe = 0				# Nombre de bombes déjà posé par le personnage
-		self.nbBombeMax = 3			# Nombre de bombes maximal que peut poser le personnage en meme temps
+		self.nbBombeMax = 3				# Nombre de bombes maximal que peut poser le personnage en meme temps
 		self.rayonBombe = 2				# Rayon d'explosion de la bombe
 		self.getSprite(hauteur, zoom) 	# Avoir le spoite du personnage de la bonne taille
 
@@ -51,8 +53,8 @@ class Player:
 	#	Permet de dessiner le personnage dont les coordonnees sont au milieu de ses pieds
 	#	tandis que le jeu dessine les images depuis leur coin superieur gauche:
 	#	(largeurPerso / 2 = 32 et hauteurPerso = 102)
-	def draw(self, surface, largeurPerso, hauteurPerso):
-		surface.blit(self.sprite[self.spriteDir][self.spriteCount], (self.x - largeurPerso, self.y - hauteurPerso))
+	def draw(self, surface, largeurPerso, hauteurPerso, zoom):
+		surface.blit(self.sprite[self.spriteDir][self.spriteCount], ((self.caseY * zoom) + self.x - largeurPerso + zoom//2,(self.caseX * zoom) + self.y - hauteurPerso + zoom//2))
 
 
 	## move(self, posX, posY):
@@ -61,9 +63,26 @@ class Player:
 	#       * Si oui on change de sprite (+1 %Nombre de sprite pour ne pas sortir du tableau) et et on reset la retenu de sprite
 	#       * Si non on augmente la retenu
 	#   (permet d'eviter un changement de sprite trop rapide par rapport a sa vitesse)
-	def move(self, posX, posY):
+	def move(self, posX, posY, zoom):
 		self.y += posY
 		self.x += posX
+		
+		if(self.x > zoom//2):
+			self.x = - zoom//2
+			self.caseY += 1
+
+		if(self.x < -zoom//2):
+			self.x = zoom//2
+			self.caseY -= 1
+
+		if(self.y > zoom//2):
+			self.y = - zoom//2
+			self.caseX += 1
+
+		if(self.y < -zoom//2):
+			self.y = zoom//2
+			self.caseX -= 1
+
 		if(self.spriteOffset == 2):
 			self.spriteCount = (self.spriteCount + 1) % 4
 			self.spriteOffset = 0
@@ -88,7 +107,8 @@ class IA(Player):
 
 	def __init__(self,startX, startY, color, hauteur, zoom, direction):
 		super(IA,self).__init__(startX, startY, color, hauteur, zoom) 		# Reutilisation de l'instanciation de Player()
-		self.dir = direction												# Initiation d'un direction par defaut de l'IA
+		self.dir = direction
+		self.needToGoCenter = False											# Initiation d'un direction par defaut de l'IA
 
 
 	## setRightDir(self):

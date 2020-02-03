@@ -21,8 +21,8 @@ class Bombe:
         self.timeBomb = times      # Selectionne le tableau de sprite (en 1D) correspondant a la direction du joueur
         self.spriteCount = 0        # Selectionne le sprite du tableau correspondant au mouvement actuel
         self.spriteOffset = 0       # Permet de changer de sprite en fonction du decalage et non a chaque mouvement
-        self.caseX = player.x // zoom
-        self.caseY = player.y // zoom
+        self.caseX = player.caseY
+        self.caseY = player.caseX
         self.exploFin = False
         self.finexplode = False
         self.explX = False

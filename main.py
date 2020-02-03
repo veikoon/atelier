@@ -102,11 +102,10 @@ LIST_BOMB = []
 LIST_IA = []
 LIST_JOUEUR = []
 
-POS_IA = [(HAUTEUR-2, LARGEUR-2), (HAUTEUR-2, 1), (1, LARGEUR-2)]
-JOUEUR_BLEU = Player(ZOOM + ZOOM//2, ZOOM + ZOOM//2, BLEU,int(ZOOM*(102/64)), ZOOM)
-JOUEUR_JAUNE = IA(POS_IA[0][1] * ZOOM + ZOOM//2, POS_IA[0][0] * ZOOM + ZOOM//2, JAUNE,int(ZOOM*(102/64)), ZOOM, (0,-1))
-JOUEUR_ORANGE = IA(POS_IA[1][1] * ZOOM + ZOOM//2, POS_IA[1][0] * ZOOM + ZOOM//2, ORANGE,int(ZOOM*(102/64)), ZOOM,(1,0))
-JOUEUR_ROUGE = IA(POS_IA[2][1] * ZOOM + ZOOM//2, POS_IA[2][0] * ZOOM + ZOOM//2, ROUGE,int(ZOOM*(102/64)), ZOOM,(-1,0))
+JOUEUR_BLEU = Player(1, 1, BLEU,int(ZOOM*(102/64)), ZOOM)
+JOUEUR_JAUNE = IA(1, 1, JAUNE,int(ZOOM*(102/64)), ZOOM, (0,1))
+JOUEUR_ORANGE = IA(1, 1, ORANGE,int(ZOOM*(102/64)), ZOOM,(1,0))
+JOUEUR_ROUGE = IA(1, 1, ROUGE,int(ZOOM*(102/64)), ZOOM,(-1,0))
 
 # grille contenant les distances aux bombes sur la map
 GRILLE_BOMBE = None
@@ -141,7 +140,7 @@ def draw():
 
     for joueur in LIST_JOUEUR:
 
-        joueur.draw(SCREEN, ZOOM//2, int(ZOOM*(102/ZOOM)))
+        joueur.draw(SCREEN, ZOOM//2, int(ZOOM*(102/ZOOM)), ZOOM)
 
     pygame.display.flip() # Rafraichis l'affichage de Pygame
 
@@ -173,16 +172,16 @@ def removeBomb():
             LIST_BOMB.remove(Bomb)
 
 def poseBombe(player):
-    caseX = int(player.x/ZOOM)
-    caseY = int(player.y/ZOOM)
+    caseX = player.caseY
+    caseY = player.caseX
     if(TAB[caseY][caseX] == 0 and player.nbBombe < player.nbBombeMax):
         LIST_BOMB.append(Bombe(caseX*ZOOM+100,caseY*ZOOM+96,BOMBES, ZOOM, TIME,player))
         TAB[caseY][caseX] = 4
         player.nbBombe += 1
 
 def Meurt(player):
-    x =getTabPos(player.x,player.y)[0]
-    y=getTabPos(player.x,player.y)[1]
+    x = player.caseY
+    y = player.caseX
     if(TAB[y][x]==5):
         player.lives -= 1
         if player.lives == 0:
@@ -191,28 +190,34 @@ def Meurt(player):
             if(player in LIST_IA):
                 LIST_IA.remove(player)
 
-def iaDanger(ia): return GRILLE_BOMBE[getTabPos(ia.x,ia.y)[1]][getTabPos(ia.x,ia.y)[0]] <= 2
+def iaDanger(ia): return GRILLE_BOMBE[ia.caseX][ia.caseY] <= 4
 
 def iaFuite(ia) :
-    possibleMove = getPossibleMoveIA(ia)
-    posIA = getTabPos(ia.x,ia.y)
+    if(ia.x != 0 or ia.y !=0): ia.needToGoCenter = True
+    else:ia.needToGoCenter = False
+
+    possibleMove = getPossibleMove(ia)
+    posIA = (ia.caseY,ia.caseX)
     max = 0
-    caseMax = None
+    caseMax = None  
     for case in possibleMove :
         if GRILLE_BOMBE[posIA[1] + case[1]][posIA[0] + case[0]] > max and GRILLE_BOMBE[posIA[1] + case[1]][posIA[0] + case[0]] < 100:
             max = GRILLE_BOMBE[posIA[1] + case[1]][posIA[0] + case[0]]
             caseMax = case
-    if(caseMax != None):
+    if(caseMax != None and not ia.needToGoCenter):
         ia.dir = caseMax
-        ia.move(caseMax[0]*VIT, caseMax[1]*VIT)
+        ia.move(caseMax[0]*VIT, caseMax[1]*VIT,ZOOM)
         ia.setRightDir()
+    else:
+        ia.move(ia.dir[0]*VIT, ia.dir[1]*VIT,ZOOM)
+
 
 def moveIA(ia):
-    if iaDanger(ia) : iaFuite(ia)
+    if iaDanger(ia) :  iaFuite(ia)
     else :
-        possibleMove = getPossibleMoveIA(ia)
+        possibleMove = getPossibleMove(ia)
         if (ia.dir in possibleMove):
-            ia.move(ia.dir[0]*VIT, ia.dir[1]*VIT)
+            ia.move(ia.dir[0]*VIT, ia.dir[1]*VIT,ZOOM)
         else:
             poseBombe(ia)
             if(len(possibleMove) !=0 ):
@@ -222,55 +227,21 @@ def moveIA(ia):
             else:
                 ia.dir = (0,0)
 
-def getTabPos(x,y):
-    posX = x // ZOOM
-    posY = y // ZOOM
-    return (posX,posY)
-
-def getPossibleMoveIA(player):
-    possibleMove = []
-    tab = []
-    dist = ZOOM//2+1
-    tab.append(TAB[getTabPos(player.x,player.y+dist)[1]][getTabPos(player.x,player.y+dist)[0]])
-    tab.append(TAB[getTabPos(player.x,player.y-dist)[1]][getTabPos(player.x,player.y-dist)[0]])
-    tab.append(TAB[getTabPos(player.x+dist,player.y)[1]][getTabPos(player.x+dist,player.y)[0]])
-    tab.append(TAB[getTabPos(player.x-dist,player.y)[1]][getTabPos(player.x-dist,player.y)[0]])
-
-    tab.append((getTabPos(player.x,player.y+dist)[0],getTabPos(player.x,player.y+dist)[1]))
-    tab.append((getTabPos(player.x,player.y-dist)[0],getTabPos(player.x,player.y-dist)[1]))
-    tab.append((getTabPos(player.x+dist,player.y)[0],getTabPos(player.x+dist,player.y)[1]))
-    tab.append((getTabPos(player.x-dist,player.y)[0],getTabPos(player.x-dist,player.y)[1]))
-
-    tab.append((getTabPos(player.x,player.y)[0],getTabPos(player.x,player.y)[1]))
-
-    if(tab[0]  == 0 or tab[0]  == 5 or (tab[0]  == 4 and tab[4] == tab[8])): possibleMove.append((0,1))
-    if(tab[1]  == 0 or tab[1]  == 5 or (tab[1]  == 4 and tab[5] == tab[8])): possibleMove.append((0,-1))
-    if(tab[2]  == 0 or tab[2]  == 5 or (tab[2]  == 4 and tab[6] == tab[8])): possibleMove.append((1,0))
-    if(tab[3]  == 0 or tab[3]  == 5 or (tab[3]  == 4 and tab[7] == tab[8])): possibleMove.append((-1,0))
-
-    return possibleMove
 
 
-def getPossibleMovePlayer(player):
+def getPossibleMove(player):
     possibleMove = []
     tab = []
 
-    tab.append(TAB[getTabPos(player.x,player.y+VIT)[1]][getTabPos(player.x,player.y+VIT)[0]])
-    tab.append(TAB[getTabPos(player.x,player.y-VIT)[1]][getTabPos(player.x,player.y-VIT)[0]])
-    tab.append(TAB[getTabPos(player.x+VIT,player.y)[1]][getTabPos(player.x+VIT,player.y)[0]])
-    tab.append(TAB[getTabPos(player.x-VIT,player.y)[1]][getTabPos(player.x-VIT,player.y)[0]])
+    tab.append(TAB[player.caseX+1][player.caseY])
+    tab.append(TAB[player.caseX-1][player.caseY])
+    tab.append(TAB[player.caseX][player.caseY+1])
+    tab.append(TAB[player.caseX][player.caseY-1])
 
-    tab.append((getTabPos(player.x,player.y+VIT)[0],getTabPos(player.x,player.y+VIT)[1]))
-    tab.append((getTabPos(player.x,player.y-VIT)[0],getTabPos(player.x,player.y-VIT)[1]))
-    tab.append((getTabPos(player.x+VIT,player.y)[0],getTabPos(player.x+VIT,player.y)[1]))
-    tab.append((getTabPos(player.x-VIT,player.y)[0],getTabPos(player.x-VIT,player.y)[1]))
-
-    tab.append((getTabPos(player.x,player.y)[0],getTabPos(player.x,player.y)[1]))
-
-    if(tab[0]  == 0 or tab[0]  == 5 or (tab[0]  == 4 and tab[4] == tab[8])): possibleMove.append((0,1))
-    if(tab[1]  == 0 or tab[1]  == 5 or (tab[1]  == 4 and tab[5] == tab[8])): possibleMove.append((0,-1))
-    if(tab[2]  == 0 or tab[2]  == 5 or (tab[2]  == 4 and tab[6] == tab[8])): possibleMove.append((1,0))
-    if(tab[3]  == 0 or tab[3]  == 5 or (tab[3]  == 4 and tab[7] == tab[8])): possibleMove.append((-1,0))
+    if((tab[0]  == 0 or tab[0]  == 5 or player.y != 0) and player.x == 0): possibleMove.append((0,1))
+    if((tab[1]  == 0 or tab[1]  == 5 or player.y != 0) and player.x == 0): possibleMove.append((0,-1))
+    if((tab[2]  == 0 or tab[2]  == 5 or player.x != 0) and player.y == 0): possibleMove.append((1,0))
+    if((tab[3]  == 0 or tab[3]  == 5 or player.x != 0) and player.y == 0): possibleMove.append((-1,0))
 
     return possibleMove
 
@@ -307,8 +278,8 @@ pygame.display.set_caption("ESIEE - BOMB HERMAN")
 
 
 LIST_IA.append(JOUEUR_JAUNE)#JAUNE
-LIST_IA.append(JOUEUR_ORANGE)#ORANGE
-LIST_IA.append(JOUEUR_ROUGE)#ROUGE
+#LIST_IA.append(JOUEUR_ORANGE)#ORANGE
+#LIST_IA.append(JOUEUR_ROUGE)#ROUGE
 
 for ia in LIST_IA:
     LIST_JOUEUR.append(ia)
@@ -324,7 +295,6 @@ generate()
 
 # --------  Main -----------
 while not DONE:
-
     event = pygame.event.Event(pygame.USEREVENT)
     pygame.event.pump()
     for event in pygame.event.get():
@@ -357,28 +327,28 @@ while not DONE:
     for ia in LIST_IA:
         moveIA(ia)
 
-
-
     keysPressed = pygame.key.get_pressed()  # On retient les touches pressees
 
     ## Mouvements du JOUEUR_
     #   On choisit la direction du sprite en fonction de sa position dans le tableau des sprites
     #   On fait appelle a la fonction move pour changer les coordonnees et les sprites
-    possibleMove = getPossibleMovePlayer(JOUEUR_BLEU)
+
+    possibleMove = getPossibleMove(JOUEUR_BLEU)
+
     if(keysPressed[pygame.K_DOWN]  and (0,1) in possibleMove):
         JOUEUR_BLEU.spriteDir = 0
-        JOUEUR_BLEU.move(0,VIT)
+        JOUEUR_BLEU.move(0,VIT,ZOOM)
 
-    if(keysPressed[pygame.K_UP] and (0,-1) in possibleMove):
-        JOUEUR_BLEU.move(0,-VIT)
+    elif(keysPressed[pygame.K_UP] and (0,-1) in possibleMove):
+        JOUEUR_BLEU.move(0,-VIT,ZOOM)
         JOUEUR_BLEU.spriteDir = 3
 
-    if(keysPressed[pygame.K_RIGHT] and (1,0) in possibleMove):
-        JOUEUR_BLEU.move(VIT,0)
+    elif(keysPressed[pygame.K_RIGHT] and (1,0) in possibleMove):
+        JOUEUR_BLEU.move(VIT,0,ZOOM)
         JOUEUR_BLEU.spriteDir = 2
 
-    if(keysPressed[pygame.K_LEFT] and (-1,0) in possibleMove):
-        JOUEUR_BLEU.move(-VIT,0)
+    elif(keysPressed[pygame.K_LEFT] and (-1,0) in possibleMove):
+        JOUEUR_BLEU.move(-VIT,0,ZOOM)
         JOUEUR_BLEU.spriteDir = 1
 
     if(keysPressed[pygame.K_SPACE]):
@@ -387,6 +357,10 @@ while not DONE:
 
     for ia in LIST_IA:
         Meurt(ia)
+
+    #print()
+    #for i in range(len(TAB)):
+    #    print(TAB[i])
 
     Meurt(JOUEUR_BLEU)
 
