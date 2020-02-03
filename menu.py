@@ -20,8 +20,8 @@ fenetre = pygame.display.set_mode((1100,875))
 jouer = False
 myfont = pygame.font.SysFont('Helvetic', 20)
 clock = pygame.time.Clock()
-arrow_sprite = pygame.image.load("sprite/arrow.png")
-fond = pygame.image.load("sprite/menu2.png")
+arrow_sprite = pygame.image.load("menu_img/arrow.png")
+fond = pygame.image.load("menu_img/menu2.png")
 fondx=0
 fondy=0
 fenetre.blit(fond ,(fondx,fondy))
@@ -42,7 +42,7 @@ def gerer_events_principale():
 
 ## MenuScreen():
 #   Creation de la fenetre menu
-#   Detection d'evenements 
+#   Detection d'evenements
 def MenuScreen():
     global screen, done, clock, arrow_sprite
     done2 = False
