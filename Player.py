@@ -15,7 +15,7 @@ import copy
 #################################################################################
 
 class Player:
-	def __init__(self,startX, startY, color, hauteur, zoom):
+	def __init__(self,startX, startY, live, color, hauteur, zoom):
 		self.x = 0						# Positions initiales
 		self.y = 0
 		self.caseX = startX
@@ -25,7 +25,7 @@ class Player:
 		self.spriteDir = 0				# Selectionne le tableau de sprite (en 1D) correspondant a la direction du joueur
 		self.spriteCount = 0			# Selectionne le sprite du tableau correspondant au mouvement actuel
 		self.spriteOffset = 0			# Permet de changer de sprite en fonction du decalage et non a chaque mouvement
-		self.lives = 1					# Nombre de vie du personnage dans une partie de jeu
+		self.lives = live					# Nombre de vie du personnage dans une partie de jeu
 		self.nbBombe = 0				# Nombre de bombes déjà posé par le personnage
 		self.nbBombeMax = 3				# Nombre de bombes maximal que peut poser le personnage en meme temps
 		self.rayonBombe = 2				# Rayon d'explosion de la bombe
@@ -104,9 +104,8 @@ class IA(Player):
 	## Variable globale
 	GRILLE_BOMBE = None
 
-
-	def __init__(self,startX, startY, color, hauteur, zoom, direction):
-		super(IA,self).__init__(startX, startY, color, hauteur, zoom) 		# Reutilisation de l'instanciation de Player()
+	def __init__(self,startX, startY, live, color, hauteur, zoom, direction):
+		super(IA,self).__init__(startX, startY, live, color, hauteur, zoom) 		# Reutilisation de l'instanciation de Player()
 		self.dir = direction
 		self.needToGoCenter = False											# Initiation d'un direction par defaut de l'IA
 
