@@ -72,15 +72,14 @@ fond = pygame.transform.scale(fond, (scrrec.right, scrrec.bottom))
 ZOOM = int((64/1920)*SCREEN_WIDTH)   # Taille d'une case en pixels
 jeu_fini = False
 clock = pygame.time.Clock()
-GREEN = [0, 255, 0] # Definition de quelques couleurs en RGB
 WHITE = [255, 255, 255]
 BLACK = [0, 0, 0]
 GAME_OVER = pygame.image.load("sprite/gameover.png").convert()
-TIME = 0# Temps depuis le lancement du jeu
+TIME_START = time.time()# Temps depuis le lancement du jeu
 VIT =ZOOM //16 # Vitesse de deplacement des joueurs
 
 
-FONT = pygame.font.SysFont("arial", 50)     # Definition de la police d'écriture
+FONT = pygame.font.SysFont("arial", 25)     # Definition de la police d'écriture
 CLOCK = pygame.time.Clock()                 # Mise en place de l'horloge interne
 
 LIST_BOMB = []      # Liste contenant les bombes
@@ -140,8 +139,6 @@ def draw():
             if(TAB[j][i] == 2): SCREEN.blit(BLOCK_MIDDLE,(i*ZOOM,j*ZOOM))
             if(TAB[j][i] == 3): SCREEN.blit(BLOCK_BRICK,(i*ZOOM,j*ZOOM))
 
-    SCREEN.blit(FONT.render(str(TIME // 1), True, WHITE), ((1920 // 2) - 25 , 64*HAUTEUR + 32))
-
     for bomb in LIST_BOMB:
         bomb.anim(TIME)
         bomb.draw(SCREEN)
@@ -153,6 +150,8 @@ def draw():
     for joueur in LIST_JOUEUR:
 
         joueur.draw(SCREEN, ZOOM//2, int(ZOOM*(102/ZOOM)), ZOOM)
+
+    SCREEN.blit(FONT.render("Temps : " + str(int(TIME- TIME_START)), True, BLACK), (900,15))
 
     pygame.display.flip()       # Rafraichis l'affichage de Pygame
 
@@ -554,6 +553,7 @@ while not DONE:
     if (JOUEUR_ROUGE not in LIST_JOUEUR and JOUEUR_ORANGE not in LIST_JOUEUR and JOUEUR_JAUNE not in LIST_JOUEUR):
         SCREEN.fill(BLACK)
         jeu_fini = victory()
+        
 
     SCREEN.fill(BLACK)
     TIME = time.time()
