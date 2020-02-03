@@ -116,7 +116,7 @@ GRILLE_BOMBE = None     # Grille contenant les distances aux bombes sur la map
 def draw():
     for i in range(LARGEUR):
         for j in range(HAUTEUR):
-            if(TAB[j][i] == 0 or TAB[j][i] == 4 or TAB[j][i] ==  5): SCREEN.blit(GRASS,(i*ZOOM,j*ZOOM))
+            if(TAB[j][i] == 0 or TAB[j][i] == 4 or TAB[j][i] ==  5 or TAB[j][i] == 7): SCREEN.blit(GRASS,(i*ZOOM,j*ZOOM))
             if(TAB[j][i] == 1): SCREEN.blit(BLOCK,(i*ZOOM,j*ZOOM))
             if(TAB[j][i] == 2): SCREEN.blit(BLOCK_MIDDLE,(i*ZOOM,j*ZOOM))
             if(TAB[j][i] == 3): SCREEN.blit(BLOCK_BRICK,(i*ZOOM,j*ZOOM))
