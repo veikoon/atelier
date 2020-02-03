@@ -34,8 +34,8 @@ BLOCK = pygame.image.load("images/blocks/stone.png")
 BLOCK_MIDDLE = pygame.image.load("images/blocks/stone2.png")
 GRASS = pygame.image.load("images/blocks/grass.png")
 BLOCK_BRICK = pygame.image.load("images/blocks/brick.png")
-arrow_sprite = pygame.image.load("sprite/arrow.png")
-fond = pygame.image.load("sprite/menu2.png")
+arrow_sprite = pygame.image.load("images/menu/arrow.png")
+fond = pygame.image.load("images/menu/menu2.png")
 
 
 # Sprites
@@ -63,9 +63,9 @@ SCREEN_WIDTH = pygame.display.Info().current_w      # L'ecran de jeu s'ajuste à
 SCREEN_HEIGHT = pygame.display.Info().current_h - 100
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT), RESIZABLE)
 scrrec = SCREEN.get_rect()
-fond = pygame.image.load("sprite/menu2.png").convert()
-VICTOIRE = pygame.image.load("sprite/VICTOIRE.png").convert()
-arrow_sprite = pygame.image.load("sprite/arrow.png")
+fond = pygame.image.load("images/menu/menu2.png").convert()
+VICTOIRE = pygame.image.load("images/menu/VICTOIRE.png").convert()
+arrow_sprite = pygame.image.load("images/menu/arrow.png")
 VICTOIRE = pygame.transform.scale(VICTOIRE, (scrrec.right, scrrec.bottom))
 fond = pygame.transform.scale(fond, (scrrec.right, scrrec.bottom))
 #arrow_sprite = pygame.transform.scale(arrow_sprite, (scrrec.right, scrrec.bottom))
@@ -74,8 +74,9 @@ jeu_fini = False
 clock = pygame.time.Clock()
 WHITE = [255, 255, 255]
 BLACK = [0, 0, 0]
-GAME_OVER = pygame.image.load("sprite/gameover.png").convert()
+
 TIME_START = time.time()# Temps depuis le lancement du jeu
+GAME_OVER = pygame.image.load("images/menu/gameover.png").convert()
 VIT =ZOOM //16 # Vitesse de deplacement des joueurs
 
 
