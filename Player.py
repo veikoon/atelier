@@ -28,7 +28,7 @@ class Player:
 		self.lives = live					# Nombre de vie du personnage dans une partie de jeu
 		self.nbBombe = 0				# Nombre de bombes déjà posé par le personnage
 		self.nbBombeMax = 3				# Nombre de bombes maximal que peut poser le personnage en meme temps
-		self.rayonBombe = 2				# Rayon d'explosion de la bombe
+		self.rayonBombe = 10			# Rayon d'explosion de la bombe
 		self.getSprite(hauteur, zoom) 	# Avoir le spoite du personnage de la bonne taille
 
 
@@ -118,3 +118,29 @@ class IA(Player):
 		if(self.dir == (0,-1)): self.spriteDir = 3
 		if(self.dir == (1,0)): self.spriteDir = 2
 		if(self.dir == (-1,0)): self.spriteDir = 1
+
+	def move(self, posX, posY, zoom):
+		self.y += posY
+		self.x += posX
+		
+		if(self.x > zoom//2):
+			self.x = - zoom//2
+			self.caseY += 1
+
+		if(self.x < -zoom//2):
+			self.x = zoom//2
+			self.caseY -= 1
+
+		if(self.y > zoom//2):
+			self.y = - zoom//2
+			self.caseX += 1
+
+		if(self.y < -zoom//2):
+			self.y = zoom//2
+			self.caseX -= 1
+
+		if(self.spriteOffset == 2):
+			if(self.dir != (0,0)): self.spriteCount = (self.spriteCount + 1) % 4
+			self.spriteOffset = 0
+		else:
+			self.spriteOffset += 1

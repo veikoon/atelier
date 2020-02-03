@@ -50,32 +50,14 @@ FIRE =pygame.image.load("images/fire/explosion2.png")
 pygame.mixer.init()
 SON_FOND = pygame.mixer.Sound("son/bomberman.wav")
 SON_BOMBE = pygame.mixer.Sound("son/bombe.wav")
-
-SON_FOND.play(loops=-1, maxtime = 0, fade_ms=0)
+SON_MORT = pygame.mixer.Sound("son/mort.wav")
+SON_VICTOIRE = pygame.mixer.Sound("son/victory.wav")
+SON_DEFEAT = pygame.mixer.Sound("son/defeat.wav")
 
 
 #################################################################################
 ##
 ##  Variables globales
-
-TAB = [ [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],      ## TAB est la matrice permettant de former la carte
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],      #   0 vide
-        [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],      #   1 mur exterieur
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],      #   2 mur interieur
-        [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],      #   3 briques destructibles
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],      #   4 Bombes
-        [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],      #   5 Explosion
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
-
-HAUTEUR = len(TAB)     # Nombre de cases en hauteur
-LARGEUR = len(TAB[0])  # Nombre de cases en largeur
 
 SCREEN_WIDTH = pygame.display.Info().current_w      # L'ecran de jeu s'ajuste à la taille de l'ecran de l'ordinateur
 SCREEN_HEIGHT = pygame.display.Info().current_h - 100
@@ -100,19 +82,45 @@ VIT =ZOOM //16 # Vitesse de deplacement des joueurs
 
 FONT = pygame.font.SysFont("arial", 50)     # Definition de la police d'écriture
 CLOCK = pygame.time.Clock()                 # Mise en place de l'horloge interne
-TIME = time.time()
-
-DONE = False                                # Variable qui indique si le jeu est terminé
 
 LIST_BOMB = []      # Liste contenant les bombes
 LIST_IA = []        # Liste contenant les IA en vie
 LIST_JOUEUR = []    # Liste contennat les joueurs en vie
 
-POS_IA = [(HAUTEUR-2, LARGEUR-2), (HAUTEUR-2, 1), (1, LARGEUR-2)]       # Positionnenement des IA à l'initialisation du jeu
-JOUEUR_BLEU = Player(1, 1, 1, BLEU, int(ZOOM*(102/64)), ZOOM)     # Definition du joueur
-JOUEUR_JAUNE = IA(POS_IA[0][0], POS_IA[0][1], 1, JAUNE,int(ZOOM*(102/64)), ZOOM, (0,-1))     # Definition de l'IA
-JOUEUR_ORANGE = IA(POS_IA[1][0], POS_IA[1][1], 1, ORANGE,int(ZOOM*(102/64)), ZOOM,(1,0))     # Definition de l'IA
-JOUEUR_ROUGE = IA(POS_IA[2][0], POS_IA[2][1], 1, ROUGE,int(ZOOM*(102/64)), ZOOM,(-1,0))      # Definition de l'IA
+def init_jeu():
+    global TAB, LIST_BOMB, LIST_IA,LIST_JOUEUR, JOUEUR_BLEU,JOUEUR_JAUNE,JOUEUR_ORANGE,JOUEUR_ROUGE,HAUTEUR,LARGEUR
+    SON_FOND.play(loops=-1, maxtime = 0, fade_ms=0)
+    TAB = [ [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
+
+    HAUTEUR = len(TAB)     # Nombre de cases en hauteur
+    LARGEUR = len(TAB[0])  # Nombre de cases en largeur
+    LIST_JOUEUR.clear()
+    LIST_IA.clear()
+    LIST_BOMB.clear()
+    POS_IA = [(HAUTEUR-2, LARGEUR-2), (HAUTEUR-2, 1), (1, LARGEUR-2)]
+    JOUEUR_BLEU = Player(1, 1,1, BLEU,int(ZOOM*(102/64)), ZOOM)
+    JOUEUR_JAUNE = IA(POS_IA[0][0], POS_IA[0][1],1, JAUNE,int(ZOOM*(102/64)), ZOOM, (0,-1))
+    JOUEUR_ORANGE = IA(POS_IA[1][0], POS_IA[1][1],1, ORANGE,int(ZOOM*(102/64)), ZOOM,(1,0))
+    JOUEUR_ROUGE = IA(POS_IA[2][0], POS_IA[2][1],1, ROUGE,int(ZOOM*(102/64)), ZOOM,(-1,0))
+
+init_jeu()
+TIME = time.time()
+
+DONE = False                                # Variable qui indique si le jeu est terminé
 
 GRILLE_BOMBE = None     # Grille contenant les distances aux bombes sur la map
 
@@ -179,32 +187,6 @@ def removeBomb():
         if(Bomb.exploFin):
             TAB[Bomb.caseY][Bomb.caseX] = 0
             LIST_BOMB.remove(Bomb)
-def clear_jeu():
-    global TAB, LIST_BOMB, LIST_IA,LIST_JOUEUR, JOUEUR_BLEU,JOUEUR_JAUNE,JOUEUR_ORANGE,JOUEUR_ROUGE
-    TAB.clear()
-    TAB = [ [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
-    LIST_JOUEUR.clear()
-    LIST_IA.clear()
-    LIST_BOMB.clear()
-    POS_IA = [(HAUTEUR-2, LARGEUR-2), (HAUTEUR-2, 1), (1, LARGEUR-2)]
-    JOUEUR_BLEU = Player(1, 1,1, BLEU,int(ZOOM*(102/64)), ZOOM)
-    JOUEUR_JAUNE = IA(POS_IA[0][0], POS_IA[0][1],1, JAUNE,int(ZOOM*(102/64)), ZOOM, (0,-1))
-    JOUEUR_ORANGE = IA(POS_IA[1][0], POS_IA[1][1],1, ORANGE,int(ZOOM*(102/64)), ZOOM,(1,0))
-    JOUEUR_ROUGE = IA(POS_IA[2][0], POS_IA[2][1],1, ROUGE,int(ZOOM*(102/64)), ZOOM,(-1,0))
 
 
 ## poseBombe(player):
@@ -235,6 +217,8 @@ def Meurt(player):
             if(player in LIST_IA):
                 LIST_IA.remove(player)
                 player.nbBombeMax = 0
+                #SON_MORT.play()
+
 ## iaDanger(ia):
 #   Regarde la position de l'IA
 #   Retourne si elle se trouve dans une zone de danger = le rayon de l'explosion de la bombe
@@ -300,12 +284,15 @@ def MenuScreen():
 
         pygame.display.flip()
         clock.tick(30)
+
 def GameOver():
     done2 = False
     pressed = False
     press_time = 0
     press_speed = 5
     jeu_fini = False
+    SON_FOND.stop()
+    #SON_DEFEAT.play()
     while not done2:
 
         event = pygame.event.Event(pygame.USEREVENT)
@@ -326,9 +313,7 @@ def GameOver():
             return jeu_fini
 
         SCREEN.blit(GAME_OVER,(0,0))
-
         pygame.display.flip()
-        clock.tick(30)
 
 def victory():
     done2 = False
@@ -336,6 +321,9 @@ def victory():
     press_time = 0
     press_speed = 5
     jeu_fini = False
+    SON_FOND.stop()
+    #SON_VICTOIRE.play()
+
     while not done2:
         event = pygame.event.Event(pygame.USEREVENT)
         for event in pygame.event.get():  # User did something
@@ -356,7 +344,6 @@ def victory():
 
         SCREEN.blit(VICTOIRE,(0,0))
         pygame.display.flip()
-        clock.tick(30)
 
 ## iaFuite(ia):
 #   Regarde les deplacement possible de l'IA
@@ -474,7 +461,7 @@ def Init():
     SCREEN.fill(BLACK)
     MenuScreen()
     pygame.mouse.set_visible(True)
-    pygame.display.set_caption("ESIEE - BOMB HERMAN")
+    pygame.display.set_caption("ESIEE - BOMB HERMANN")
     #pygame.mixer.music.play()   # Activation de la musique
 
     LIST_IA.append(JOUEUR_JAUNE)        # Ajout du joueur JAUNE dans la liste IA
@@ -574,7 +561,7 @@ while not DONE:
     CLOCK.tick(30) # Limite d'image par seconde
     if jeu_fini == True:
         jeu_fini = False
-        clear_jeu()
+        init_jeu()
         Init()
         draw()
         continue
