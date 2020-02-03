@@ -104,10 +104,10 @@ LIST_IA = []        # Liste contenant les IA en vie
 LIST_JOUEUR = []    # Liste contennat les joueurs en vie
 
 POS_IA = [(HAUTEUR-2, LARGEUR-2), (HAUTEUR-2, 1), (1, LARGEUR-2)]       # Positionnenement des IA à l'initialisation du jeu
-JOUEUR_BLEU = Player(ZOOM + ZOOM//2, ZOOM + ZOOM//2, BLEU,int(ZOOM*(102/64)), ZOOM)     # Definition du joueur
-JOUEUR_JAUNE = IA(POS_IA[0][1] * ZOOM + ZOOM//2, POS_IA[0][0] * ZOOM + ZOOM//2, JAUNE,int(ZOOM*(102/64)), ZOOM, (0,-1))     # Definition de l'IA
-JOUEUR_ORANGE = IA(POS_IA[1][1] * ZOOM + ZOOM//2, POS_IA[1][0] * ZOOM + ZOOM//2, ORANGE,int(ZOOM*(102/64)), ZOOM,(1,0))     # Definition de l'IA
-JOUEUR_ROUGE = IA(POS_IA[2][1] * ZOOM + ZOOM//2, POS_IA[2][0] * ZOOM + ZOOM//2, ROUGE,int(ZOOM*(102/64)), ZOOM,(-1,0))      # Definition de l'IA
+JOUEUR_BLEU = Player(ZOOM + ZOOM//2, ZOOM + ZOOM//2,1, BLEU,int(ZOOM*(102/64)), ZOOM)     # Definition du joueur
+JOUEUR_JAUNE = IA(POS_IA[0][1] * ZOOM + ZOOM//2, POS_IA[0][0] * ZOOM + ZOOM//2,1, JAUNE,int(ZOOM*(102/64)), ZOOM, (0,-1))     # Definition de l'IA
+JOUEUR_ORANGE = IA(POS_IA[1][1] * ZOOM + ZOOM//2, POS_IA[1][0] * ZOOM + ZOOM//2,1, ORANGE,int(ZOOM*(102/64)), ZOOM,(1,0))     # Definition de l'IA
+JOUEUR_ROUGE = IA(POS_IA[2][1] * ZOOM + ZOOM//2, POS_IA[2][0] * ZOOM + ZOOM//2,1, ROUGE,int(ZOOM*(102/64)), ZOOM,(-1,0))      # Definition de l'IA
 
 GRILLE_BOMBE = None     # Grille contenant les distances aux bombes sur la map
 
@@ -176,7 +176,7 @@ def removeBomb():
             TAB[Bomb.caseY][Bomb.caseX] = 0
             LIST_BOMB.remove(Bomb)
 def clear_jeu():
-    global TAB, LIST_BOMB, LIST_IA,LIST_JOUEUR
+    global TAB, LIST_BOMB, LIST_IA,LIST_JOUEUR, JOUEUR_BLEU,JOUEUR_JAUNE,JOUEUR_ORANGE,JOUEUR_ROUGE
     TAB.clear()
     TAB = [ [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
@@ -197,10 +197,10 @@ def clear_jeu():
     LIST_IA.clear()
     LIST_BOMB.clear()
     POS_IA = [(HAUTEUR-2, LARGEUR-2), (HAUTEUR-2, 1), (1, LARGEUR-2)]
-    JOUEUR_BLEU = Player(ZOOM + ZOOM//2, ZOOM + ZOOM//2, BLEU,int(ZOOM*(102/64)), ZOOM)
-    JOUEUR_JAUNE = IA(POS_IA[0][1] * ZOOM + ZOOM//2, POS_IA[0][0] * ZOOM + ZOOM//2, JAUNE,int(ZOOM*(102/64)), ZOOM, (0,-1))
-    JOUEUR_ORANGE = IA(POS_IA[1][1] * ZOOM + ZOOM//2, POS_IA[1][0] * ZOOM + ZOOM//2, ORANGE,int(ZOOM*(102/64)), ZOOM,(1,0))
-    JOUEUR_ROUGE = IA(POS_IA[2][1] * ZOOM + ZOOM//2, POS_IA[2][0] * ZOOM + ZOOM//2, ROUGE,int(ZOOM*(102/64)), ZOOM,(-1,0))
+    JOUEUR_BLEU = Player(ZOOM + ZOOM//2, ZOOM + ZOOM//2,1, BLEU,int(ZOOM*(102/64)), ZOOM)
+    JOUEUR_JAUNE = IA(POS_IA[0][1] * ZOOM + ZOOM//2, POS_IA[0][0] * ZOOM + ZOOM//2,1, JAUNE,int(ZOOM*(102/64)), ZOOM, (0,-1))
+    JOUEUR_ORANGE = IA(POS_IA[1][1] * ZOOM + ZOOM//2, POS_IA[1][0] * ZOOM + ZOOM//2,1, ORANGE,int(ZOOM*(102/64)), ZOOM,(1,0))
+    JOUEUR_ROUGE = IA(POS_IA[2][1] * ZOOM + ZOOM//2, POS_IA[2][0] * ZOOM + ZOOM//2,1, ROUGE,int(ZOOM*(102/64)), ZOOM,(-1,0))
 
 
 ## poseBombe(player):
@@ -224,7 +224,7 @@ def Meurt(player):
     x =getTabPos(player.x,player.y)[0]
     y=getTabPos(player.x,player.y)[1]
     if(TAB[y][x]==5):
-        player.lives -= 1
+        player.lives = 0
         if player.lives == 0:
             if(player in LIST_JOUEUR):
                 LIST_JOUEUR.remove(player)
@@ -498,15 +498,8 @@ def Init():
 #################################################################################
 ##
 ##   Boucle principale
-Init()
-
-
-
-#################################################################################
-##
-##   Boucle principale
 # --------  Main -----------
-
+Init()
 while not DONE:
 
     event = pygame.event.Event(pygame.USEREVENT)
@@ -571,18 +564,16 @@ while not DONE:
 
     Meurt(JOUEUR_BLEU)
     if (JOUEUR_BLEU not in LIST_JOUEUR):
-        print("hey")
         SCREEN.fill(BLACK)
         jeu_fini = GameOver()
     SCREEN.fill(BLACK)
     TIME = time.time()
-
+    print(JOUEUR_BLEU.lives)
     draw()   # On redessine l'affichage et on actualise
     CLOCK.tick(30) # Limite d'image par seconde
     if jeu_fini == True:
         jeu_fini = False
         clear_jeu()
-
         Init()
         draw()
         continue
