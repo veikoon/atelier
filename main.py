@@ -24,11 +24,12 @@ from Bombe import Bombe
 from Player import IA
 pygame.init()
 
+
 #################################################################################
 ##
 ##  Importation des images et musiques:
 
-# Decort
+# Decor
 BLOCK = pygame.image.load("images/blocks/stone.png")
 BLOCK_MIDDLE = pygame.image.load("images/blocks/stone2.png")
 GRASS = pygame.image.load("images/blocks/grass.png")
@@ -41,31 +42,26 @@ JAUNE = pygame.image.load("images/ia/Jaune/sprite.png")
 ORANGE = pygame.image.load("images/ia/Orange/sprite.png")
 BOMBES = pygame.image.load("images/bombe/bomb.png")
 FIRE =pygame.image.load("images/fire/explosion2.png")
+
 # Musique
 pygame.mixer.init()
 SON_FOND = pygame.mixer.Sound("son/bomberman.wav")
 SON_BOMBE = pygame.mixer.Sound("son/bombe.wav")
 
 SON_FOND.play(loops=-1, maxtime = 0, fade_ms=0)
+
+
 #################################################################################
 ##
 ##  Variables globales
 
-# TAB est la matrice permettant de former la carte
-# 0 vide
-# 1 mur exterieur
-# 2 mur interieur
-# 3 briques destructibles
-# 4 Bombes
-# 5 Explosion
-
-TAB = [ [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
+TAB = [ [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],      ## TAB est la matrice permettant de former la carte
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],      #   0 vide
+        [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],      #   1 mur exterieur
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],      #   2 mur interieur
+        [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],      #   3 briques destructibles
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],      #   4 Bombes
+        [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],      #   5 Explosion
         [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
         [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
         [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
@@ -75,52 +71,51 @@ TAB = [ [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
         [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
         [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
 
-
 HAUTEUR = len(TAB)     # Nombre de cases en hauteur
 LARGEUR = len(TAB[0])  # Nombre de cases en largeur
 
-SCREEN_WIDTH = pygame.display.Info().current_w
+SCREEN_WIDTH = pygame.display.Info().current_w      # L'ecran de jeu s'ajuste à la taille de l'ecran de l'ordinateur
 SCREEN_HEIGHT = pygame.display.Info().current_h - 100
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT), RESIZABLE)
 
 ZOOM = int((64/1920)*SCREEN_WIDTH)   # Taille d'une case en pixels
 
-GREEN = [0, 255, 0]
+GREEN = [0, 255, 0]         # Definition de quelques couleurs en RGB
 WHITE = [255, 255, 255]
 BLACK = [0, 0, 0]
 
-TIME = 0
-VIT = 4
+TIME = 0        # Temps depuis le lancement du jeu
+VIT = 4         # Vitesse de deplacement des joueurs
 
-FONT = pygame.font.SysFont("arial", 50)
-CLOCK = pygame.time.Clock()
+FONT = pygame.font.SysFont("arial", 50)     # Definition de la police d'écriture
+CLOCK = pygame.time.Clock()                 # Mise en place de l'horloge interne
 TIME = time.time()
-DONE = False
+DONE = False                                # Variable qui indique si le jeu est terminé
 
-#info_ia = [(720,350,JAUNE),(1450,102,ROUGE),(1450,700,VERT),(96,700,ORANGE)]
-LIST_BOMB = []
-LIST_IA = []
-LIST_JOUEUR = []
+LIST_BOMB = []      # Liste contenant les bombes
+LIST_IA = []        # Liste contenant les IA en vie
+LIST_JOUEUR = []    # Liste contennat les joueurs en vie
 
-JOUEUR_BLEU = Player(1, 1, BLEU,int(ZOOM*(102/64)), ZOOM)
-JOUEUR_JAUNE = IA(1, 1, JAUNE,int(ZOOM*(102/64)), ZOOM, (0,1))
-JOUEUR_ORANGE = IA(1, 1, ORANGE,int(ZOOM*(102/64)), ZOOM,(1,0))
-JOUEUR_ROUGE = IA(1, 1, ROUGE,int(ZOOM*(102/64)), ZOOM,(-1,0))
+POS_IA = [(HAUTEUR-2, LARGEUR-2), (HAUTEUR-2, 1), (1, LARGEUR-2)]       # Positionnenement des IA à l'initialisation du jeu
+JOUEUR_BLEU = Player(1,1, BLEU,int(ZOOM*(102/64)), ZOOM)     # Definition du joueur
+JOUEUR_JAUNE = IA(POS_IA[0][0], POS_IA[0][1], JAUNE,int(ZOOM*(102/64)), ZOOM, (0,-1))     # Definition de l'IA
+JOUEUR_ORANGE = IA(POS_IA[1][0], POS_IA[1][1], ORANGE,int(ZOOM*(102/64)), ZOOM,(1,0))     # Definition de l'IA
+JOUEUR_ROUGE = IA(POS_IA[2][0], POS_IA[2][1], ROUGE,int(ZOOM*(102/64)), ZOOM,(-1,0))      # Definition de l'IA
 
-# grille contenant les distances aux bombes sur la map
-GRILLE_BOMBE = None
+GRILLE_BOMBE = None     # Grille contenant les distances aux bombes sur la map
+
 #################################################################################
 ##
 ##  Fonctions principales
 
-# dessine():
-#   Parcourt TAB et place les images aux coordonnees idoines
+## draw():
+#   Parcourt TAB et place les images aux coordonnees donnees
 #   en fonction de la valeur des cases du tableau
-#   Puis place les JOUEUR_s
+#   Puis place les joueurs
 def draw():
     for i in range(LARGEUR):
         for j in range(HAUTEUR):
-            if(TAB[j][i] == 0 or TAB[j][i] == 4 or TAB[j][i] ==  5): SCREEN.blit(GRASS,(i*ZOOM,j*ZOOM))
+            if(TAB[j][i] == 0 or TAB[j][i] == 4 or TAB[j][i] ==  5 or TAB[j][i] == 7): SCREEN.blit(GRASS,(i*ZOOM,j*ZOOM))
             if(TAB[j][i] == 1): SCREEN.blit(BLOCK,(i*ZOOM,j*ZOOM))
             if(TAB[j][i] == 2): SCREEN.blit(BLOCK_MIDDLE,(i*ZOOM,j*ZOOM))
             if(TAB[j][i] == 3): SCREEN.blit(BLOCK_BRICK,(i*ZOOM,j*ZOOM))
@@ -132,18 +127,19 @@ def draw():
         bomb.draw(SCREEN)
         removeBomb()
         for i in range(bomb.rayon):
-
             bomb.drawExplo(SCREEN,TAB,LIST_BOMB, i,(1+i),ZOOM)
             bomb.drawExplo(SCREEN,TAB, LIST_BOMB, i,-(1+i),ZOOM)
-
-
 
     for joueur in LIST_JOUEUR:
 
         joueur.draw(SCREEN, ZOOM//2, int(ZOOM*(102/ZOOM)), ZOOM)
 
-    pygame.display.flip() # Rafraichis l'affichage de Pygame
+    pygame.display.flip()       # Rafraichis l'affichage de Pygame
 
+
+## generate():
+#   Genere les cases destructibles aleatoirement
+#   Les maps changent donc à chaque jeux
 def generate():
     for i in range(LARGEUR):
         for j in range(HAUTEUR):
@@ -153,24 +149,30 @@ def generate():
     TAB[1][LARGEUR-2] = 0; TAB[1][LARGEUR-3] = 0; TAB[2][LARGEUR-2] = 0
     TAB[HAUTEUR-2][LARGEUR-2] = 0; TAB[HAUTEUR-3][LARGEUR-2] = 0; TAB[HAUTEUR-2][LARGEUR-3] = 0
 
-# regarde chaque bombe de la liste et si la bombe explose, l'enleve de la liste des BOMBES
+
+## removeBomb():
+#   Regarde chaque bombe de la liste
+#   On l'enleve de la liste des bombes si elle explose
 def removeBomb():
     for Bomb in LIST_BOMB:
         if (Bomb.Explode() == True):
-
             Bomb.spriteCount = 0
             Bomb.spriteDir=0
             Bomb.sprite= Bomb.getSpriteExplo(FIRE, ZOOM)
-            #SON_BOMBE.play()
+            #SON_BOMBE.play()       # Mise en commentaire car ca fais beuguer l'ordi de Quentin
             TAB[Bomb.caseY][Bomb.caseX] = 5
             Bomb.explode = False
             Bomb.player.nbBombe -= 1
-
 
         if(Bomb.exploFin):
             TAB[Bomb.caseY][Bomb.caseX] = 0
             LIST_BOMB.remove(Bomb)
 
+
+## poseBombe(player):
+#   Verifie si le joueur peut poser une bombe
+#   Pose une bombe sur une case
+#   Mise à jour du tableau
 def poseBombe(player):
     caseX = player.caseY
     caseY = player.caseX
@@ -179,6 +181,11 @@ def poseBombe(player):
         TAB[caseY][caseX] = 4
         player.nbBombe += 1
 
+
+## Meurt(player):
+#   Regarde si la position du joueur correspond à une cases en explosion
+#   Enleve une vie au joueur
+#   Si le joueur n'a plus de vie, on enleve le joueur de la liste des joueurs/IA
 def Meurt(player):
     x = player.caseY
     y = player.caseX
@@ -189,9 +196,15 @@ def Meurt(player):
                 LIST_JOUEUR.remove(player)
             if(player in LIST_IA):
                 LIST_IA.remove(player)
-
+                player.nbBombeMax = 0
+## iaDanger(ia):
+#   Regarde la position de l'IA
+#   Retourne si elle se trouve dans une zone de danger = le rayon de l'explosion de la bombe
 def iaDanger(ia): return GRILLE_BOMBE[ia.caseX][ia.caseY] <= 4
 
+## iaFuite(ia):
+#   Regarde les deplacement possible de l'IA
+#   Se deplace sur la case la plus grande = le plus loin de la bombe
 def iaFuite(ia) :
     if(ia.x != 0 or ia.y !=0): ia.needToGoCenter = True
     else:ia.needToGoCenter = False
@@ -206,17 +219,25 @@ def iaFuite(ia) :
             caseMax = case
     if(caseMax != None and not ia.needToGoCenter):
         ia.dir = caseMax
-        ia.move(caseMax[0]*VIT, caseMax[1]*VIT,ZOOM)
+        print("move")
+        ia.move(ia.dir[0]*VIT, ia.dir[1]*VIT,ZOOM)
         ia.setRightDir()
     else:
+        print("move")
         ia.move(ia.dir[0]*VIT, ia.dir[1]*VIT,ZOOM)
 
 
+
+## moveIA(ia):
+#   S'occupe du deplacement principal des IA
+#   Regarde en premiere si l'IA est en danger = dans le rayon d'explosion de la bombe
+#   Si non, elle se dirige dans une direction jusqu'à rencontrer un mur
 def moveIA(ia):
     if iaDanger(ia) :  iaFuite(ia)
     else :
         possibleMove = getPossibleMove(ia)
         if (ia.dir in possibleMove):
+            print("move")
             ia.move(ia.dir[0]*VIT, ia.dir[1]*VIT,ZOOM)
         else:
             poseBombe(ia)
@@ -228,7 +249,20 @@ def moveIA(ia):
                 ia.dir = (0,0)
 
 
+## getTabPos(x,y):
+#   Prendre la position en pixels du joueur
+#   Regarde en fonction du zoom (taille de la fenetre) sur quelle case le joueur se trouve
+#   Retourne la case du joueur
+def getTabPos(x,y):
+    posX = x // ZOOM
+    posY = y // ZOOM
+    return (posX,posY)
 
+
+## getPossibleMovePlayer(player):
+#   En focntion de la position du joueur
+#   On regarde les cases tout autour pour connaitre leurs valeurs
+#   Retourne les deplacements possibles du joueur
 def getPossibleMove(player):
     possibleMove = []
     tab = []
@@ -245,6 +279,9 @@ def getPossibleMove(player):
 
     return possibleMove
 
+## grilleBombe():
+#   Grille contenantles murs et les bombes
+#   Elle permet ensuite de savoir si les ia sont en danger ou non
 def grilleBombe():
     global GRILLE_BOMBE
     GRILLE_BOMBE = copy.deepcopy(TAB)
@@ -254,6 +291,10 @@ def grilleBombe():
             if (TAB[y][x] == 1 or TAB[y][x] == 2 or TAB[y][x] == 3): GRILLE_BOMBE[y][x] = 1000
             if (TAB[y][x] == 0): GRILLE_BOMBE[y][x] = 100
 
+
+## miseDistance():
+#   Fonction qui permet de mettre à distance les cases de la grille bombe
+#   Si la case se trouve à cote de la bombe elle sera mise à 1 (etc)
 def miseDistance():
     global GRILLE_BOMBE
     done = True
@@ -268,30 +309,32 @@ def miseDistance():
                         GRILLE_BOMBE[y][x] = mini +1
                         done = True
 
+
 #################################################################################
 ##
 ##  Initialisation
 
-pygame.mouse.set_visible(True)
-pygame.display.set_caption("ESIEE - BOMB HERMAN")
-#pygame.mixer.music.play()   # Activation de la musique
+pygame.mouse.set_visible(True)      # Souris du clavier visible
+pygame.display.set_caption("ESIEE - BOMB HERMAN")       # Titre de la page de jeu
+#pygame.mixer.music.play()      # Activation de la musique
 
 
-LIST_IA.append(JOUEUR_JAUNE)#JAUNE
-#LIST_IA.append(JOUEUR_ORANGE)#ORANGE
-#LIST_IA.append(JOUEUR_ROUGE)#ROUGE
+LIST_IA.append(JOUEUR_JAUNE)        # Ajout du joueur JAUNE dans la liste IA
+LIST_IA.append(JOUEUR_ORANGE)       # Ajout du joueur ORANGE dans la liste IA
+LIST_IA.append(JOUEUR_ROUGE)        # Ajout du joueur ROUGE dans la liste IA
 
-for ia in LIST_IA:
-    LIST_JOUEUR.append(ia)
-    ia.setRightDir()    # Defini la direction des sprites des ia a l'init
+for ia in LIST_IA:          # Defini la direction des sprites des ia a l'init
+    LIST_JOUEUR.append(ia)  # Ajout des ia dans la liste des joueurs
+    ia.setRightDir()
 
-LIST_JOUEUR.append(JOUEUR_BLEU)
+LIST_JOUEUR.append(JOUEUR_BLEU)     # Ajout du joueur BLEU dans la liste des joueurs
 
-generate()
+generate()      # Genere la map de jeu
+
+
 #################################################################################
 ##
 ##   Boucle principale
-
 
 # --------  Main -----------
 while not DONE:
@@ -300,7 +343,7 @@ while not DONE:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             DONE = True
-            
+
         if event.type == pygame.VIDEORESIZE:
             SCREEN_HEIGHT = event.h
             SCREEN_WIDTH = event.w
@@ -320,16 +363,14 @@ while not DONE:
             pygame.display.flip()
             draw()
 
-
     grilleBombe()
     miseDistance()
-
     for ia in LIST_IA:
         moveIA(ia)
 
     keysPressed = pygame.key.get_pressed()  # On retient les touches pressees
 
-    ## Mouvements du JOUEUR_
+    ## Mouvements du joueur:
     #   On choisit la direction du sprite en fonction de sa position dans le tableau des sprites
     #   On fait appelle a la fonction move pour changer les coordonnees et les sprites
 
@@ -363,13 +404,15 @@ while not DONE:
     #    print(TAB[i])
 
     Meurt(JOUEUR_BLEU)
-
+    print()
+    print("## TOUR ##")
+    print()
     SCREEN.fill(BLACK)
     TIME = time.time()
-    draw()   # On redessine l'affichage et on actualise
-    CLOCK.tick(30) # Limite d'image par seconde
+    draw()      # On redessine l'affichage et on actualise
+    CLOCK.tick(30)   # Limite d'image par seconde
 
-    #a mettre quand le personnage est mort : pygame.mixer.music.stop()
+    # A mettre quand le personnage est mort : pygame.mixer.music.stop()
 
 
-pygame.quit() # Ferme la fenetre et quitte.
+pygame.quit() # Ferme la fenetre et quitte le jeu
