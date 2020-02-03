@@ -95,7 +95,7 @@ WHITE = [255, 255, 255]
 BLACK = [0, 0, 0]
 GAME_OVER = pygame.image.load("sprite/gameover.png").convert()
 TIME = 0# Temps depuis le lancement du jeu
-VIT = 4 # Vitesse de deplacement des joueurs
+VIT =ZOOM //16 # Vitesse de deplacement des joueurs
 
 
 FONT = pygame.font.SysFont("arial", 50)     # Definition de la police d'écriture
@@ -390,6 +390,7 @@ def moveIA(ia):
     if iaDanger(ia) :  iaFuite(ia)
     else :
         possibleMove = getPossibleMove(ia)
+        if((0,0) in possibleMove): possibleMove.remove((0,0))
         if (ia.dir in possibleMove):
             ia.move(ia.dir[0]*VIT, ia.dir[1]*VIT,ZOOM)
         else:
@@ -423,11 +424,14 @@ def getPossibleMove(player):
     tab.append(TAB[player.caseX-1][player.caseY])
     tab.append(TAB[player.caseX][player.caseY+1])
     tab.append(TAB[player.caseX][player.caseY-1])
+    tab.append(TAB[player.caseX][player.caseY])
 
     if((tab[0]  == 0 or tab[0]  == 5 or player.y != 0) and player.x == 0): possibleMove.append((0,1))
     if((tab[1]  == 0 or tab[1]  == 5 or player.y != 0) and player.x == 0): possibleMove.append((0,-1))
     if((tab[2]  == 0 or tab[2]  == 5 or player.x != 0) and player.y == 0): possibleMove.append((1,0))
     if((tab[3]  == 0 or tab[3]  == 5 or player.x != 0) and player.y == 0): possibleMove.append((-1,0))
+    if((tab[4]  == 0 or tab[4]  == 5 or player.x != 0) and player.y == 0): possibleMove.append((0,0))
+
 
     return possibleMove
 
@@ -472,12 +476,6 @@ def Init():
     pygame.mouse.set_visible(True)
     pygame.display.set_caption("ESIEE - BOMB HERMAN")
     #pygame.mixer.music.play()   # Activation de la musique
-
-
-    pygame.mouse.set_visible(True)      # Souris du clavier visible
-    pygame.display.set_caption("ESIEE - BOMB HERMAN")       # Titre de la page de jeu
-    #pygame.mixer.music.play()      # Activation de la musique
-
 
     LIST_IA.append(JOUEUR_JAUNE)        # Ajout du joueur JAUNE dans la liste IA
     LIST_IA.append(JOUEUR_ORANGE)       # Ajout du joueur ORANGE dans la liste IA
