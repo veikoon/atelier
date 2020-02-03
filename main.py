@@ -368,6 +368,11 @@ def moveIA(ia):
             else:
                 ia.dir = (0,0)
 
+def tryBombe(){
+    
+}
+
+
 
 ## getTabPos(x,y):
 #   Prendre la position en pixels du joueur
