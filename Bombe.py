@@ -124,8 +124,7 @@ class Bombe:
             rotatey=270     # Rotation de la sprite en y
             place = zoom*i+zoom     # Place correctement la sprite de l'explosion
 
-            if(self.rayon-1 == i):
-                spriteDir = 2   # Bout de l'explosion
+            if(self.rayon-1 == i): spriteDir = 2   # Bout de l'explosion
 
             if(direction < 0):
                 rotatex=180
@@ -135,14 +134,14 @@ class Bombe:
                 explX = self.explmX
                 explY = self.explmY
 
-            if(self.exploFin):     # Reinitialise la case de la bombe
-                TAB[caseY][caseX] = 0            
+            if(self.exploFin):  TAB[caseY][caseX] = 0   # Reinitialise la case de la bombe
+
+            ####################################################################################################
            
-            if( i > LARGEUR-self.caseX-2 and direction >0):
-                b= 2
-            else:
+            if(i <= LARGEUR-self.caseX-2 or direction <= 0):
                 
                 caseTesteX = TAB[caseY][caseX+direction]
+
                 if(self.animStop(TAB,direction,testcase,'x',caseX,caseY) and (caseTesteX == 3 and not explX)):
                         TAB[caseY][caseX+direction]=5
                         if(direction>0):
@@ -151,12 +150,10 @@ class Bombe:
                             self.explmX= True
 
                 
-                if(caseTesteX == 0 and  explX):
-                    TAB[caseY][caseX+direction]=7
+                if(caseTesteX == 0 and  explX): TAB[caseY][caseX+direction] = 7
 
                 if(self.animGo(TAB,direction,testcase,'x',caseX,caseY)): # verifie si c'est une case bombable                    
                    
-
                     if(TAB[caseY][caseX+direction]==4):
                         self.explMulti(listeBombe,direction,'x')
 
@@ -166,36 +163,34 @@ class Bombe:
 
                     rotateXimg =pygame.transform.rotate(self.sprite[spriteDir][self.spriteCount],rotatex)    
                     surface.blit(rotateXimg, (self.x + place- 100 , self.y - 96))
-                self.throughWall(TAB,caseX,caseY,'x',direction)
-                    
-            if(i > HAUTEUR-self.caseY-2 and direction >0):
-                a = 3
 
-            else:
+                self.throughWall(TAB,caseX,caseY,'x',direction)
+
+            ####################################################################################################
+                    
+            if(i <= HAUTEUR-self.caseY-2 or direction <= 0): 
+
                 caseTesteY = TAB[caseY+direction][caseX]
 
                 if(self.animStop(TAB,direction,testcase,'y',caseX,caseY) and (caseTesteY == 3 and not explY)):
                     TAB[caseY+direction][caseX]=5
-                    if(direction>0):
-                        self.explY= True
-                    else:
-                        self.explmY= True
+
+                    if(direction>0): self.explY= True
+                    else: self.explmY= True
                 
 
-                if(caseTesteY == 0 and  explY):
-                    TAB[caseY+direction][caseX]=7
+                if(caseTesteY == 0 and  explY): TAB[caseY+direction][caseX]=7
 
                 if(self.animGo(TAB,direction,testcase,'y',caseX,caseY)):
                     
-                    if(TAB[caseY+direction][caseX]==4):
-                        self.explMulti(listeBombe,direction,'y')
+                    if(TAB[caseY+direction][caseX]==4): self.explMulti(listeBombe,direction,'y')
                     TAB[caseY+direction][caseX] = 5
 
-                    if(self.exploFin):
-                        TAB[caseY+direction][caseX] = 0
+                    if(self.exploFin): TAB[caseY+direction][caseX] = 0
 
                     rotateY =pygame.transform.rotate(self.sprite[spriteDir][self.spriteCount],rotatey)    
                     surface.blit(rotateY, (self.x - 100 , self.y + place - 96))   
+
                 self.throughWall(TAB,caseX,caseY,'y',direction)
 
 
@@ -240,4 +235,3 @@ class Bombe:
             if(TAB[caseY+direction][caseX]==7 and self.exploFin): TAB[caseY+direction][caseX]=0
         if(sens =='x'):
             if(TAB[caseY][caseX+direction]==7 and self.exploFin): TAB[caseY][caseX+direction]=0
-

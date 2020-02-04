@@ -22,6 +22,7 @@ import time
 from Player import Player
 from Bombe import Bombe
 from Player import IA
+from Bonus import Bonus
 pygame.init()
 
 
@@ -45,6 +46,7 @@ JAUNE = pygame.image.load("images/ia/Jaune/sprite.png")
 ORANGE = pygame.image.load("images/ia/Orange/sprite.png")
 BOMBES = pygame.image.load("images/bombe/bomb.png")
 FIRE =pygame.image.load("images/fire/explosion2.png")
+BONUS = pygame.image.load("images/bonus/bonus.png")
 
 # Musique
 pygame.mixer.init()
@@ -86,6 +88,7 @@ CLOCK = pygame.time.Clock()                 # Mise en place de l'horloge interne
 LIST_BOMB = []      # Liste contenant les bombes
 LIST_IA = []        # Liste contenant les IA en vie
 LIST_JOUEUR = []    # Liste contennat les joueurs en vie
+LIST_BONUS = []
 
 def init_jeu():
     global TAB, LIST_BOMB, LIST_IA,LIST_JOUEUR, JOUEUR_BLEU,JOUEUR_JAUNE,JOUEUR_ORANGE,JOUEUR_ROUGE,HAUTEUR,LARGEUR
