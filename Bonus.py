@@ -10,23 +10,20 @@ class Bonus:
 	def getSprite(self, image, zoom):
 		Tab = []
 		for j in range(2):
-			for i in range(2):
+			for i in range(3):
 				imTemp = image.subsurface((i*16),(j*16),16,16)
 				imTemp = pygame.transform.scale(imTemp,(int(zoom/1.5),int(zoom/1.5)))
 				Tab.append(imTemp)
 		return Tab
 
 	def draw(self, surface, zoom):
+		print(self.bonus-1)
 		surface.blit(self.sprite[self.bonus-1], ((self.caseX * zoom) + zoom//5,(self.caseY * zoom) + zoom//5))
 
 	def effect(self, player):
-		if(self.bonus == 1 and player.nbBombeMax > 1):
-			player.nbBombeMax -= 1
-		if(self.bonus == 2 and player.rayonBombe > 1):
-			player.rayonBombe -= 1
-		if(self.bonus == 3):
-			player.nbBombeMax += 1
-		if(self.bonus == 4):
-			player.rayonBombe += 1
-		if (self.bonus == 5):
-			player.lives +=1
+		if(self.bonus == 0 and player.nbBombeMax > 1): player.nbBombeMax -= 1
+		if(self.bonus == 1 and player.rayonBombe > 1): player.rayonBombe -= 1
+		if(self.bonus == 2 and player.lives > 1): player.lives -=1
+		if(self.bonus == 3): player.nbBombeMax += 1
+		if(self.bonus == 4): player.rayonBombe += 1
+		if(self.bonus == 5): player.lives +=1
