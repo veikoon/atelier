@@ -27,8 +27,8 @@ class Player:
 		self.spriteOffset = 0			# Permet de changer de sprite en fonction du decalage et non a chaque mouvement
 		self.lives = live					# Nombre de vie du personnage dans une partie de jeu
 		self.nbBombe = 0				# Nombre de bombes déjà posé par le personnage
-		self.nbBombeMax = 3				# Nombre de bombes maximal que peut poser le personnage en meme temps
-		self.rayonBombe = 10			# Rayon d'explosion de la bombe
+		self.nbBombeMax = 1			# Nombre de bombes maximal que peut poser le personnage en meme temps
+		self.rayonBombe = 1			# Rayon d'explosion de la bombe
 		self.getSprite(hauteur, zoom) 	# Avoir le spoite du personnage de la bonne taille
 
 

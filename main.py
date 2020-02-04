@@ -45,8 +45,7 @@ ROUGE = pygame.image.load("images/ia/Rouge/sprite.png")
 JAUNE = pygame.image.load("images/ia/Jaune/sprite.png")
 ORANGE = pygame.image.load("images/ia/Orange/sprite.png")
 BOMBES = pygame.image.load("images/bombe/bomb.png")
-FIRE =pygame.image.load("images/fire/explosion2.png")
-BONUS = pygame.image.load("images/bonus/bonus.png")
+FIRE =pygame.image.load("images/fire/explosion2.png")   
 
 # Musique
 pygame.mixer.init()
@@ -114,6 +113,7 @@ def init_jeu():
     LIST_JOUEUR.clear()
     LIST_IA.clear()
     LIST_BOMB.clear()
+    LIST_BONUS.clear()
     POS_IA = [(HAUTEUR-2, LARGEUR-2), (HAUTEUR-2, 1), (1, LARGEUR-2)]
     JOUEUR_BLEU = Player(1, 1,1, BLEU,int(ZOOM*(102/64)), ZOOM)
     JOUEUR_JAUNE = IA(POS_IA[0][0], POS_IA[0][1],1, JAUNE,int(ZOOM*(102/64)), ZOOM, (0,-1))
@@ -138,18 +138,21 @@ GRILLE_BOMBE = None     # Grille contenant les distances aux bombes sur la map
 def draw():
     for i in range(LARGEUR):
         for j in range(HAUTEUR):
-            if(TAB[j][i] == 0 or TAB[j][i] == 4 or TAB[j][i] ==  5 or TAB[j][i] == 7): SCREEN.blit(GRASS,(i*ZOOM,j*ZOOM))
+            if(TAB[j][i] == 0 or TAB[j][i] == 4 or TAB[j][i] ==  5 or TAB[j][i] == 6): SCREEN.blit(GRASS,(i*ZOOM,j*ZOOM))
             if(TAB[j][i] == 1): SCREEN.blit(BLOCK,(i*ZOOM,j*ZOOM))
             if(TAB[j][i] == 2): SCREEN.blit(BLOCK_MIDDLE,(i*ZOOM,j*ZOOM))
             if(TAB[j][i] == 3): SCREEN.blit(BLOCK_BRICK,(i*ZOOM,j*ZOOM))
+
+    for bonus in LIST_BONUS:
+        bonus.draw(SCREEN, ZOOM)
 
     for bomb in LIST_BOMB:
         bomb.anim(TIME)
         bomb.draw(SCREEN)
         removeBomb()
         for i in range(bomb.rayon):
-            bomb.drawExplo(SCREEN,TAB,LIST_BOMB, i,(1+i),ZOOM)
-            bomb.drawExplo(SCREEN,TAB, LIST_BOMB, i,-(1+i),ZOOM)
+            bomb.drawExplo(SCREEN,TAB,LIST_BOMB, i,(1+i),ZOOM, LIST_BONUS)
+            bomb.drawExplo(SCREEN,TAB, LIST_BOMB, i,-(1+i),ZOOM, LIST_BONUS)
 
     for joueur in LIST_JOUEUR:
 
@@ -318,6 +321,9 @@ def GameOver():
         SCREEN.blit(GAME_OVER,(0,0))
         pygame.display.flip()
 
+        with open("scores.txt","w") as fichier :
+            fichier.write(str(TIME) + "\n")
+
 def victory():
     done2 = False
     pressed = False
@@ -416,11 +422,11 @@ def getPossibleMove(player):
     tab.append(TAB[player.caseX][player.caseY-1])
     tab.append(TAB[player.caseX][player.caseY])
 
-    if((tab[0]  == 0 or tab[0]  == 5 or player.y != 0) and player.x == 0): possibleMove.append((0,1))
-    if((tab[1]  == 0 or tab[1]  == 5 or player.y != 0) and player.x == 0): possibleMove.append((0,-1))
-    if((tab[2]  == 0 or tab[2]  == 5 or player.x != 0) and player.y == 0): possibleMove.append((1,0))
-    if((tab[3]  == 0 or tab[3]  == 5 or player.x != 0) and player.y == 0): possibleMove.append((-1,0))
-    if((tab[4]  == 0 or tab[4]  == 5 or player.x != 0) and player.y == 0): possibleMove.append((0,0))
+    if((tab[0]  == 0 or tab[0]  == 5 or tab[0]  == 6 or player.y != 0) and player.x == 0): possibleMove.append((0,1))
+    if((tab[1]  == 0 or tab[1]  == 5 or tab[1]  == 6 or player.y != 0) and player.x == 0): possibleMove.append((0,-1))
+    if((tab[2]  == 0 or tab[2]  == 5 or tab[2]  == 6 or player.x != 0) and player.y == 0): possibleMove.append((1,0))
+    if((tab[3]  == 0 or tab[3]  == 5 or tab[3]  == 6 or player.x != 0) and player.y == 0): possibleMove.append((-1,0))
+    if((tab[4]  == 0 or tab[4]  == 5 or tab[4]  == 6 or player.x != 0) and player.y == 0): possibleMove.append((0,0))
 
 
     return possibleMove
@@ -454,6 +460,14 @@ def miseDistance():
                     if (mini +1 < GRILLE_BOMBE[y][x]):
                         GRILLE_BOMBE[y][x] = mini +1
                         done = True
+
+def takeBonus(player):
+    global TAB
+    for bonus in LIST_BONUS:
+        if(bonus.caseY == player.caseX and bonus.caseX == player.caseY):
+            bonus.effect(player)
+            LIST_BONUS.remove(bonus)
+            TAB[player.caseX][player.caseY]=0
 
 
 #################################################################################
@@ -548,15 +562,18 @@ while not DONE:
 
     #print()
     #for i in range(len(TAB)):
-    #    print(TAB[i])
+        #print(TAB[i])
 
     Meurt(JOUEUR_BLEU)
     if (JOUEUR_BLEU not in LIST_JOUEUR):
         SCREEN.fill(BLACK)
         jeu_fini = GameOver()
-    if (JOUEUR_ROUGE not in LIST_JOUEUR and JOUEUR_ORANGE not in LIST_JOUEUR and JOUEUR_JAUNE not in LIST_JOUEUR):
+    if (len(LIST_IA) == 0):
         SCREEN.fill(BLACK)
         jeu_fini = victory()
+
+    for player in LIST_JOUEUR:
+        if(TAB[player.caseX][player.caseY] == 6): takeBonus(player)
         
 
     SCREEN.fill(BLACK)
