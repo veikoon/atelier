@@ -45,7 +45,7 @@ ROUGE = pygame.image.load("images/ia/Rouge/sprite.png")
 JAUNE = pygame.image.load("images/ia/Jaune/sprite.png")
 ORANGE = pygame.image.load("images/ia/Orange/sprite.png")
 BOMBES = pygame.image.load("images/bombe/bomb.png")
-FIRE =pygame.image.load("images/fire/explosion2.png")   
+FIRE =pygame.image.load("images/fire/explosion2.png")
 
 # Musique
 pygame.mixer.init()
@@ -217,8 +217,8 @@ def Meurt(player):
     x = player.caseY
     y = player.caseX
     if(TAB[y][x]==5):
-        player.lives = 0
-        if player.lives == 0:
+        player.lives -= 1
+        if player.lives <= 0:
             if(player in LIST_JOUEUR):
                 LIST_JOUEUR.remove(player)
             if(player in LIST_IA):

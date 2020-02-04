@@ -28,3 +28,5 @@ class Bonus:
 			player.nbBombeMax += 1
 		if(self.bonus == 4):
 			player.rayonBombe += 1
+		if (self.bonus == 5):
+			player.lives +=1
