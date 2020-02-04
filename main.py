@@ -67,15 +67,16 @@ scrrec = SCREEN.get_rect()
 fond = pygame.image.load("images/menu/menu2.png").convert()
 VICTOIRE = pygame.image.load("images/menu/VICTOIRE.png").convert()
 arrow_sprite = pygame.image.load("images/menu/arrow.png")
+COMMANDES = pygame.image.load("images/menu/commandes.png").convert()
 VICTOIRE = pygame.transform.scale(VICTOIRE, (scrrec.right, scrrec.bottom))
 fond = pygame.transform.scale(fond, (scrrec.right, scrrec.bottom))
+COMMANDES = pygame.transform.scale(COMMANDES,(scrrec.right, scrrec.bottom))
 #arrow_sprite = pygame.transform.scale(arrow_sprite, (scrrec.right, scrrec.bottom))
 ZOOM = int((64/1920)*SCREEN_WIDTH)   # Taille d'une case en pixels
 jeu_fini = False
 clock = pygame.time.Clock()
 WHITE = [255, 255, 255]
 BLACK = [0, 0, 0]
-
 TIME_START = time.time()# Temps depuis le lancement du jeu
 GAME_OVER = pygame.image.load("images/menu/gameover.png").convert()
 VIT =ZOOM //16 # Vitesse de deplacement des joueurs
@@ -231,8 +232,9 @@ def Meurt(player):
 def iaDanger(ia): return GRILLE_BOMBE[ia.caseX][ia.caseY] <= 4
 
 def MenuScreen():
-    global screen,done,clock, arrow_sprite
+    global screen,DONE,clock, arrow_sprite
     done2 = False
+    done = False
     start = 1
     commandes = 2
     yes = True
@@ -250,12 +252,14 @@ def MenuScreen():
         time = int( pygame.time.get_ticks() / 100 )
 
         event = pygame.event.Event(pygame.USEREVENT)
-        for event in pygame.event.get():  # User did something
+        for event in pygame.event.get():
             if event.type == pygame.QUIT:  # If user clicked close
-                 done = True
-                 done2 = True
+                DONE = True
+                done2 = True
 
-        KeysPressed = pygame.key.get_pressed()
+        KeysPressed = pygame.key.get_pressed() # User did something
+
+
 
         if KeysPressed[pygame.K_DOWN] and time - last_time > 3:
             last_time = time
@@ -282,16 +286,30 @@ def MenuScreen():
 
 
             if arrow['choice'] == no:
-                done = True
-                done2 = True
+                while not done:
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT:  # If user clicked close
+                            DONE = True
+                            done2 = True
+                            done = True
+
+                    KeysPressed = pygame.key.get_pressed()
+                    if KeysPressed[pygame.K_ESCAPE]:
+                        done = True
+                    SCREEN.blit(COMMANDES,(0,0))
+                    pygame.display.flip()
+
+
 
         SCREEN.blit(fond ,(0,0))
         SCREEN.blit(arrow['sprite'],(arrow['x'],arrow['y']))
 
+        done = False
         pygame.display.flip()
         clock.tick(30)
 
 def GameOver():
+    global DONE
     done2 = False
     pressed = False
     press_time = 0
@@ -304,8 +322,9 @@ def GameOver():
         event = pygame.event.Event(pygame.USEREVENT)
         for event in pygame.event.get():  # User did something
             if event.type == pygame.QUIT:  # If user clicked close
-                done = True
+                DONE = True
                 done2 = True
+
 
         KeysPressed = pygame.key.get_pressed()
 
@@ -325,6 +344,7 @@ def GameOver():
             fichier.write(str(TIME) + "\n")
 
 def victory():
+    global DONE
     done2 = False
     pressed = False
     press_time = 0
@@ -337,7 +357,7 @@ def victory():
         event = pygame.event.Event(pygame.USEREVENT)
         for event in pygame.event.get():  # User did something
             if event.type == pygame.QUIT:  # If user clicked close
-                done = True
+                DONE = True
                 done2 = True
 
         KeysPressed = pygame.key.get_pressed()
@@ -364,7 +384,7 @@ def iaFuite(ia) :
     possibleMove = getPossibleMove(ia)
     posIA = (ia.caseY,ia.caseX)
     max = 0
-    caseMax = None  
+    caseMax = None
     for case in possibleMove :
         if GRILLE_BOMBE[posIA[1] + case[1]][posIA[0] + case[0]] > max and GRILLE_BOMBE[posIA[1] + case[1]][posIA[0] + case[0]] < 100:
             max = GRILLE_BOMBE[posIA[1] + case[1]][posIA[0] + case[0]]
@@ -574,7 +594,6 @@ while not DONE:
 
     for player in LIST_JOUEUR:
         if(TAB[player.caseX][player.caseY] == 6): takeBonus(player)
-        
 
     SCREEN.fill(BLACK)
     TIME = time.time()
