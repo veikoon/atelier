@@ -507,64 +507,76 @@ def deplacement():
             poseBombe(JOUEUR_BLEU)
 
 
-    if(keysPressed[pygame.K_UP] and keysPressed[pygame.K_RIGHT] and LAST_DIRECTION == 2 and (1,0) in possibleMove):
+    if(keysPressed[pygame.K_UP] and keysPressed[pygame.K_RIGHT] and JOUEUR_BLEU.dir == (0,-1) and (1,0) in possibleMove):
         JOUEUR_BLEU.move(VIT,0,ZOOM)
         JOUEUR_BLEU.spriteDir = 2
+        JOUEUR_BLEU.dir = (1,0)
         return
 
-    if(keysPressed[pygame.K_UP] and keysPressed[pygame.K_RIGHT] and LAST_DIRECTION == 4 and (0,-1) in possibleMove):
+    if(keysPressed[pygame.K_UP] and keysPressed[pygame.K_RIGHT] and JOUEUR_BLEU.dir == (1,0) and (0,-1) in possibleMove):
         JOUEUR_BLEU.move(0,-VIT,ZOOM)
         JOUEUR_BLEU.spriteDir = 3
+        JOUEUR_BLEU.dir = (0,-1)
         return
 
-    if(keysPressed[pygame.K_UP] and keysPressed[pygame.K_LEFT] and LAST_DIRECTION == 4 and (0,-1) in possibleMove):
+    if(keysPressed[pygame.K_UP] and keysPressed[pygame.K_LEFT] and JOUEUR_BLEU.dir == (-1,0) and (0,-1) in possibleMove):
         JOUEUR_BLEU.move(0,-VIT,ZOOM)
         JOUEUR_BLEU.spriteDir = 3
+        JOUEUR_BLEU.dir = (0,-1)
         return
 
-    if(keysPressed[pygame.K_UP] and keysPressed[pygame.K_LEFT] and LAST_DIRECTION == 1 and (-1,0) in possibleMove):
+    if(keysPressed[pygame.K_UP] and keysPressed[pygame.K_LEFT] and JOUEUR_BLEU.dir == (0,-1) and (-1,0) in possibleMove):
         JOUEUR_BLEU.move(-VIT,0,ZOOM)
         JOUEUR_BLEU.spriteDir = 1
+        JOUEUR_BLEU.dir = (-1,0)
         return
 
-    if(keysPressed[pygame.K_DOWN] and keysPressed[pygame.K_RIGHT] and LAST_DIRECTION == 3 and (0,1) in possibleMove):
+    if(keysPressed[pygame.K_DOWN] and keysPressed[pygame.K_RIGHT] and JOUEUR_BLEU.dir == (1,0) and (0,1) in possibleMove):
         JOUEUR_BLEU.spriteDir = 0
         JOUEUR_BLEU.move(0,VIT,ZOOM)
+        JOUEUR_BLEU.dir = (0,1)
         return
 
-    if(keysPressed[pygame.K_DOWN] and keysPressed[pygame.K_RIGHT] and LAST_DIRECTION == 2 and (1,0) in possibleMove):
+    if(keysPressed[pygame.K_DOWN] and keysPressed[pygame.K_RIGHT] and JOUEUR_BLEU.dir == (0,1) and (1,0) in possibleMove):
         JOUEUR_BLEU.move(VIT,0,ZOOM)
         JOUEUR_BLEU.spriteDir = 2
+        JOUEUR_BLEU.dir = (1,0)
         return
 
-    if(keysPressed[pygame.K_DOWN] and keysPressed[pygame.K_LEFT] and LAST_DIRECTION == 1 and (-1,0) in possibleMove):
+    if(keysPressed[pygame.K_DOWN] and keysPressed[pygame.K_LEFT] and JOUEUR_BLEU.dir == (0,1) and (-1,0) in possibleMove):
         JOUEUR_BLEU.move(-VIT,0,ZOOM)
         JOUEUR_BLEU.spriteDir = 1
+        JOUEUR_BLEU.dir = (-1,0)
         return
 
-    if(keysPressed[pygame.K_DOWN] and keysPressed[pygame.K_LEFT] and LAST_DIRECTION == 3 and (0,1) in possibleMove):
+    if(keysPressed[pygame.K_DOWN] and keysPressed[pygame.K_LEFT] and JOUEUR_BLEU.dir == (-1,0) and (0,1) in possibleMove):
         JOUEUR_BLEU.spriteDir = 0
         JOUEUR_BLEU.move(0,VIT,ZOOM)
+        JOUEUR_BLEU.dir = (0,1)
         return
 
     if(keysPressed[pygame.K_DOWN] and (0,1) in possibleMove):
         JOUEUR_BLEU.spriteDir = 0
         JOUEUR_BLEU.move(0,VIT,ZOOM)
+        JOUEUR_BLEU.dir = (0,1)
         return
 
     if(keysPressed[pygame.K_UP] and (0,-1) in possibleMove):
         JOUEUR_BLEU.move(0,-VIT,ZOOM)
         JOUEUR_BLEU.spriteDir = 3
+        JOUEUR_BLEU.dir = (0,-1)
         return
 
     if(keysPressed[pygame.K_RIGHT] and (1,0) in possibleMove):
         JOUEUR_BLEU.move(VIT,0,ZOOM)
         JOUEUR_BLEU.spriteDir = 2
+        JOUEUR_BLEU.dir = (1,0)
         return
 
     if(keysPressed[pygame.K_LEFT] and (-1,0) in possibleMove):
         JOUEUR_BLEU.move(-VIT,0,ZOOM)
         JOUEUR_BLEU.spriteDir = 1
+        JOUEUR_BLEU.dir = (-1,0)
         return
 
 
