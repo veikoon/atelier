@@ -121,7 +121,7 @@ def init_jeu():
     JOUEUR_BLEU = Player(1, 1,1, BLEU,int(ZOOM*(102/64)), ZOOM)
     JOUEUR_JAUNE = IA(POS_IA[0][0], POS_IA[0][1],1, JAUNE,int(ZOOM*(102/64)), ZOOM, (0,-1))
     JOUEUR_ORANGE = IA(POS_IA[1][0], POS_IA[1][1],1, ORANGE,int(ZOOM*(102/64)), ZOOM,(1,0))
-    JOUEUR_ROUGE = IA(POS_IA[2][0], POS_IA[2][1],1, ROUGE,int(ZOOM*(102/64)), ZOOM,(-1,0))
+    JOUEUR_ROUGE = IA(POS_IA[2][0], POS_IA[2][1],1, ROUGE,int(ZOOM*(102/64)), ZOOM, (-1,0))
 
 init_jeu()
 TIME = time.time()
@@ -638,6 +638,11 @@ while not DONE:
             if event.key == pygame.K_RIGHT: LAST_DIRECTION = 2
             if event.key == pygame.K_DOWN: LAST_DIRECTION = 3
             if event.key == pygame.K_UP: LAST_DIRECTION = 4
+
+        for joueur in LIST_JOUEUR:
+            joueur.generateDist(TAB)
+
+
 
     grilleBombe()
     miseDistance()

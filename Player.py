@@ -4,6 +4,7 @@
 
 import pygame
 import copy
+from copy import deepcopy
 
 
 #################################################################################
@@ -21,11 +22,12 @@ class Player:
 		self.caseX = startX
 		self.caseY = startY
 		self.color = color				# Couleur du personnage
+		self.cartedist = []				# Carte des distance au joueur courant
 		self.sprite = []				# Tableau de sprites en 2D
 		self.spriteDir = 0				# Selectionne le tableau de sprite (en 1D) correspondant a la direction du joueur
 		self.spriteCount = 0			# Selectionne le sprite du tableau correspondant au mouvement actuel
 		self.spriteOffset = 0			# Permet de changer de sprite en fonction du decalage et non a chaque mouvement
-		self.lives = live					# Nombre de vie du personnage dans une partie de jeu
+		self.lives = live				# Nombre de vie du personnage dans une partie de jeu
 		self.nbBombe = 0				# Nombre de bombes déjà posé par le personnage
 		self.nbBombeMax = 1			# Nombre de bombes maximal que peut poser le personnage en meme temps
 		self.rayonBombe = 1			# Rayon d'explosion de la bombe
@@ -67,7 +69,7 @@ class Player:
 	def move(self, posX, posY, zoom):
 		self.y += posY
 		self.x += posX
-		
+
 		if(self.x > zoom//2):
 			self.x = - zoom//2
 			self.caseY += 1
@@ -89,6 +91,46 @@ class Player:
 			self.spriteOffset = 0
 		else:
 			self.spriteOffset += 1
+
+
+	def generateDist(self, tab):
+		self.cartedist = [ [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+	            		   [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	            		   [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
+	            		   [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	            		   [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
+	            		   [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	            		   [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
+	            		   [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	            		   [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
+	            		   [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	            		   [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
+	            		   [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	            		   [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
+	            		   [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	            		   [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
+		done = True
+		hauteur = len(tab)
+		largeur = len(tab[0])
+		for x in range(largeur):
+			for y in range(hauteur):
+				if (tab[y][x] == 1 or tab[y][x] == 2):
+					self.cartedist[y][x] = 1000
+					continue
+				if (tab[y][x] == 0 or tab[y][x] == 3 or tab[y][x] == 4 or tab[y][x] == 5):
+					self.cartedist[y][x] = 100
+					continue
+		while done:
+			done = False
+			for y in range(hauteur):
+				for x in range(largeur):
+					self.cartedist[self.caseX][self.caseY] = 0
+					if (self.cartedist[y][x] == 1000): continue
+					if (self.cartedist[y][x] >= 0):
+						mini = min(self.cartedist[y+1][x], self.cartedist[y-1][x], self.cartedist[y][x+1], self.cartedist[y][x-1])
+						if (mini +1 < self.cartedist[y][x]):
+							self.cartedist[y][x] = mini +1
+							done = True
 
 
 
@@ -122,7 +164,7 @@ class IA(Player):
 	def move(self, posX, posY, zoom):
 		self.y += posY
 		self.x += posX
-		
+
 		if(self.x > zoom//2):
 			self.x = - zoom//2
 			self.caseY += 1
