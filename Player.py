@@ -34,6 +34,7 @@ class Player:
 		self.invincible = -10000         # Rend le player invincible quand il rencontre une bombe et qu'il lui reste encore une vie ou plus
 		self.getSprite(hauteur, zoom) 	# Avoir le spoite du personnage de la bonne taille
 		self.dir = (0,0)
+		self.bloque = False
 
 
 	## getSprite(self, hauteur, zoom):
