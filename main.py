@@ -115,7 +115,7 @@ def init_jeu():
     JOUEUR_BLEU = Player(1, 1,1, BLEU,int(ZOOM*(102/64)), ZOOM)
     JOUEUR_JAUNE = IA(POS_IA[0][0], POS_IA[0][1],1, JAUNE,int(ZOOM*(102/64)), ZOOM, (0,-1))
     JOUEUR_ORANGE = IA(POS_IA[1][0], POS_IA[1][1],1, ORANGE,int(ZOOM*(102/64)), ZOOM,(1,0))
-    JOUEUR_ROUGE = IA(POS_IA[2][0], POS_IA[2][1],1, ROUGE,int(ZOOM*(102/64)), ZOOM,(-1,0))
+    JOUEUR_ROUGE = IA(POS_IA[2][0], POS_IA[2][1],1, ROUGE,int(ZOOM*(102/64)), ZOOM, (-1,0))
 
 init_jeu()
 TIME = time.time()
@@ -358,7 +358,7 @@ def iaFuite(ia) :
     possibleMove = getPossibleMove(ia)
     posIA = (ia.caseY,ia.caseX)
     max = 0
-    caseMax = None  
+    caseMax = None
     for case in possibleMove :
         if GRILLE_BOMBE[posIA[1] + case[1]][posIA[0] + case[0]] > max and GRILLE_BOMBE[posIA[1] + case[1]][posIA[0] + case[0]] < 100:
             max = GRILLE_BOMBE[posIA[1] + case[1]][posIA[0] + case[0]]
@@ -510,6 +510,11 @@ while not DONE:
             pygame.display.flip()
             draw()
 
+        for joueur in LIST_JOUEUR:
+            joueur.generateDist(TAB)
+
+
+
     grilleBombe()
     miseDistance()
     for ia in LIST_IA:
@@ -557,7 +562,7 @@ while not DONE:
     if (JOUEUR_ROUGE not in LIST_JOUEUR and JOUEUR_ORANGE not in LIST_JOUEUR and JOUEUR_JAUNE not in LIST_JOUEUR):
         SCREEN.fill(BLACK)
         jeu_fini = victory()
-        
+
 
     SCREEN.fill(BLACK)
     TIME = time.time()
