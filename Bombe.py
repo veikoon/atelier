@@ -97,21 +97,21 @@ class Bombe:
         return self.explode
 
 
-    ##  draw(self, surface):
+    ##  dessine(self, surface):
     #   Permet de dessiner le personnage dont les coordonnees sont au milieu de ses pieds
     #   Tandis que le jeu dessine les images depuis leur coin superieur gauche:
     #   (largeurPerso / 2 = 32 et hauteurPerso = 102)
-    def draw(self, surface):
+    def dessine(self, surface):
         if(self.finexplode):
             surface.blit(self.sprite[self.spriteDir][self.spriteCount], (self.x - 100, self.y - 96))
         else:
             surface.blit(self.sprite[self.spriteDir][self.spriteCount], (self.x - 90, self.y - 96))
 
 
-    ## drawExplo(self, surface, tab, listebombe, i, direction, zoom):
+    ## dessineExplo(self, surface, tab, listebombe, i, direction, zoom):
     #   Dessine l'explosion de la bombe
     #   On verifie les cases au alentour pour savoir jusqu'où va l'explosion
-    def drawExplo(self, surface,TAB,listeBombe,i,direction, zoom, listebonus):
+    def dessineExplo(self, surface,TAB,listeBombe,i,direction, zoom, listebonus):
         HAUTEUR = len(TAB)          # Nombre de cases en hauteur
         LARGEUR = len(TAB[0])       # Nombre de cases en largeur
 
