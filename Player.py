@@ -133,6 +133,14 @@ class Player:
 							self.cartedist[y][x] = mini +1
 							done = True
 
+		## setRightDir(self):
+	#	Permet de determiner le bon sprite
+	#	en fonction de la direction de deplacement de l'IA
+	def setRightDir(self):
+		if(self.dir == (0,1)): self.spriteDir = 0
+		if(self.dir == (0,-1)): self.spriteDir = 3
+		if(self.dir == (1,0)): self.spriteDir = 2
+		if(self.dir == (-1,0)): self.spriteDir = 1
 
 
 #################################################################################
@@ -151,16 +159,6 @@ class IA(Player):
 	def __init__(self,startX, startY, live, color, hauteur, zoom, direction):
 		super(IA,self).__init__(startX, startY, live, color, hauteur, zoom) 		# Reutilisation de l'instanciation de Player()
 		self.needToGoCenter = False											# Initiation d'un direction par defaut de l'IA
-
-
-	## setRightDir(self):
-	#	Permet de determiner le bon sprite
-	#	en fonction de la direction de deplacement de l'IA
-	def setRightDir(self):
-		if(self.dir == (0,1)): self.spriteDir = 0
-		if(self.dir == (0,-1)): self.spriteDir = 3
-		if(self.dir == (1,0)): self.spriteDir = 2
-		if(self.dir == (-1,0)): self.spriteDir = 1
 
 	def move(self, posX, posY, zoom):
 		self.y += posY
