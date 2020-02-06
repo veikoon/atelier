@@ -235,6 +235,7 @@ def Invinciblility(player):
         player.lives = 999999999999999
     elif player.invincible > 0:
         player.lives = 1
+        player.invincible = 0
 
 
 
