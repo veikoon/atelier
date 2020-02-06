@@ -5,8 +5,8 @@
 import pygame
 from pygame import *
 import time
-
-
+import random
+from Bonus import Bonus
 #################################################################################
 #   Class Bombe from Bomberman                                                  #
 #   Created by Quentin : 25/01/2020                                             #
@@ -111,7 +111,7 @@ class Bombe:
     ## drawExplo(self, surface, tab, listebombe, i, direction, zoom):
     #   Dessine l'explosion de la bombe
     #   On verifie les cases au alentour pour savoir jusqu'où va l'explosion
-    def drawExplo(self, surface,TAB,listeBombe,i,direction, zoom):
+    def drawExplo(self, surface,TAB,listeBombe,i,direction, zoom, listebonus):
         HAUTEUR = len(TAB)          # Nombre de cases en hauteur
         LARGEUR = len(TAB[0])       # Nombre de cases en largeur
 
@@ -150,15 +150,22 @@ class Bombe:
                 else:
                     
                     caseTesteX = TAB[caseY][caseX+direction]
-                    if(self.animStop(TAB,direction,testcase,'x',caseX,caseY) and (caseTesteX == 3 and not explX)):
-                            
+                    if(self.animStop(TAB,direction,testcase,'x',caseX,caseY) and ((caseTesteX == 3 or caseTesteX == 6) and not explX)):
+                        
+                        if(not random.randrange(3) and caseTesteX != 6): 
+                            listebonus.append(Bonus(caseX+direction, caseY, random.randrange(6), zoom))
+                            TAB[caseY][caseX+direction]=6
+                        else:
                             TAB[caseY][caseX+direction]=5
-                            if(direction>0):
-                                self.explX= True
-                                self.stopX=i
-                            else:
-                                self.explmX= True
-                                self.stopmX=i
+                            for bonus in listebonus:
+                                if(bonus.caseY == caseY and bonus.caseX == caseX + direction): listebonus.remove(bonus)
+
+                        if(direction>0):
+                            self.explX= True
+                            self.stopX=i
+                        else:
+                            self.explmX= True
+                            self.stopmX=i
 
                 
              
@@ -183,17 +190,22 @@ class Bombe:
                 else:
                     caseTesteY = TAB[caseY+direction][caseX]
 
-                    if(self.animStop(TAB,direction,testcase,'y',caseX,caseY) and (caseTesteY == 3 and not explY)):
-                        TAB[caseY+direction][caseX]=5
+                    if(self.animStop(TAB,direction,testcase,'y',caseX,caseY) and ((caseTesteY == 3 or caseTesteY == 6) and not explY)):
+                        tempRand = random.randrange(5)
+                        if(not random.randrange(3) and caseTesteY != 6):
+                            listebonus.append(Bonus(caseX, caseY+direction, random.randrange(6), zoom))
+                            TAB[caseY+direction][caseX]=6
+                        else:
+                            TAB[caseY+direction][caseX]=5
+                            for bonus in listebonus:
+                                if(bonus.caseY == caseY + direction and bonus.caseX == caseX): listebonus.remove(bonus)
+
                         if(direction>0):
                             self.explY= True
                             self.stopY=i
                         else:
                             self.explmY= True
                             self.stopmY=i
-
-                    if(caseTesteY == 0 and  explY):
-                        TAB[caseY+direction][caseX]=7
 
                     if(self.animGo(TAB,direction,testcase,'y',caseX,caseY)):
                         
@@ -242,6 +254,3 @@ class Bombe:
             
             if(sens =='x'):
                 if(bombe.caseX == self.caseX +direction and bombe.caseY == self.caseY ): bombe.timeBomb = 0     
-    
-
-  

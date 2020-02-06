@@ -22,6 +22,7 @@ import time
 from Player import Player
 from Bombe import Bombe
 from Player import IA
+from Bonus import Bonus
 pygame.init()
 
 
@@ -66,15 +67,16 @@ scrrec = SCREEN.get_rect()
 fond = pygame.image.load("images/menu/menu2.png").convert()
 VICTOIRE = pygame.image.load("images/menu/VICTOIRE.png").convert()
 arrow_sprite = pygame.image.load("images/menu/arrow.png")
+COMMANDES = pygame.image.load("images/menu/commandes.png").convert()
 VICTOIRE = pygame.transform.scale(VICTOIRE, (scrrec.right, scrrec.bottom))
 fond = pygame.transform.scale(fond, (scrrec.right, scrrec.bottom))
+COMMANDES = pygame.transform.scale(COMMANDES,(scrrec.right, scrrec.bottom))
 #arrow_sprite = pygame.transform.scale(arrow_sprite, (scrrec.right, scrrec.bottom))
 ZOOM = int((64/1920)*SCREEN_WIDTH)   # Taille d'une case en pixels
 jeu_fini = False
 clock = pygame.time.Clock()
 WHITE = [255, 255, 255]
 BLACK = [0, 0, 0]
-
 TIME_START = time.time()# Temps depuis le lancement du jeu
 GAME_OVER = pygame.image.load("images/menu/gameover.png").convert()
 VIT =ZOOM //16 # Vitesse de deplacement des joueurs
@@ -86,9 +88,10 @@ CLOCK = pygame.time.Clock()                 # Mise en place de l'horloge interne
 LIST_BOMB = []      # Liste contenant les bombes
 LIST_IA = []        # Liste contenant les IA en vie
 LIST_JOUEUR = []    # Liste contennat les joueurs en vie
+LIST_BONUS = []
 
 def init_jeu():
-    global TAB, LIST_BOMB, LIST_IA,LIST_JOUEUR, JOUEUR_BLEU,JOUEUR_JAUNE,JOUEUR_ORANGE,JOUEUR_ROUGE,HAUTEUR,LARGEUR
+    global TAB, LIST_BOMB, LIST_IA,LIST_JOUEUR, JOUEUR_BLEU,JOUEUR_JAUNE,JOUEUR_ORANGE,JOUEUR_ROUGE,HAUTEUR,LARGEUR,LIST_BONUS
     SON_FOND.play(loops=-1, maxtime = 0, fade_ms=0)
     TAB = [ [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
@@ -111,6 +114,7 @@ def init_jeu():
     LIST_JOUEUR.clear()
     LIST_IA.clear()
     LIST_BOMB.clear()
+    LIST_BONUS.clear()
     POS_IA = [(HAUTEUR-2, LARGEUR-2), (HAUTEUR-2, 1), (1, LARGEUR-2)]
     JOUEUR_BLEU = Player(1, 1,1, BLEU,int(ZOOM*(102/64)), ZOOM)
     JOUEUR_JAUNE = IA(POS_IA[0][0], POS_IA[0][1],1, JAUNE,int(ZOOM*(102/64)), ZOOM, (0,-1))
@@ -135,18 +139,21 @@ GRILLE_BOMBE = None     # Grille contenant les distances aux bombes sur la map
 def draw():
     for i in range(LARGEUR):
         for j in range(HAUTEUR):
-            if(TAB[j][i] == 0 or TAB[j][i] == 4 or TAB[j][i] ==  5 or TAB[j][i] == 7): SCREEN.blit(GRASS,(i*ZOOM,j*ZOOM))
+            if(TAB[j][i] == 0 or TAB[j][i] == 4 or TAB[j][i] ==  5 or TAB[j][i] == 6): SCREEN.blit(GRASS,(i*ZOOM,j*ZOOM))
             if(TAB[j][i] == 1): SCREEN.blit(BLOCK,(i*ZOOM,j*ZOOM))
             if(TAB[j][i] == 2): SCREEN.blit(BLOCK_MIDDLE,(i*ZOOM,j*ZOOM))
             if(TAB[j][i] == 3): SCREEN.blit(BLOCK_BRICK,(i*ZOOM,j*ZOOM))
+
+    for bonus in LIST_BONUS:
+        bonus.draw(SCREEN, ZOOM)
 
     for bomb in LIST_BOMB:
         bomb.anim(TIME)
         bomb.draw(SCREEN)
         removeBomb()
         for i in range(bomb.rayon):
-            bomb.drawExplo(SCREEN,TAB,LIST_BOMB, i,(1+i),ZOOM)
-            bomb.drawExplo(SCREEN,TAB, LIST_BOMB, i,-(1+i),ZOOM)
+            bomb.drawExplo(SCREEN,TAB,LIST_BOMB, i,(1+i),ZOOM, LIST_BONUS)
+            bomb.drawExplo(SCREEN,TAB, LIST_BOMB, i,-(1+i),ZOOM, LIST_BONUS)
 
     for joueur in LIST_JOUEUR:
 
@@ -210,8 +217,8 @@ def Meurt(player):
     x = player.caseY
     y = player.caseX
     if(TAB[y][x]==5):
-        player.lives = 0
-        if player.lives == 0:
+        player.lives -= 1
+        if player.lives <= 0:
             if(player in LIST_JOUEUR):
                 LIST_JOUEUR.remove(player)
             if(player in LIST_IA):
@@ -225,8 +232,9 @@ def Meurt(player):
 def iaDanger(ia): return GRILLE_BOMBE[ia.caseX][ia.caseY] <= 4
 
 def MenuScreen():
-    global screen,done,clock, arrow_sprite
+    global screen,DONE,clock, arrow_sprite
     done2 = False
+    done = False
     start = 1
     commandes = 2
     yes = True
@@ -244,12 +252,14 @@ def MenuScreen():
         time = int( pygame.time.get_ticks() / 100 )
 
         event = pygame.event.Event(pygame.USEREVENT)
-        for event in pygame.event.get():  # User did something
+        for event in pygame.event.get():
             if event.type == pygame.QUIT:  # If user clicked close
-                 done = True
-                 done2 = True
+                DONE = True
+                done2 = True
 
-        KeysPressed = pygame.key.get_pressed()
+        KeysPressed = pygame.key.get_pressed() # User did something
+
+
 
         if KeysPressed[pygame.K_DOWN] and time - last_time > 3:
             last_time = time
@@ -276,16 +286,30 @@ def MenuScreen():
 
 
             if arrow['choice'] == no:
-                done = True
-                done2 = True
+                while not done:
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT:  # If user clicked close
+                            DONE = True
+                            done2 = True
+                            done = True
+
+                    KeysPressed = pygame.key.get_pressed()
+                    if KeysPressed[pygame.K_ESCAPE]:
+                        done = True
+                    SCREEN.blit(COMMANDES,(0,0))
+                    pygame.display.flip()
+
+
 
         SCREEN.blit(fond ,(0,0))
         SCREEN.blit(arrow['sprite'],(arrow['x'],arrow['y']))
 
+        done = False
         pygame.display.flip()
         clock.tick(30)
 
 def GameOver():
+    global DONE
     done2 = False
     pressed = False
     press_time = 0
@@ -298,8 +322,9 @@ def GameOver():
         event = pygame.event.Event(pygame.USEREVENT)
         for event in pygame.event.get():  # User did something
             if event.type == pygame.QUIT:  # If user clicked close
-                done = True
+                DONE = True
                 done2 = True
+
 
         KeysPressed = pygame.key.get_pressed()
 
@@ -319,6 +344,7 @@ def GameOver():
             fichier.write(str(TIME) + "\n")
 
 def victory():
+    global DONE
     done2 = False
     pressed = False
     press_time = 0
@@ -331,7 +357,7 @@ def victory():
         event = pygame.event.Event(pygame.USEREVENT)
         for event in pygame.event.get():  # User did something
             if event.type == pygame.QUIT:  # If user clicked close
-                done = True
+                DONE = True
                 done2 = True
 
         KeysPressed = pygame.key.get_pressed()
@@ -416,11 +442,11 @@ def getPossibleMove(player):
     tab.append(TAB[player.caseX][player.caseY-1])
     tab.append(TAB[player.caseX][player.caseY])
 
-    if((tab[0]  == 0 or tab[0]  == 5 or player.y != 0) and player.x == 0): possibleMove.append((0,1))
-    if((tab[1]  == 0 or tab[1]  == 5 or player.y != 0) and player.x == 0): possibleMove.append((0,-1))
-    if((tab[2]  == 0 or tab[2]  == 5 or player.x != 0) and player.y == 0): possibleMove.append((1,0))
-    if((tab[3]  == 0 or tab[3]  == 5 or player.x != 0) and player.y == 0): possibleMove.append((-1,0))
-    if((tab[4]  == 0 or tab[4]  == 5 or player.x != 0) and player.y == 0): possibleMove.append((0,0))
+    if((tab[0]  == 0 or tab[0]  == 5 or tab[0]  == 6 or player.y != 0) and player.x == 0): possibleMove.append((0,1))
+    if((tab[1]  == 0 or tab[1]  == 5 or tab[1]  == 6 or player.y != 0) and player.x == 0): possibleMove.append((0,-1))
+    if((tab[2]  == 0 or tab[2]  == 5 or tab[2]  == 6 or player.x != 0) and player.y == 0): possibleMove.append((1,0))
+    if((tab[3]  == 0 or tab[3]  == 5 or tab[3]  == 6 or player.x != 0) and player.y == 0): possibleMove.append((-1,0))
+    if((tab[4]  == 0 or tab[4]  == 5 or tab[4]  == 6 or player.x != 0) and player.y == 0): possibleMove.append((0,0))
 
 
     return possibleMove
@@ -454,6 +480,14 @@ def miseDistance():
                     if (mini +1 < GRILLE_BOMBE[y][x]):
                         GRILLE_BOMBE[y][x] = mini +1
                         done = True
+
+def takeBonus(player):
+    global TAB
+    for bonus in LIST_BONUS:
+        if(bonus.caseY == player.caseX and bonus.caseX == player.caseY):
+            bonus.effect(player)
+            LIST_BONUS.remove(bonus)
+            TAB[player.caseX][player.caseY]=0
 
 
 #################################################################################
@@ -553,16 +587,18 @@ while not DONE:
 
     #print()
     #for i in range(len(TAB)):
-    #    print(TAB[i])
+        #print(TAB[i])
 
     Meurt(JOUEUR_BLEU)
     if (JOUEUR_BLEU not in LIST_JOUEUR):
         SCREEN.fill(BLACK)
         jeu_fini = GameOver()
-    if (JOUEUR_ROUGE not in LIST_JOUEUR and JOUEUR_ORANGE not in LIST_JOUEUR and JOUEUR_JAUNE not in LIST_JOUEUR):
+    if (len(LIST_IA) == 0):
         SCREEN.fill(BLACK)
         jeu_fini = victory()
 
+    for player in LIST_JOUEUR:
+        if(TAB[player.caseX][player.caseY] == 6): takeBonus(player)
 
     SCREEN.fill(BLACK)
     TIME = time.time()
