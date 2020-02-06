@@ -6,7 +6,10 @@
 Ce projet a été réalisé dans le cadre d'un projet de deuxième année à l'ESIEE Paris
 
 ### Installation
-Requière : 
-	- python 3
-	- pygame
+``` bash
+	$ git clone https://github.com/veikoon/atelier.git
+	$ cd atelier/
+	$ pip install -r requirements.txt
+	$ python3 main.py
+```
 
