@@ -29,7 +29,7 @@ class Player:
 		self.nbBombe = 0				# Nombre de bombes déjà posé par le personnage
 		self.nbBombeMax = 1			# Nombre de bombes maximal que peut poser le personnage en meme temps
 		self.rayonBombe = 1			# Rayon d'explosion de la bombe
-		self.invincible = 0         # Rend le player invincible quand il rencontre une bombe et qu'il lui reste encore une vie ou plus
+		self.invincible = -10000         # Rend le player invincible quand il rencontre une bombe et qu'il lui reste encore une vie ou plus
 		self.getSprite(hauteur, zoom) 	# Avoir le spoite du personnage de la bonne taille
 
 

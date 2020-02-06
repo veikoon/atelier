@@ -91,7 +91,7 @@ LIST_JOUEUR = []    # Liste contennant les joueurs en vie
 LIST_BONUS = []     # Liste contennant les bonus
 
 def init_jeu():
-    global TAB, LIST_BOMB,LIST_BONUS, LIST_IA,LIST_JOUEUR, JOUEUR_BLEU,JOUEUR_JAUNE,JOUEUR_ORANGE,JOUEUR_ROUGE,HAUTEUR,LARGEUR
+    global TAB, LIST_BOMB, LIST_IA,LIST_JOUEUR, JOUEUR_BLEU,JOUEUR_JAUNE,JOUEUR_ORANGE,JOUEUR_ROUGE,HAUTEUR,LARGEUR,LIST_BONUS
     SON_FOND.play(loops=-1, maxtime = 0, fade_ms=0)
     TAB = [ [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
@@ -219,7 +219,7 @@ def Meurt(player):
     if(TAB[y][x]==5):
         player.lives -= 1
         if player.lives >= 1:
-            player.invincible = TIME + 3
+            player.invincible = int(TIME- TIME_START) + 5
         if player.lives <= 0:
             if(player in LIST_JOUEUR):
                 LIST_JOUEUR.remove(player)
@@ -229,10 +229,9 @@ def Meurt(player):
                 #SON_MORT.play()
 
 def Invinciblility(player):
-    global TIME
-    if player.invincible >= TIME:
+    if player.invincible >= int(TIME- TIME_START):
         player.lives = 999999999999999
-    else:
+    elif player.invincible > 0:
         player.lives = 1
 
 
@@ -587,16 +586,17 @@ while not DONE:
     if(keysPressed[pygame.K_SPACE]):
         if JOUEUR_BLEU in LIST_JOUEUR :
             poseBombe(JOUEUR_BLEU)
-            print(JOUEUR_BLEU.lives)
 
     for ia in LIST_IA:
         Meurt(ia)
+        Invinciblility(ia)
 
     #print()
     #for i in range(len(TAB)):
         #print(TAB[i])
 
     Meurt(JOUEUR_BLEU)
+    Invinciblility(JOUEUR_BLEU)
     if (JOUEUR_BLEU not in LIST_JOUEUR):
         SCREEN.fill(BLACK)
         jeu_fini = GameOver()
@@ -617,7 +617,6 @@ while not DONE:
         Init()
         draw()
         continue
-    print(JOUEUR_BLEU.lives)
 
 
 
