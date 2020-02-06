@@ -244,6 +244,21 @@ def Invinciblility(player):
 #   Retourne si elle se trouve dans une zone de danger = le rayon de l'explosion de la bombe
 def iaDanger(ia): return GRILLE_BOMBE[ia.caseX][ia.caseY] <= 4
 
+
+## getCloserPlayer(Player):
+#   Retourne la position du joueur le plus proche
+#   
+def getCloserPlayer(player):
+    dist_min = 1000
+    coordonnees_min = (0,0)
+    for joueur in LIST_JOUEUR:
+        if joueur.carteDist[player.caseX][player.caseY] < dist_min:
+            dist_min = joueur.carteDist[player.caseX][player.caseY]
+            coordonnees_min = (joueur.caseX,joueur.caseY)
+
+    return coordonnees_min
+
+
 def MenuScreen():
     global screen,DONE,clock, arrow_sprite
     done2 = False
