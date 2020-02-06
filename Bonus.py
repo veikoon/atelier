@@ -17,7 +17,7 @@ class Bonus:
 		return Tab
 
 	def draw(self, surface, zoom):
-		print(self.bonus-1)
+		#print(self.bonus-1)
 		surface.blit(self.sprite[self.bonus-1], ((self.caseX * zoom) + zoom//5,(self.caseY * zoom) + zoom//5))
 
 	def effect(self, player):

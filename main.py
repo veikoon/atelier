@@ -87,11 +87,11 @@ CLOCK = pygame.time.Clock()                 # Mise en place de l'horloge interne
 
 LIST_BOMB = []      # Liste contenant les bombes
 LIST_IA = []        # Liste contenant les IA en vie
-LIST_JOUEUR = []    # Liste contennat les joueurs en vie
-LIST_BONUS = []
+LIST_JOUEUR = []    # Liste contennant les joueurs en vie
+LIST_BONUS = []     # Liste contennant les bonus
 
 def init_jeu():
-    global TAB, LIST_BOMB, LIST_IA,LIST_JOUEUR, JOUEUR_BLEU,JOUEUR_JAUNE,JOUEUR_ORANGE,JOUEUR_ROUGE,HAUTEUR,LARGEUR
+    global TAB, LIST_BOMB,LIST_BONUS, LIST_IA,LIST_JOUEUR, JOUEUR_BLEU,JOUEUR_JAUNE,JOUEUR_ORANGE,JOUEUR_ROUGE,HAUTEUR,LARGEUR
     SON_FOND.play(loops=-1, maxtime = 0, fade_ms=0)
     TAB = [ [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
@@ -218,6 +218,8 @@ def Meurt(player):
     y = player.caseX
     if(TAB[y][x]==5):
         player.lives -= 1
+        if player.lives >= 1:
+            player.invincible = TIME + 3
         if player.lives <= 0:
             if(player in LIST_JOUEUR):
                 LIST_JOUEUR.remove(player)
@@ -225,6 +227,15 @@ def Meurt(player):
                 LIST_IA.remove(player)
                 player.nbBombeMax = 0
                 #SON_MORT.play()
+
+def Invinciblility(player):
+    global TIME
+    if player.invincible >= TIME:
+        player.lives = 999999999999999
+    else:
+        player.lives = 1
+
+
 
 ## iaDanger(ia):
 #   Regarde la position de l'IA
@@ -576,6 +587,7 @@ while not DONE:
     if(keysPressed[pygame.K_SPACE]):
         if JOUEUR_BLEU in LIST_JOUEUR :
             poseBombe(JOUEUR_BLEU)
+            print(JOUEUR_BLEU.lives)
 
     for ia in LIST_IA:
         Meurt(ia)
@@ -605,6 +617,8 @@ while not DONE:
         Init()
         draw()
         continue
+    print(JOUEUR_BLEU.lives)
+
 
 
     # A mettre quand le personnage est mort : pygame.mixer.music.stop()

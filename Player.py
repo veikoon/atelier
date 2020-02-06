@@ -29,6 +29,7 @@ class Player:
 		self.nbBombe = 0				# Nombre de bombes déjà posé par le personnage
 		self.nbBombeMax = 1			# Nombre de bombes maximal que peut poser le personnage en meme temps
 		self.rayonBombe = 1			# Rayon d'explosion de la bombe
+		self.invincible = 0         # Rend le player invincible quand il rencontre une bombe et qu'il lui reste encore une vie ou plus
 		self.getSprite(hauteur, zoom) 	# Avoir le spoite du personnage de la bonne taille
 
 
@@ -66,7 +67,7 @@ class Player:
 	def move(self, posX, posY, zoom):
 		self.y += posY
 		self.x += posX
-		
+
 		if(self.x > zoom//2):
 			self.x = - zoom//2
 			self.caseY += 1
@@ -122,7 +123,7 @@ class IA(Player):
 	def move(self, posX, posY, zoom):
 		self.y += posY
 		self.x += posX
-		
+
 		if(self.x > zoom//2):
 			self.x = - zoom//2
 			self.caseY += 1
