@@ -20,22 +20,16 @@ class Bonus:
 		surface.blit(self.sprite[self.bonus], ((self.caseX * zoom) + zoom//5,(self.caseY * zoom) + zoom//5))
 
 	def effect(self, player):
-		if(self.bonus == 0 and player.nbBombeMax > 1): 
+		if(self.bonus == 0 and player.nbBombeMax > 1):
 			player.nbBombeMax -= 1
-			print("bombe -1")
-		if(self.bonus == 1 and player.rayonBombe > 1): 
+		if(self.bonus == 1 and player.rayonBombe > 1):
 			player.rayonBombe -= 1
-			print("rayon -1")
-		if(self.bonus == 2 and player.lives > 1): 
+		if(self.bonus == 2 and player.lives > 1):
 			player.lives -=1
-			print("vie -1")
-		if(self.bonus == 3): 
+		if(self.bonus == 3):
 			player.nbBombeMax += 1
-			print("bombe +1")
-		if(self.bonus == 4): 
+		if(self.bonus == 4):
 			player.rayonBombe += 1
-			print("rayon +1")
-		if(self.bonus == 5): 
+		if(self.bonus == 5):
 			player.lives +=1
-			print("vie +1")
-		print(self.bonus)
+

@@ -85,10 +85,12 @@ VIT =ZOOM //16 # Vitesse de deplacement des joueurs
 FONT = pygame.font.SysFont("arial", 25)     # Definition de la police d'écriture
 CLOCK = pygame.time.Clock()                 # Mise en place de l'horloge interne
 
+
+LAST_DIRECTION = 0
 LIST_BOMB = []      # Liste contenant les bombes
 LIST_IA = []        # Liste contenant les IA en vie
-LIST_JOUEUR = []    # Liste contennat les joueurs en vie
-LIST_BONUS = []
+LIST_JOUEUR = []    # Liste contennant les joueurs en vie
+LIST_BONUS = []     # Liste contennant les bonus
 
 def init_jeu():
     global TAB, LIST_BOMB, LIST_IA,LIST_JOUEUR, JOUEUR_BLEU,JOUEUR_JAUNE,JOUEUR_ORANGE,JOUEUR_ROUGE,HAUTEUR,LARGEUR,LIST_BONUS
@@ -218,6 +220,8 @@ def Meurt(player):
     y = player.caseX
     if(TAB[y][x]==5):
         player.lives -= 1
+        if player.lives >= 1:
+            player.invincible = int(TIME- TIME_START) + 5
         if player.lives <= 0:
             if(player in LIST_JOUEUR):
                 LIST_JOUEUR.remove(player)
@@ -225,6 +229,14 @@ def Meurt(player):
                 LIST_IA.remove(player)
                 player.nbBombeMax = 0
                 #SON_MORT.play()
+
+def Invinciblility(player):
+    if player.invincible >= int(TIME- TIME_START):
+        player.lives = 999999999999999
+    elif player.invincible > 0:
+        player.lives = 1
+
+
 
 ## iaDanger(ia):
 #   Regarde la position de l'IA
@@ -504,6 +516,94 @@ def takeBonus(player):
             LIST_BONUS.remove(bonus)
             TAB[player.caseX][player.caseY]=0
 
+def deplacement():
+    global JOUEUR_BLEU
+
+    keysPressed = pygame.key.get_pressed()  # On retient les touches pressees
+
+    ## Mouvements du joueur:
+    #   On choisit la direction du sprite en fonction de sa position dans le tableau des sprites
+    #   On fait appelle a la fonction move pour changer les coordonnees et les sprites
+
+    possibleMove = getPossibleMove(JOUEUR_BLEU)
+
+    if(keysPressed[pygame.K_SPACE]):
+        if JOUEUR_BLEU in LIST_JOUEUR :
+            poseBombe(JOUEUR_BLEU)
+
+
+    if(keysPressed[pygame.K_UP] and keysPressed[pygame.K_RIGHT] and JOUEUR_BLEU.dir == (0,-1) and (1,0) in possibleMove):
+        JOUEUR_BLEU.move(VIT,0,ZOOM)
+        JOUEUR_BLEU.spriteDir = 2
+        JOUEUR_BLEU.dir = (1,0)
+        return
+
+    if(keysPressed[pygame.K_UP] and keysPressed[pygame.K_RIGHT] and JOUEUR_BLEU.dir == (1,0) and (0,-1) in possibleMove):
+        JOUEUR_BLEU.move(0,-VIT,ZOOM)
+        JOUEUR_BLEU.spriteDir = 3
+        JOUEUR_BLEU.dir = (0,-1)
+        return
+
+    if(keysPressed[pygame.K_UP] and keysPressed[pygame.K_LEFT] and JOUEUR_BLEU.dir == (-1,0) and (0,-1) in possibleMove):
+        JOUEUR_BLEU.move(0,-VIT,ZOOM)
+        JOUEUR_BLEU.spriteDir = 3
+        JOUEUR_BLEU.dir = (0,-1)
+        return
+
+    if(keysPressed[pygame.K_UP] and keysPressed[pygame.K_LEFT] and JOUEUR_BLEU.dir == (0,-1) and (-1,0) in possibleMove):
+        JOUEUR_BLEU.move(-VIT,0,ZOOM)
+        JOUEUR_BLEU.spriteDir = 1
+        JOUEUR_BLEU.dir = (-1,0)
+        return
+
+    if(keysPressed[pygame.K_DOWN] and keysPressed[pygame.K_RIGHT] and JOUEUR_BLEU.dir == (1,0) and (0,1) in possibleMove):
+        JOUEUR_BLEU.spriteDir = 0
+        JOUEUR_BLEU.move(0,VIT,ZOOM)
+        JOUEUR_BLEU.dir = (0,1)
+        return
+
+    if(keysPressed[pygame.K_DOWN] and keysPressed[pygame.K_RIGHT] and JOUEUR_BLEU.dir == (0,1) and (1,0) in possibleMove):
+        JOUEUR_BLEU.move(VIT,0,ZOOM)
+        JOUEUR_BLEU.spriteDir = 2
+        JOUEUR_BLEU.dir = (1,0)
+        return
+
+    if(keysPressed[pygame.K_DOWN] and keysPressed[pygame.K_LEFT] and JOUEUR_BLEU.dir == (0,1) and (-1,0) in possibleMove):
+        JOUEUR_BLEU.move(-VIT,0,ZOOM)
+        JOUEUR_BLEU.spriteDir = 1
+        JOUEUR_BLEU.dir = (-1,0)
+        return
+
+    if(keysPressed[pygame.K_DOWN] and keysPressed[pygame.K_LEFT] and JOUEUR_BLEU.dir == (-1,0) and (0,1) in possibleMove):
+        JOUEUR_BLEU.spriteDir = 0
+        JOUEUR_BLEU.move(0,VIT,ZOOM)
+        JOUEUR_BLEU.dir = (0,1)
+        return
+
+    if(keysPressed[pygame.K_DOWN] and (0,1) in possibleMove):
+        JOUEUR_BLEU.spriteDir = 0
+        JOUEUR_BLEU.move(0,VIT,ZOOM)
+        JOUEUR_BLEU.dir = (0,1)
+        return
+
+    if(keysPressed[pygame.K_UP] and (0,-1) in possibleMove):
+        JOUEUR_BLEU.move(0,-VIT,ZOOM)
+        JOUEUR_BLEU.spriteDir = 3
+        JOUEUR_BLEU.dir = (0,-1)
+        return
+
+    if(keysPressed[pygame.K_RIGHT] and (1,0) in possibleMove):
+        JOUEUR_BLEU.move(VIT,0,ZOOM)
+        JOUEUR_BLEU.spriteDir = 2
+        JOUEUR_BLEU.dir = (1,0)
+        return
+
+    if(keysPressed[pygame.K_LEFT] and (-1,0) in possibleMove):
+        JOUEUR_BLEU.move(-VIT,0,ZOOM)
+        JOUEUR_BLEU.spriteDir = 1
+        JOUEUR_BLEU.dir = (-1,0)
+        return
+
 
 #################################################################################
 ##
@@ -558,6 +658,11 @@ while not DONE:
             BLOCK_MIDDLE = pygame.transform.scale(pygame.image.load("images/blocks/stone2.png"),(ZOOM,ZOOM))
             pygame.display.flip()
             draw()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT: LAST_DIRECTION = 1
+            if event.key == pygame.K_RIGHT: LAST_DIRECTION = 2
+            if event.key == pygame.K_DOWN: LAST_DIRECTION = 3
+            if event.key == pygame.K_UP: LAST_DIRECTION = 4
 
         for joueur in LIST_JOUEUR:
             joueur.generateDist(TAB)
@@ -569,42 +674,18 @@ while not DONE:
     for ia in LIST_IA:
         moveIA(ia)
 
-    keysPressed = pygame.key.get_pressed()  # On retient les touches pressees
-
-    ## Mouvements du joueur:
-    #   On choisit la direction du sprite en fonction de sa position dans le tableau des sprites
-    #   On fait appelle a la fonction move pour changer les coordonnees et les sprites
-
-    possibleMove = getPossibleMove(JOUEUR_BLEU)
-
-    if(keysPressed[pygame.K_DOWN]  and (0,1) in possibleMove):
-        JOUEUR_BLEU.spriteDir = 0
-        JOUEUR_BLEU.move(0,VIT,ZOOM)
-
-    elif(keysPressed[pygame.K_UP] and (0,-1) in possibleMove):
-        JOUEUR_BLEU.move(0,-VIT,ZOOM)
-        JOUEUR_BLEU.spriteDir = 3
-
-    elif(keysPressed[pygame.K_RIGHT] and (1,0) in possibleMove):
-        JOUEUR_BLEU.move(VIT,0,ZOOM)
-        JOUEUR_BLEU.spriteDir = 2
-
-    elif(keysPressed[pygame.K_LEFT] and (-1,0) in possibleMove):
-        JOUEUR_BLEU.move(-VIT,0,ZOOM)
-        JOUEUR_BLEU.spriteDir = 1
-
-    if(keysPressed[pygame.K_SPACE]):
-        if JOUEUR_BLEU in LIST_JOUEUR :
-            poseBombe(JOUEUR_BLEU)
+    deplacement()
 
     for ia in LIST_IA:
         Meurt(ia)
+        Invinciblility(ia)
 
     #print()
     #for i in range(len(TAB)):
         #print(TAB[i])
 
     Meurt(JOUEUR_BLEU)
+    Invinciblility(JOUEUR_BLEU)
     if (JOUEUR_BLEU not in LIST_JOUEUR):
         SCREEN.fill(BLACK)
         jeu_fini = GameOver()
@@ -625,6 +706,7 @@ while not DONE:
         Init()
         draw()
         continue
+
 
 
     # A mettre quand le personnage est mort : pygame.mixer.music.stop()
