@@ -435,8 +435,7 @@ def moveIA(ia):
     else :
         possibleMove = getPossibleMove(ia)
         if((0,0) in possibleMove): possibleMove.remove((0,0))
-        if (ia.dir in possibleMove):
-            ia.move(ia.dir[0]*VIT, ia.dir[1]*VIT,ZOOM)
+        if (ia.dir in possibleMove): ia.move(ia.dir[0]*VIT, ia.dir[1]*VIT,ZOOM)
         else:
             poseBombe(ia)
             if(len(possibleMove) !=0 ):

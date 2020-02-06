@@ -158,6 +158,7 @@ class IA(Player):
 
 	def __init__(self,startX, startY, live, color, hauteur, zoom, direction):
 		super(IA,self).__init__(startX, startY, live, color, hauteur, zoom) 		# Reutilisation de l'instanciation de Player()
+		self.dir = direction
 		self.needToGoCenter = False											# Initiation d'un direction par defaut de l'IA
 
 	def move(self, posX, posY, zoom):
