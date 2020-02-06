@@ -85,6 +85,8 @@ VIT =ZOOM //16 # Vitesse de deplacement des joueurs
 FONT = pygame.font.SysFont("arial", 25)     # Definition de la police d'écriture
 CLOCK = pygame.time.Clock()                 # Mise en place de l'horloge interne
 
+
+LAST_DIRECTION = 0
 LIST_BOMB = []      # Liste contenant les bombes
 LIST_IA = []        # Liste contenant les IA en vie
 LIST_JOUEUR = []    # Liste contennant les joueurs en vie
@@ -119,7 +121,7 @@ def init_jeu():
     JOUEUR_BLEU = Player(1, 1,1, BLEU,int(ZOOM*(102/64)), ZOOM)
     JOUEUR_JAUNE = IA(POS_IA[0][0], POS_IA[0][1],1, JAUNE,int(ZOOM*(102/64)), ZOOM, (0,-1))
     JOUEUR_ORANGE = IA(POS_IA[1][0], POS_IA[1][1],1, ORANGE,int(ZOOM*(102/64)), ZOOM,(1,0))
-    JOUEUR_ROUGE = IA(POS_IA[2][0], POS_IA[2][1],1, ROUGE,int(ZOOM*(102/64)), ZOOM,(-1,0))
+    JOUEUR_ROUGE = IA(POS_IA[2][0], POS_IA[2][1],1, ROUGE,int(ZOOM*(102/64)), ZOOM, (-1,0))
 
 init_jeu()
 TIME = time.time()
@@ -499,6 +501,94 @@ def takeBonus(player):
             LIST_BONUS.remove(bonus)
             TAB[player.caseX][player.caseY]=0
 
+def deplacement():
+    global JOUEUR_BLEU
+
+    keysPressed = pygame.key.get_pressed()  # On retient les touches pressees
+
+    ## Mouvements du joueur:
+    #   On choisit la direction du sprite en fonction de sa position dans le tableau des sprites
+    #   On fait appelle a la fonction move pour changer les coordonnees et les sprites
+
+    possibleMove = getPossibleMove(JOUEUR_BLEU)
+
+    if(keysPressed[pygame.K_SPACE]):
+        if JOUEUR_BLEU in LIST_JOUEUR :
+            poseBombe(JOUEUR_BLEU)
+
+
+    if(keysPressed[pygame.K_UP] and keysPressed[pygame.K_RIGHT] and JOUEUR_BLEU.dir == (0,-1) and (1,0) in possibleMove):
+        JOUEUR_BLEU.move(VIT,0,ZOOM)
+        JOUEUR_BLEU.spriteDir = 2
+        JOUEUR_BLEU.dir = (1,0)
+        return
+
+    if(keysPressed[pygame.K_UP] and keysPressed[pygame.K_RIGHT] and JOUEUR_BLEU.dir == (1,0) and (0,-1) in possibleMove):
+        JOUEUR_BLEU.move(0,-VIT,ZOOM)
+        JOUEUR_BLEU.spriteDir = 3
+        JOUEUR_BLEU.dir = (0,-1)
+        return
+
+    if(keysPressed[pygame.K_UP] and keysPressed[pygame.K_LEFT] and JOUEUR_BLEU.dir == (-1,0) and (0,-1) in possibleMove):
+        JOUEUR_BLEU.move(0,-VIT,ZOOM)
+        JOUEUR_BLEU.spriteDir = 3
+        JOUEUR_BLEU.dir = (0,-1)
+        return
+
+    if(keysPressed[pygame.K_UP] and keysPressed[pygame.K_LEFT] and JOUEUR_BLEU.dir == (0,-1) and (-1,0) in possibleMove):
+        JOUEUR_BLEU.move(-VIT,0,ZOOM)
+        JOUEUR_BLEU.spriteDir = 1
+        JOUEUR_BLEU.dir = (-1,0)
+        return
+
+    if(keysPressed[pygame.K_DOWN] and keysPressed[pygame.K_RIGHT] and JOUEUR_BLEU.dir == (1,0) and (0,1) in possibleMove):
+        JOUEUR_BLEU.spriteDir = 0
+        JOUEUR_BLEU.move(0,VIT,ZOOM)
+        JOUEUR_BLEU.dir = (0,1)
+        return
+
+    if(keysPressed[pygame.K_DOWN] and keysPressed[pygame.K_RIGHT] and JOUEUR_BLEU.dir == (0,1) and (1,0) in possibleMove):
+        JOUEUR_BLEU.move(VIT,0,ZOOM)
+        JOUEUR_BLEU.spriteDir = 2
+        JOUEUR_BLEU.dir = (1,0)
+        return
+
+    if(keysPressed[pygame.K_DOWN] and keysPressed[pygame.K_LEFT] and JOUEUR_BLEU.dir == (0,1) and (-1,0) in possibleMove):
+        JOUEUR_BLEU.move(-VIT,0,ZOOM)
+        JOUEUR_BLEU.spriteDir = 1
+        JOUEUR_BLEU.dir = (-1,0)
+        return
+
+    if(keysPressed[pygame.K_DOWN] and keysPressed[pygame.K_LEFT] and JOUEUR_BLEU.dir == (-1,0) and (0,1) in possibleMove):
+        JOUEUR_BLEU.spriteDir = 0
+        JOUEUR_BLEU.move(0,VIT,ZOOM)
+        JOUEUR_BLEU.dir = (0,1)
+        return
+
+    if(keysPressed[pygame.K_DOWN] and (0,1) in possibleMove):
+        JOUEUR_BLEU.spriteDir = 0
+        JOUEUR_BLEU.move(0,VIT,ZOOM)
+        JOUEUR_BLEU.dir = (0,1)
+        return
+
+    if(keysPressed[pygame.K_UP] and (0,-1) in possibleMove):
+        JOUEUR_BLEU.move(0,-VIT,ZOOM)
+        JOUEUR_BLEU.spriteDir = 3
+        JOUEUR_BLEU.dir = (0,-1)
+        return
+
+    if(keysPressed[pygame.K_RIGHT] and (1,0) in possibleMove):
+        JOUEUR_BLEU.move(VIT,0,ZOOM)
+        JOUEUR_BLEU.spriteDir = 2
+        JOUEUR_BLEU.dir = (1,0)
+        return
+
+    if(keysPressed[pygame.K_LEFT] and (-1,0) in possibleMove):
+        JOUEUR_BLEU.move(-VIT,0,ZOOM)
+        JOUEUR_BLEU.spriteDir = 1
+        JOUEUR_BLEU.dir = (-1,0)
+        return
+
 
 #################################################################################
 ##
@@ -553,39 +643,23 @@ while not DONE:
             BLOCK_MIDDLE = pygame.transform.scale(pygame.image.load("images/blocks/stone2.png"),(ZOOM,ZOOM))
             pygame.display.flip()
             draw()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT: LAST_DIRECTION = 1
+            if event.key == pygame.K_RIGHT: LAST_DIRECTION = 2
+            if event.key == pygame.K_DOWN: LAST_DIRECTION = 3
+            if event.key == pygame.K_UP: LAST_DIRECTION = 4
+
+        for joueur in LIST_JOUEUR:
+            joueur.generateDist(TAB)
+
+
 
     grilleBombe()
     miseDistance()
     for ia in LIST_IA:
         moveIA(ia)
 
-    keysPressed = pygame.key.get_pressed()  # On retient les touches pressees
-
-    ## Mouvements du joueur:
-    #   On choisit la direction du sprite en fonction de sa position dans le tableau des sprites
-    #   On fait appelle a la fonction move pour changer les coordonnees et les sprites
-
-    possibleMove = getPossibleMove(JOUEUR_BLEU)
-
-    if(keysPressed[pygame.K_DOWN]  and (0,1) in possibleMove):
-        JOUEUR_BLEU.spriteDir = 0
-        JOUEUR_BLEU.move(0,VIT,ZOOM)
-
-    elif(keysPressed[pygame.K_UP] and (0,-1) in possibleMove):
-        JOUEUR_BLEU.move(0,-VIT,ZOOM)
-        JOUEUR_BLEU.spriteDir = 3
-
-    elif(keysPressed[pygame.K_RIGHT] and (1,0) in possibleMove):
-        JOUEUR_BLEU.move(VIT,0,ZOOM)
-        JOUEUR_BLEU.spriteDir = 2
-
-    elif(keysPressed[pygame.K_LEFT] and (-1,0) in possibleMove):
-        JOUEUR_BLEU.move(-VIT,0,ZOOM)
-        JOUEUR_BLEU.spriteDir = 1
-
-    if(keysPressed[pygame.K_SPACE]):
-        if JOUEUR_BLEU in LIST_JOUEUR :
-            poseBombe(JOUEUR_BLEU)
+    deplacement()
 
     for ia in LIST_IA:
         Meurt(ia)
