@@ -91,45 +91,6 @@ LIST_BOMB = []      # Liste contenant les bombes
 LIST_IA = []        # Liste contenant les IA en vie
 LIST_JOUEUR = []    # Liste contennant les joueurs en vie
 LIST_BONUS = []     # Liste contennant les bonus
-
-# def init_jeu():
-#     global TAB, LIST_BOMB, LIST_IA,LIST_JOUEUR, JOUEUR_BLEU,JOUEUR_JAUNE,JOUEUR_ORANGE,JOUEUR_ROUGE,HAUTEUR,LARGEUR,LIST_BONUS
-#     SON_FOND.play(loops=-1, maxtime = 0, fade_ms=0)
-#     TAB = [ [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-#             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-#             [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
-#             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-#             [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
-#             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-#             [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
-#             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-#             [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
-#             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-#             [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
-#             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-#             [1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
-#             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-#             [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
-#
-#     HAUTEUR = len(TAB)     # Nombre de cases en hauteur
-#     LARGEUR = len(TAB[0])  # Nombre de cases en largeur
-#     LIST_JOUEUR.clear()
-#     LIST_IA.clear()
-#     LIST_BOMB.clear()
-#     LIST_BONUS.clear()
-#     POS_IA = [(HAUTEUR-2, LARGEUR-2), (HAUTEUR-2, 1), (1, LARGEUR-2)]
-#     JOUEUR_BLEU = Player(1, 1,1, BLEU,int(ZOOM*(102/64)), ZOOM)
-#     JOUEUR_JAUNE = IA(POS_IA[0][0], POS_IA[0][1],1, JAUNE,int(ZOOM*(102/64)), ZOOM, (0,-1))
-#     JOUEUR_ORANGE = IA(POS_IA[1][0], POS_IA[1][1],1, ORANGE,int(ZOOM*(102/64)), ZOOM,(1,0))
-#     JOUEUR_ROUGE = IA(POS_IA[2][0], POS_IA[2][1],1, ROUGE,int(ZOOM*(102/64)), ZOOM, (-1,0))
-#
-# init_jeu()
-# TIME = time.time()
-#
-# DONE = False                                # Variable qui indique si le jeu est terminé
-#
-# GRILLE_BOMBE = None     # Grille contenant les distances aux bombes sur la map
-
 #################################################################################
 ##
 ##  Fonctions principales
@@ -430,12 +391,26 @@ def iaFuite(ia) :
 #   Regarde en premiere si l'IA est en danger = dans le rayon d'explosion de la bombe
 #   Si non, elle se dirige dans une direction jusqu'à rencontrer un mur
 def moveIA(ia):
+    iaBloque(ia)
     if iaDanger(ia) :  iaFuite(ia)
+    elif not ia.bloqued:
+            if(ia.x != 0 or ia.y !=0): ia.needToGoCenter = True
+            else:ia.needToGoCenter = False
+            coup = direcionBonus(ia.caseX,ia.caseY)
+            if(not ia.needToGoCenter):
+                ia.dir = coup
+
+                ia.move(ia.dir[0]*VIT, ia.dir[1]*VIT,ZOOM)
+                ia.setRightDir()
+            else:
+                ia.move(ia.dir[0]*VIT, ia.dir[1]*VIT,ZOOM)
     else :
         possibleMove = getPossibleMove(ia)
         if((0,0) in possibleMove): possibleMove.remove((0,0))
         if (ia.dir in possibleMove):
-            ia.move(ia.dir[0]*VIT, ia.dir[1]*VIT,ZOOM)
+
+                ia.move(ia.dir[0]*VIT, ia.dir[1]*VIT,ZOOM)
+                ia.setRightDir()
         else:
             poseBombe(ia)
             if(len(possibleMove) !=0 ):
@@ -490,23 +465,60 @@ def grilleBombe():
             if (TAB[y][x] == 1 or TAB[y][x] == 2 or TAB[y][x] == 3): GRILLE_BOMBE[y][x] = 1000
             if (TAB[y][x] == 0): GRILLE_BOMBE[y][x] = 100
 
+def GrilleDistBonus():
+    global GRILLE_BONUS
+    GRILLE_BONUS = copy.deepcopy(TAB)
+    for x in range(LARGEUR):
+        for y in range(HAUTEUR):
+            if (TAB[y][x] == 6): GRILLE_BONUS[y][x] = 0
+            elif (TAB[y][x] == 1 or TAB[y][x] == 2 or TAB[y][x] == 3): GRILLE_BONUS[y][x] = 1000
+            else: GRILLE_BONUS[y][x] = 100
+
 
 ## miseDistance():
 #   Fonction qui permet de mettre à distance les cases de la grille bombe
 #   Si la case se trouve à cote de la bombe elle sera mise à 1 (etc)
-def miseDistance():
-    global GRILLE_BOMBE
+def miseDistance(grille):
     done = True
     while done:
         done = False
         for y in range(HAUTEUR):
             for x in range(LARGEUR):
-                if (GRILLE_BOMBE[y][x] == 1000): continue
-                if (GRILLE_BOMBE[y][x] >= 0):
-                    mini = min(GRILLE_BOMBE[y][x+1], GRILLE_BOMBE[y][x-1], GRILLE_BOMBE[y+1][x], GRILLE_BOMBE[y-1][x])
-                    if (mini +1 < GRILLE_BOMBE[y][x]):
-                        GRILLE_BOMBE[y][x] = mini +1
+                if (grille[y][x] == 1000): continue
+                if (grille[y][x] >= 0):
+                    mini = min(grille[y][x+1], grille[y][x-1], grille[y+1][x], grille[y-1][x])
+                    if (mini +1 < grille[y][x]):
+                        grille[y][x] = mini +1
                         done = True
+
+def direcionBonus(x,y):
+    global GRILLE_BONUS
+    distmin = 10000
+    coup = (x, y)
+    if (GRILLE_BONUS[x+1][y] < distmin):
+        distmin = GRILLE_BONUS[x+1][y]
+
+        coup = (0, 1)
+    if (GRILLE_BONUS[x-1][y] < distmin):
+        distmin = GRILLE_BONUS[x-1][y]
+
+        coup = (0, -1)
+    if (GRILLE_BONUS[x][y+1] < distmin):
+        distmin = GRILLE_BONUS[x][y+1]
+
+        coup = (1, 0)
+    if (GRILLE_BONUS[x][y-1] < distmin):
+        distmin = GRILLE_BONUS[x][y-1]
+
+        coup = (-1, 0)
+    return coup
+
+def iaBloque(ia):
+    x = ia.caseX; y = ia.caseY
+    if((GRILLE_BONUS[x+1][y] or GRILLE_BONUS[x-1][y] or GRILLE_BONUS[x][y+1] or GRILLE_BONUS[x][y-1])==100):
+        ia.bloqued =True
+    else:
+        ia.bloqued = False
 
 def takeBonus(player):
     global TAB
@@ -657,7 +669,9 @@ while not DONE:
 
 
     grilleBombe()
-    miseDistance()
+    miseDistance(GRILLE_BOMBE)
+    GrilleDistBonus()
+    miseDistance(GRILLE_BONUS)
     for ia in LIST_IA:
         moveIA(ia)
 
