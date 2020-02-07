@@ -118,7 +118,7 @@ class Player:
 				if (tab[y][x] == 1 or tab[y][x] == 2):
 					self.cartedist[y][x] = 1000
 					continue
-				if (tab[y][x] == 0 or tab[y][x] == 3 or tab[y][x] == 4 or tab[y][x] == 5):
+				if (tab[y][x] == 0 or tab[y][x] == 3 or tab[y][x] == 4 or tab[y][x] == 5 or tab[y][x] == 6):
 					self.cartedist[y][x] = 100
 					continue
 		while done:
@@ -187,3 +187,4 @@ class IA(Player):
 			self.spriteOffset = 0
 		else:
 			self.spriteOffset += 1
+		self.setRightDir()
