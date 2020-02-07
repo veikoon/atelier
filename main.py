@@ -91,15 +91,16 @@ LIST_BOMB = []      # Liste contenant les bombes
 LIST_IA = []        # Liste contenant les IA en vie
 LIST_JOUEUR = []    # Liste contennant les joueurs en vie
 LIST_BONUS = []     # Liste contennant les bonus
+
 #################################################################################
 ##
 ##  Fonctions principales
 
-## draw():
+## dessine():
 #   Parcourt TAB et place les images aux coordonnees donnees
 #   en fonction de la valeur des cases du tableau
 #   Puis place les joueurs
-def draw():
+def dessine():
     for i in range(LARGEUR):
         for j in range(HAUTEUR):
             if(TAB[j][i] == 0 or TAB[j][i] == 4 or TAB[j][i] ==  5 or TAB[j][i] == 6): SCREEN.blit(GRASS,(i*ZOOM,j*ZOOM))
@@ -108,29 +109,29 @@ def draw():
             if(TAB[j][i] == 3): SCREEN.blit(BLOCK_BRICK,(i*ZOOM,j*ZOOM))
 
     for bonus in LIST_BONUS:
-        bonus.draw(SCREEN, ZOOM)
+        bonus.dessine(SCREEN, ZOOM)
 
     for bomb in LIST_BOMB:
         bomb.anim(TIME)
-        bomb.draw(SCREEN)
+        bomb.dessine(SCREEN)
         removeBomb()
         for i in range(bomb.rayon):
-            bomb.drawExplo(SCREEN,TAB,LIST_BOMB, i,(1+i),ZOOM, LIST_BONUS)
-            bomb.drawExplo(SCREEN,TAB, LIST_BOMB, i,-(1+i),ZOOM, LIST_BONUS)
+            bomb.dessineExplo(SCREEN,TAB,LIST_BOMB, i,(1+i),ZOOM, LIST_BONUS)
+            bomb.dessineExplo(SCREEN,TAB, LIST_BOMB, i,-(1+i),ZOOM, LIST_BONUS)
 
     for joueur in LIST_JOUEUR:
 
-        joueur.draw(SCREEN, ZOOM//2, int(ZOOM*(102/ZOOM)), ZOOM)
+        joueur.dessine(SCREEN, ZOOM//2, int(ZOOM*(102/ZOOM)), ZOOM)
 
-    SCREEN.blit(FONT.render("Temps : " + str(int(TIME- TIME_START)), True, BLACK), (900,15))
+    SCREEN.blit(FONT.render("Temps : " + str(int(TIME- TIME_START)) + "  PV : "+str(JOUEUR_BLEU.lives), True, BLACK), (900,15))
 
     pygame.display.flip()       # Rafraichis l'affichage de Pygame
 
 
-## generate():
+## generateBrick():
 #   Genere les cases destructibles aleatoirement
 #   Les maps changent donc à chaque jeux
-def generate():
+def generateBrick():
     for i in range(LARGEUR):
         for j in range(HAUTEUR):
             if(TAB[j][i] == 0 and random.randrange(2)): TAB[j][i] = 3
@@ -180,23 +181,19 @@ def Meurt(player):
     x = player.caseY
     y = player.caseX
     if(TAB[y][x]==5):
-        player.lives -= 1
-        if player.lives >= 1:
-            player.invincible = int(TIME- TIME_START) + 5
-        if player.lives <= 0:
-            if(player in LIST_JOUEUR):
-                LIST_JOUEUR.remove(player)
-            if(player in LIST_IA):
-                LIST_IA.remove(player)
-                player.nbBombeMax = 0
-                #SON_MORT.play()
+        if player.invincible == 0:
+        	player.lives -= 1
+        	if player.lives >= 1: player.invincible = time.time()
+        	else:
+	            if(player in LIST_JOUEUR):
+	                LIST_JOUEUR.remove(player)
+	            if(player in LIST_IA):
+	                LIST_IA.remove(player)
+	                player.nbBombeMax = 0
+	                #SON_MORT.play()
 
 def Invinciblility(player):
-    if player.invincible >= int(TIME- TIME_START):
-        player.lives = 999999999999999
-    elif player.invincible > 0:
-        player.lives = 1
-        player.invincible = 0
+    if ((player.invincible + 5) - TIME) <= 0: player.invincible = 0
 
 
 
@@ -453,10 +450,10 @@ def getPossibleMove(player):
 
     return possibleMove
 
-## grilleBombe():
+## grilleDistBombe():
 #   Grille contenantles murs et les bombes
 #   Elle permet ensuite de savoir si les ia sont en danger ou non
-def grilleBombe():
+def grilleDistBombe():
     global GRILLE_BOMBE
     GRILLE_BOMBE = copy.deepcopy(TAB)
     for x in range(LARGEUR):
@@ -465,7 +462,7 @@ def grilleBombe():
             if (TAB[y][x] == 1 or TAB[y][x] == 2 or TAB[y][x] == 3): GRILLE_BOMBE[y][x] = 1000
             if (TAB[y][x] == 0): GRILLE_BOMBE[y][x] = 100
 
-def GrilleDistBonus():
+def grilleDistBonus():
     global GRILLE_BONUS
     GRILLE_BONUS = copy.deepcopy(TAB)
     for x in range(LARGEUR):
@@ -515,10 +512,8 @@ def direcionBonus(x,y):
 
 def iaBloque(ia):
     x = ia.caseX; y = ia.caseY
-    if((GRILLE_BONUS[x+1][y] or GRILLE_BONUS[x-1][y] or GRILLE_BONUS[x][y+1] or GRILLE_BONUS[x][y-1])==100):
-        ia.bloqued =True
-    else:
-        ia.bloqued = False
+    if(GRILLE_BONUS[x][y]==100): ia.bloqued =True
+    else: ia.bloqued = False
 
 def takeBonus(player):
     global TAB
@@ -571,7 +566,7 @@ def interactionJoueur():
 ##
 ##  Initialisation
 
-def Init():
+def init():
     global TAB, LIST_BOMB, LIST_IA,LIST_JOUEUR, JOUEUR_BLEU,JOUEUR_JAUNE,JOUEUR_ORANGE,JOUEUR_ROUGE,HAUTEUR,LARGEUR,LIST_BONUS, TIME,DONE
     SON_FOND.play(loops=-1, maxtime = 0, fade_ms=0)
     TAB = [ [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
@@ -626,12 +621,12 @@ def Init():
 
     LIST_JOUEUR.append(JOUEUR_BLEU)
 
-    generate()
+    generateBrick()
 #################################################################################
 ##
 ##   Boucle principale
 # --------  Main -----------
-Init()
+init()
 while not DONE:
     event = pygame.event.Event(pygame.USEREVENT)
     pygame.event.pump()
@@ -656,7 +651,7 @@ while not DONE:
             BLOCK = pygame.transform.scale(pygame.image.load("images/blocks/stone.png"),(ZOOM,ZOOM))
             BLOCK_MIDDLE = pygame.transform.scale(pygame.image.load("images/blocks/stone2.png"),(ZOOM,ZOOM))
             pygame.display.flip()
-            draw()
+            dessine()
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT: LAST_DIRECTION = 1
             if event.key == pygame.K_RIGHT: LAST_DIRECTION = 2
@@ -668,25 +663,25 @@ while not DONE:
 
 
 
-    grilleBombe()
+    grilleDistBombe()
     miseDistance(GRILLE_BOMBE)
-    GrilleDistBonus()
+    grilleDistBonus()
     miseDistance(GRILLE_BONUS)
     for ia in LIST_IA:
         moveIA(ia)
 
     interactionJoueur()
 
-    for ia in LIST_IA:
-        Meurt(ia)
-        Invinciblility(ia)
+    for joueur in LIST_JOUEUR:
+        Meurt(joueur)
+        Invinciblility(joueur)
 
     #print()
     #for i in range(len(TAB)):
         #print(TAB[i])
 
-    Meurt(JOUEUR_BLEU)
-    Invinciblility(JOUEUR_BLEU)
+
+
     if (JOUEUR_BLEU not in LIST_JOUEUR):
         SCREEN.fill(BLACK)
         jeu_fini = GameOver()
@@ -699,17 +694,15 @@ while not DONE:
 
     SCREEN.fill(BLACK)
     TIME = time.time()
-    draw()   # On redessine l'affichage et on actualise
+    dessine()   # On redessine l'affichage et on actualise
     CLOCK.tick(30) # Limite d'image par seconde
     if jeu_fini == True:
         jeu_fini = False
+
         #init_jeu()
-        Init()
-        draw()
+        init()
+        dessine()
         continue
-
-
-
     # A mettre quand le personnage est mort : pygame.mixer.music.stop()
 
 

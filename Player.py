@@ -31,10 +31,9 @@ class Player:
 		self.nbBombe = 0				# Nombre de bombes déjà posé par le personnage
 		self.nbBombeMax = 1			# Nombre de bombes maximal que peut poser le personnage en meme temps
 		self.rayonBombe = 1			# Rayon d'explosion de la bombe
-		self.invincible = -10000         # Rend le player invincible quand il rencontre une bombe et qu'il lui reste encore une vie ou plus
+		self.invincible = 0         # Rend le player invincible quand il rencontre une bombe et qu'il lui reste encore une vie ou plus
 		self.getSprite(hauteur, zoom) 	# Avoir le spoite du personnage de la bonne taille
 		self.dir = (0,0)
-		self.bloque = False
 
 
 	## getSprite(self, hauteur, zoom):
@@ -54,11 +53,11 @@ class Player:
 		self.sprite = Tab
 
 
-	##	draw(self, surface, largeurPerso, hauteurPerso):
+	##	dessine(self, surface, largeurPerso, hauteurPerso):
 	#	Permet de dessiner le personnage dont les coordonnees sont au milieu de ses pieds
 	#	tandis que le jeu dessine les images depuis leur coin superieur gauche:
 	#	(largeurPerso / 2 = 32 et hauteurPerso = 102)
-	def draw(self, surface, largeurPerso, hauteurPerso, zoom):
+	def dessine(self, surface, largeurPerso, hauteurPerso, zoom):
 		surface.blit(self.sprite[self.spriteDir][self.spriteCount], ((self.caseY * zoom) + self.x - largeurPerso + zoom//2,(self.caseX * zoom) + self.y - hauteurPerso + zoom//2))
 
 
@@ -160,7 +159,8 @@ class IA(Player):
 	def __init__(self,startX, startY, live, color, hauteur, zoom, direction):
 		super(IA,self).__init__(startX, startY, live, color, hauteur, zoom) 		# Reutilisation de l'instanciation de Player()
 		self.dir = direction
-		self.needToGoCenter = False											# Initiation d'un direction par defaut de l'IA
+		self.needToGoCenter = False													# Initiation d'un direction par defaut de l'IA
+		self.bloque = False
 
 	def move(self, posX, posY, zoom):
 		self.y += posY
