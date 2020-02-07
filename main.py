@@ -387,43 +387,16 @@ def iaFuite(ia) :
 #   S'occupe du deplacement principal des IA
 #   Regarde en premiere si l'IA est en danger = dans le rayon d'explosion de la bombe
 #   Si non, elle se dirige dans une direction jusqu'à rencontrer un mur
-def moveIA(ia):
-	iaBloque(ia)
-	if iaDanger(ia) :  iaFuite(ia)
-	elif not ia.bloqued:
-			if(ia.x != 0 or ia.y !=0): ia.needToGoCenter = True
-			else:ia.needToGoCenter = False
-			coup = direcionBonus(ia.caseX,ia.caseY)
-			if(not ia.needToGoCenter):
-				ia.dir = coup
 
-				ia.move(ia.dir[0]*VIT, ia.dir[1]*VIT,ZOOM)
-				ia.setRightDir()
-			else:
-				ia.move(ia.dir[0]*VIT, ia.dir[1]*VIT,ZOOM)
-	else :
-		possibleMove = getPossibleMove(ia)
-		if((0,0) in possibleMove): possibleMove.remove((0,0))
-		if (ia.dir in possibleMove):
-
-				ia.move(ia.dir[0]*VIT, ia.dir[1]*VIT,ZOOM)
-				ia.setRightDir()
-		else:
-			poseBombe(ia)
-			if(len(possibleMove) !=0 ):
-				deplacement_ia = random.randrange(len(possibleMove))
-				ia.dir = possibleMove[deplacement_ia]
-				ia.setRightDir()
-			else:
-				ia.dir = (0,0)
 
 def normale(ia):
 	if iaDanger(ia): iaFuite(ia)
 	else:
 		if(ia.x != 0 or ia.y !=0): ia.needToGoCenter = True
 		else:ia.needToGoCenter = False
+		distJoueurCloser = getCloserPlayer(ia)[0]
+		if (distJoueurCloser <= ia.rayonBombe) : poseBombe(ia)
 		if(not ia.needToGoCenter):
-			distJoueurCloser = getCloserPlayer(ia)[0]
 			distBonus = GRILLE_BONUS[ia.caseX][ia.caseY]
 			possibleMove = getPossibleMove(ia)
 			if ((0,0) in possibleMove): possibleMove.remove((0,0))
@@ -432,20 +405,84 @@ def normale(ia):
 				if (dirBonus in possibleMove):
 					ia.dir = dirBonus
 			else:
-				joueurCloser = getCloserPlayer(ia)[1]
-				caseMin = 1000
-				for dire in possibleMove:
-					if (joueurCloser.cartedist[ia.caseX + dire[0]][ia.caseY + dire[1]] < caseMin):
-						caseMin = joueurCloser.cartedist[ia.caseX + dire[0]][ia.caseY + dire[1]]
-						ia.dir = dire
-				if(TAB[ia.caseX + ia.dir[0]][ia.caseY + ia.dir[1]] == 3):
-					print(ia.dir)
+				if(TAB[ia.caseX + ia.dir[1]][ia.caseY + ia.dir[0]] == 3):
 					poseBombe(ia)
 					return
+				else:
+					joueurCloser = getCloserPlayer(ia)[1]
+					caseMin = 1000
+					for dire in possibleMove:
+						if (joueurCloser.cartedist[ia.caseX + dire[1]][ia.caseY + dire[0]] < caseMin):
+							caseMin = joueurCloser.cartedist[ia.caseX + dire[1]][ia.caseY + dire[0]]
+							ia.dir = dire
 			ia.move(ia.dir[0]*VIT,ia.dir[1]*VIT,ZOOM)
 		else:
 			ia.move(ia.dir[0]*VIT,ia.dir[1]*VIT,ZOOM)
 
+def tueur(ia):
+	if iaDanger(ia): iaFuite(ia)
+	else:
+		if(ia.x != 0 or ia.y !=0): ia.needToGoCenter = True
+		else:ia.needToGoCenter = False
+		if (JOUEUR_BLEU.cartedist[ia.caseX][ia.caseY] <= ia.rayonBombe) : poseBombe(ia)
+
+		if(not ia.needToGoCenter):
+			possibleMove = getPossibleMove(ia)
+			if ((0,0) in possibleMove): possibleMove.remove((0,0))
+			if(TAB[ia.caseX + ia.dir[1]][ia.caseY + ia.dir[0]] == 3):
+				poseBombe(ia)
+				return
+			else:
+				caseMin = 1000
+				for dire in possibleMove:
+					if (JOUEUR_BLEU.cartedist[ia.caseX + dire[1]][ia.caseY + dire[0]] < caseMin):
+						caseMin = JOUEUR_BLEU.cartedist[ia.caseX + dire[1]][ia.caseY + dire[0]]
+						ia.dir = dire
+			ia.move(ia.dir[0]*VIT,ia.dir[1]*VIT,ZOOM)
+		else:
+			ia.move(ia.dir[0]*VIT,ia.dir[1]*VIT,ZOOM)
+
+def fuyarde(ia):
+	if iaDanger(ia): iaFuite(ia)
+	else:
+		if(ia.x != 0 or ia.y !=0): ia.needToGoCenter = True
+		else:ia.needToGoCenter = False
+
+		distJoueurCloser = getCloserPlayer(ia)[0]
+
+		if(not ia.needToGoCenter):
+			distBonus = GRILLE_BONUS[ia.caseX][ia.caseY]
+			possibleMove = getPossibleMove(ia)
+			if ((0,0) in possibleMove): possibleMove.remove((0,0))
+			joueurCloser = getCloserPlayer(ia)[1]
+			if distJoueurCloser <= 5:
+				caseMax = 0
+				for dep in possibleMove:
+					if(joueurCloser.cartedist[ia.caseX + dep[1]][ia.caseY + dep[0]] > caseMax):
+						caseMax = joueurCloser.cartedist[ia.caseX + dep[1]][ia.caseY + dep[0]]
+						ia.dir = dep
+			elif bonusDisponnible(ia): 
+				direction = direcionBonus(ia.caseX,ia.caseY)
+				if (direction in possibleMove):
+					ia.dir = direction
+			else:
+				grilleDistBrique()
+				miseDistance(GRILLE_BRIQUE)
+				if(GRILLE_BRIQUE[ia.caseX][ia.caseY]==1):
+					poseBombe(ia)
+					return
+				else:
+					caseMin = 100
+					for dep in possibleMove:
+						if(GRILLE_BRIQUE[ia.caseX + dep[1]][ia.caseY + dep[0]] < caseMin):
+							caseMin = GRILLE_BRIQUE[ia.caseX + dep[1]][ia.caseY + dep[0]]
+							ia.dir = dep
+
+			ia.move(ia.dir[0]*VIT,ia.dir[1]*VIT,ZOOM)
+		else:
+			ia.move(ia.dir[0]*VIT,ia.dir[1]*VIT,ZOOM)
+
+def bonusDisponnible(joueur): return GRILLE_BONUS[joueur.caseX][joueur.caseY] < 100
 
 
 ## getTabPos(x,y):
@@ -501,6 +538,15 @@ def grilleDistBonus():
 			if (TAB[y][x] == 6): GRILLE_BONUS[y][x] = 0
 			elif (TAB[y][x] == 1 or TAB[y][x] == 2 or TAB[y][x] == 3): GRILLE_BONUS[y][x] = 1000
 			else: GRILLE_BONUS[y][x] = 100
+
+def grilleDistBrique():
+	global GRILLE_BRIQUE
+	GRILLE_BRIQUE = copy.deepcopy(TAB)
+	for x in range(LARGEUR):
+		for y in range(HAUTEUR):
+			if (TAB[y][x] == 3): GRILLE_BRIQUE[y][x] = 0
+			elif (TAB[y][x] == 1 or TAB[y][x] == 2): GRILLE_BRIQUE[y][x] = 1000
+			else: GRILLE_BRIQUE[y][x] = 100
 
 
 ## miseDistance():
@@ -634,6 +680,8 @@ def init():
 	DONE = False                                # Variable qui indique si le jeu est terminé
 
 	GRILLE_BOMBE = None     # Grille contenant les distances aux bombes sur la map
+	GRILLE_BRIQUE = None
+	GRILLE_BONUS = None
 
 	SCREEN.fill(BLACK)
 	MenuScreen()
@@ -699,7 +747,9 @@ while not DONE:
 	grilleDistBonus()
 	miseDistance(GRILLE_BONUS)
 
-	normale(JOUEUR_ORANGE)
+	fuyarde(JOUEUR_ROUGE)
+	tueur(JOUEUR_ORANGE)
+	normale(JOUEUR_JAUNE)
 
 	interactionJoueur()
 
