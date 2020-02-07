@@ -335,6 +335,9 @@ def victory():
     jeu_fini = False
     SON_FOND.stop()
     #SON_VICTOIRE.play()
+    with open("scores.txt","a") as fichier :
+        fichier.write(str(TIME - TIME_START) + "\n")
+        fichier.close()
 
     while not done2:
         event = pygame.event.Event(pygame.USEREVENT)
@@ -357,9 +360,7 @@ def victory():
         SCREEN.blit(VICTOIRE,(0,0))
         pygame.display.flip()
 
-    with open("scores.txt","a") as fichier :
-        fichier.write(str(TIME - TIME_START) + "\n")
-        fichier.close()
+
 
 ## iaFuite(ia):
 #   Regarde les deplacement possible de l'IA
