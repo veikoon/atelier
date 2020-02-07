@@ -123,7 +123,8 @@ def dessine():
 
 		joueur.dessine(SCREEN, ZOOM//2, int(ZOOM*(102/ZOOM)), ZOOM)
 
-	SCREEN.blit(FONT.render("Temps : " + str(int(TIME- TIME_START)), True, BLACK), (900,15))
+
+	SCREEN.blit(FONT.render("Temps : " + str(int(TIME- TIME_START)) + "  PV : "+str(JOUEUR_BLEU.lives), True, BLACK), (900,15))
 
 	pygame.display.flip()       # Rafraichis l'affichage de Pygame
 
@@ -217,6 +218,7 @@ def getCloserPlayer(player):
 	return (dist_min, joueurProche)
 
 def MenuScreen():
+
 	global screen,DONE,clock, arrow_sprite
 	done2 = False
 	done = False
@@ -225,11 +227,10 @@ def MenuScreen():
 	yes = True
 	no = False
 	arrow = {}
-	arrow['x']= 150
-	arrow['y']= 430
+	arrow['x']= 300
+	arrow['y']= 470
 	arrow['sprite'] = arrow_sprite
 	arrow['choice'] = yes
-
 	last_time = 0
 
 	while not done2:
@@ -244,24 +245,22 @@ def MenuScreen():
 
 		KeysPressed = pygame.key.get_pressed() # User did something
 
-
-
 		if KeysPressed[pygame.K_DOWN] and time - last_time > 3:
 			last_time = time
-			if arrow['y'] == 430:
-				arrow['y']= 560
+			if arrow['y'] == 470:
+				arrow['y']= 640
 				arrow['choice'] = no
 			else:
-				arrow['y']= 430
+				arrow['y']= 470
 				arrow['choice'] = yes
 
 		if KeysPressed[pygame.K_UP] and time - last_time > 3:
 			last_time = time
-			if arrow['y'] == 430:
-				arrow['y']= 560
+			if arrow['y'] == 470:
+				arrow['y']= 640
 				arrow['choice'] = no
 			else:
-				arrow['y']= 430
+				arrow['y']= 470
 				arrow['choice'] = yes
 
 		if KeysPressed[pygame.K_RETURN]:
@@ -325,9 +324,6 @@ def GameOver():
 		SCREEN.blit(GAME_OVER,(0,0))
 		pygame.display.flip()
 
-		with open("scores.txt","w") as fichier :
-			fichier.write(str(TIME) + "\n")
-
 def victory():
 	global DONE
 	done2 = False
@@ -337,6 +333,9 @@ def victory():
 	jeu_fini = False
 	SON_FOND.stop()
 	#SON_VICTOIRE.play()
+	with open("scores.txt","a") as fichier :
+		fichier.write(str(TIME - TIME_START) + "\n")
+		fichier.close()
 
 	while not done2:
 		event = pygame.event.Event(pygame.USEREVENT)
@@ -358,6 +357,7 @@ def victory():
 
 		SCREEN.blit(VICTOIRE,(0,0))
 		pygame.display.flip()
+
 
 ## iaFuite(ia):
 #   Regarde les deplacement possible de l'IA
