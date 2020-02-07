@@ -325,8 +325,9 @@ def GameOver():
         SCREEN.blit(GAME_OVER,(0,0))
         pygame.display.flip()
 
-        with open("scores.txt","w") as fichier :
-            fichier.write(str(TIME) + "\n")
+    with open("scores.txt","a") as fichier :
+        fichier.write(str(TIME - TIME_START) + "\n")
+        fichier.close()
 
 def victory():
     global DONE
