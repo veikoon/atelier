@@ -123,7 +123,7 @@ def dessine():
 
         joueur.dessine(SCREEN, ZOOM//2, int(ZOOM*(102/ZOOM)), ZOOM)
 
-    SCREEN.blit(FONT.render("Temps : " + str(int(TIME- TIME_START)), True, BLACK), (900,15))
+    SCREEN.blit(FONT.render("Temps : " + str(int(TIME- TIME_START)) + "  PV : "+str(JOUEUR_BLEU.lives), True, BLACK), (900,15))
 
     pygame.display.flip()       # Rafraichis l'affichage de Pygame
 
