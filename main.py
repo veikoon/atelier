@@ -225,8 +225,8 @@ def MenuScreen():
     yes = True
     no = False
     arrow = {}
-    arrow['x']= 150
-    arrow['y']= 430
+    arrow['x']= 300
+    arrow['y']= 470
     arrow['sprite'] = arrow_sprite
     arrow['choice'] = yes
 
@@ -248,20 +248,20 @@ def MenuScreen():
 
         if KeysPressed[pygame.K_DOWN] and time - last_time > 3:
             last_time = time
-            if arrow['y'] == 430:
-                arrow['y']= 560
+            if arrow['y'] == 470:
+                arrow['y']= 640
                 arrow['choice'] = no
             else:
-                arrow['y']= 430
+                arrow['y']= 470
                 arrow['choice'] = yes
 
         if KeysPressed[pygame.K_UP] and time - last_time > 3:
             last_time = time
-            if arrow['y'] == 430:
-                arrow['y']= 560
+            if arrow['y'] == 470:
+                arrow['y']= 640
                 arrow['choice'] = no
             else:
-                arrow['y']= 430
+                arrow['y']= 470
                 arrow['choice'] = yes
 
         if KeysPressed[pygame.K_RETURN]:
