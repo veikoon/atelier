@@ -32,6 +32,7 @@ class Player:
 		self.nbBombeMax = 1			# Nombre de bombes maximal que peut poser le personnage en meme temps
 		self.rayonBombe = 1			# Rayon d'explosion de la bombe
 		self.invincible = 0         # Rend le player invincible quand il rencontre une bombe et qu'il lui reste encore une vie ou plus
+		self.invincibleOffset = 0
 		self.getSprite(hauteur, zoom) 	# Avoir le spoite du personnage de la bonne taille
 		self.dir = (0,0)
 
@@ -58,7 +59,9 @@ class Player:
 	#	tandis que le jeu dessine les images depuis leur coin superieur gauche:
 	#	(largeurPerso / 2 = 32 et hauteurPerso = 102)
 	def dessine(self, surface, largeurPerso, hauteurPerso, zoom):
-		surface.blit(self.sprite[self.spriteDir][self.spriteCount], ((self.caseY * zoom) + self.x - largeurPerso + zoom//2,(self.caseX * zoom) + self.y - hauteurPerso + zoom//2))
+		if(self.invincible == 0 or self.invincibleOffset == 0):
+			surface.blit(self.sprite[self.spriteDir][self.spriteCount], ((self.caseY * zoom) + self.x - largeurPerso + zoom//2,(self.caseX * zoom) + self.y - hauteurPerso + zoom//2))
+		self.invincibleOffset = (self.invincibleOffset + 1) % 2
 
 
 	## move(self, posX, posY):
