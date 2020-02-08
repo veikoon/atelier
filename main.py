@@ -609,34 +609,34 @@ def interactionJoueur():
 	if(keysPressed[pygame.K_SPACE]):
 		if JOUEUR_BLEU in LIST_JOUEUR :
 			poseBombe(JOUEUR_BLEU)
-
+	
 	############################ Deplacement ############################
 	## Mouvements du joueur:
 	#   On choisit la direction du sprite en fonction de sa position dans le tableau des sprites
 	#   On fait appelle a la fonction move pour changer les coordonnees et les sprites
+	for i in range(JOUEUR_BLEU.vitesse): 
+		possibleMove = getPossibleMove(JOUEUR_BLEU)
 
-	possibleMove = getPossibleMove(JOUEUR_BLEU)
+		## Si deux touches sont pressees en meme temps on priorise le changement de direction :
+		if(keysPressed[pygame.K_UP] and keysPressed[pygame.K_RIGHT] and JOUEUR_BLEU.dir == (0,-1) and (1,0) in possibleMove): JOUEUR_BLEU.dir = (1,0)
+		elif(keysPressed[pygame.K_UP] and keysPressed[pygame.K_RIGHT] and JOUEUR_BLEU.dir == (1,0) and (0,-1) in possibleMove): JOUEUR_BLEU.dir = (0,-1)
+		elif(keysPressed[pygame.K_UP] and keysPressed[pygame.K_LEFT] and JOUEUR_BLEU.dir == (-1,0) and (0,-1) in possibleMove): JOUEUR_BLEU.dir = (0,-1)
+		elif(keysPressed[pygame.K_UP] and keysPressed[pygame.K_LEFT] and JOUEUR_BLEU.dir == (0,-1) and (-1,0) in possibleMove): JOUEUR_BLEU.dir = (-1,0)
+		elif(keysPressed[pygame.K_DOWN] and keysPressed[pygame.K_RIGHT] and JOUEUR_BLEU.dir == (1,0) and (0,1) in possibleMove): JOUEUR_BLEU.dir = (0,1)
+		elif(keysPressed[pygame.K_DOWN] and keysPressed[pygame.K_RIGHT] and JOUEUR_BLEU.dir == (0,1) and (1,0) in possibleMove): JOUEUR_BLEU.dir = (1,0)
+		elif(keysPressed[pygame.K_DOWN] and keysPressed[pygame.K_LEFT] and JOUEUR_BLEU.dir == (0,1) and (-1,0) in possibleMove): JOUEUR_BLEU.dir = (-1,0)
+		elif(keysPressed[pygame.K_DOWN] and keysPressed[pygame.K_LEFT] and JOUEUR_BLEU.dir == (-1,0) and (0,1) in possibleMove): JOUEUR_BLEU.dir = (0,1)
+		## Si une seule touche est pressees on prend la direction idoine
+		elif(keysPressed[pygame.K_DOWN] and (0,1) in possibleMove): JOUEUR_BLEU.dir = (0,1)
+		elif(keysPressed[pygame.K_UP] and (0,-1) in possibleMove): JOUEUR_BLEU.dir = (0,-1)
+		elif(keysPressed[pygame.K_RIGHT] and (1,0) in possibleMove): JOUEUR_BLEU.dir = (1,0)
+		elif(keysPressed[pygame.K_LEFT] and (-1,0) in possibleMove): JOUEUR_BLEU.dir = (-1,0)
+		## Si aucunes touches n'est pressees on quitte la fonction
+		else: return
 
-	## Si deux touches sont pressees en meme temps on priorise le changement de direction :
-	if(keysPressed[pygame.K_UP] and keysPressed[pygame.K_RIGHT] and JOUEUR_BLEU.dir == (0,-1) and (1,0) in possibleMove): JOUEUR_BLEU.dir = (1,0)
-	elif(keysPressed[pygame.K_UP] and keysPressed[pygame.K_RIGHT] and JOUEUR_BLEU.dir == (1,0) and (0,-1) in possibleMove): JOUEUR_BLEU.dir = (0,-1)
-	elif(keysPressed[pygame.K_UP] and keysPressed[pygame.K_LEFT] and JOUEUR_BLEU.dir == (-1,0) and (0,-1) in possibleMove): JOUEUR_BLEU.dir = (0,-1)
-	elif(keysPressed[pygame.K_UP] and keysPressed[pygame.K_LEFT] and JOUEUR_BLEU.dir == (0,-1) and (-1,0) in possibleMove): JOUEUR_BLEU.dir = (-1,0)
-	elif(keysPressed[pygame.K_DOWN] and keysPressed[pygame.K_RIGHT] and JOUEUR_BLEU.dir == (1,0) and (0,1) in possibleMove): JOUEUR_BLEU.dir = (0,1)
-	elif(keysPressed[pygame.K_DOWN] and keysPressed[pygame.K_RIGHT] and JOUEUR_BLEU.dir == (0,1) and (1,0) in possibleMove): JOUEUR_BLEU.dir = (1,0)
-	elif(keysPressed[pygame.K_DOWN] and keysPressed[pygame.K_LEFT] and JOUEUR_BLEU.dir == (0,1) and (-1,0) in possibleMove): JOUEUR_BLEU.dir = (-1,0)
-	elif(keysPressed[pygame.K_DOWN] and keysPressed[pygame.K_LEFT] and JOUEUR_BLEU.dir == (-1,0) and (0,1) in possibleMove): JOUEUR_BLEU.dir = (0,1)
-	## Si une seule touche est pressees on prend la direction idoine
-	elif(keysPressed[pygame.K_DOWN] and (0,1) in possibleMove): JOUEUR_BLEU.dir = (0,1)
-	elif(keysPressed[pygame.K_UP] and (0,-1) in possibleMove): JOUEUR_BLEU.dir = (0,-1)
-	elif(keysPressed[pygame.K_RIGHT] and (1,0) in possibleMove): JOUEUR_BLEU.dir = (1,0)
-	elif(keysPressed[pygame.K_LEFT] and (-1,0) in possibleMove): JOUEUR_BLEU.dir = (-1,0)
-	## Si aucunes touches n'est pressees on quitte la fonction
-	else: return
-
-	## Si la fonction n'a pas ete quitte jusqu'ici, c'est qu'un deplacement a ete valide, on procede donc au deplacement du joueur par rapport a sa direction
-	JOUEUR_BLEU.setRightDir()
-	JOUEUR_BLEU.move(JOUEUR_BLEU.dir[0]*VIT,JOUEUR_BLEU.dir[1]*VIT,ZOOM)
+		## Si la fonction n'a pas ete quitte jusqu'ici, c'est qu'un deplacement a ete valide, on procede donc au deplacement du joueur par rapport a sa direction
+		JOUEUR_BLEU.setRightDir()
+		JOUEUR_BLEU.move(JOUEUR_BLEU.dir[0]*VIT,JOUEUR_BLEU.dir[1]*VIT,ZOOM)
 
 
 #################################################################################
@@ -747,9 +747,10 @@ while not DONE:
 	grilleDistBonus()
 	miseDistance(GRILLE_BONUS)
 
-	fuyarde(JOUEUR_ROUGE)
-	tueur(JOUEUR_ORANGE)
-	normale(JOUEUR_JAUNE)
+
+	for i in range(JOUEUR_ROUGE.vitesse): fuyarde(JOUEUR_ROUGE)
+	for i in range(JOUEUR_ORANGE.vitesse): tueur(JOUEUR_ORANGE)
+	for i in range(JOUEUR_JAUNE.vitesse): normale(JOUEUR_JAUNE)
 
 	interactionJoueur()
 

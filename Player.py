@@ -35,6 +35,7 @@ class Player:
 		self.invincibleOffset = 0
 		self.getSprite(hauteur, zoom) 	# Avoir le spoite du personnage de la bonne taille
 		self.dir = (0,0)
+		self.vitesse = 1
 
 
 	## getSprite(self, hauteur, zoom):
