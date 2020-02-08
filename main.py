@@ -151,7 +151,7 @@ def removeBomb():
 			Bomb.spriteCount = 0
 			Bomb.spriteDir=0
 			Bomb.sprite= Bomb.getSpriteExplo(FIRE, ZOOM)
-			#SON_BOMBE.play()       # Mise en commentaire car ca fais beuguer l'ordi de Quentin
+			SON_BOMBE.play()       # Mise en commentaire car ca fais beuguer l'ordi de Quentin
 			TAB[Bomb.caseY][Bomb.caseX] = 5
 			Bomb.explode = False
 			Bomb.player.nbBombe -= 1
@@ -191,7 +191,7 @@ def Meurt(player):
 				if(player in LIST_IA):
 					LIST_IA.remove(player)
 					player.nbBombeMax = 0
-					#SON_MORT.play()
+					SON_MORT.play()
 
 def Invinciblility(player):
 	if ((player.invincible + 5) - TIME) <= 0: player.invincible = 0
@@ -300,7 +300,8 @@ def GameOver():
 	press_speed = 5
 	jeu_fini = False
 	SON_FOND.stop()
-	#SON_DEFEAT.play()
+	
+	SON_DEFEAT.play()
 	while not done2:
 
 		event = pygame.event.Event(pygame.USEREVENT)
@@ -332,7 +333,7 @@ def victory():
 	press_speed = 5
 	jeu_fini = False
 	SON_FOND.stop()
-	#SON_VICTOIRE.play()
+	SON_VICTOIRE.play()
 	with open("scores.txt","a") as fichier :
 		fichier.write(str(TIME - TIME_START) + "\n")
 		fichier.close()
@@ -353,6 +354,7 @@ def victory():
 		if pressed and int( pygame.time.get_ticks() / 100 ) - press_time >= press_speed:
 			done2 = True
 			jeu_fini = True
+			SON_VICTOIRE.stop()
 			return jeu_fini
 
 		SCREEN.blit(VICTOIRE,(0,0))
@@ -669,10 +671,10 @@ def init():
 	LIST_BOMB.clear()
 	LIST_BONUS.clear()
 	POS_IA = [(HAUTEUR-2, LARGEUR-2), (HAUTEUR-2, 1), (1, LARGEUR-2)]
-	JOUEUR_BLEU = Player(1, 1, 2, BLEU,int(ZOOM*(102/64)), ZOOM)
-	JOUEUR_JAUNE = IA(POS_IA[0][0], POS_IA[0][1],1, JAUNE,int(ZOOM*(102/64)), ZOOM, (0,-1))
-	JOUEUR_ORANGE = IA(POS_IA[1][0], POS_IA[1][1],1, ORANGE,int(ZOOM*(102/64)), ZOOM,(1,0))
-	JOUEUR_ROUGE = IA(POS_IA[2][0], POS_IA[2][1],1, ROUGE,int(ZOOM*(102/64)), ZOOM, (-1,0))
+	JOUEUR_BLEU = Player(1, 1, BLEU,int(ZOOM*(102/64)), ZOOM)
+	JOUEUR_JAUNE = IA(POS_IA[0][0], POS_IA[0][1], JAUNE,int(ZOOM*(102/64)), ZOOM, (0,-1))
+	JOUEUR_ORANGE = IA(POS_IA[1][0], POS_IA[1][1], ORANGE,int(ZOOM*(102/64)), ZOOM,(1,0))
+	JOUEUR_ROUGE = IA(POS_IA[2][0], POS_IA[2][1], ROUGE,int(ZOOM*(102/64)), ZOOM, (-1,0))
 
 	#init_jeu()
 	TIME = time.time()
@@ -687,7 +689,6 @@ def init():
 	MenuScreen()
 	pygame.mouse.set_visible(True)
 	pygame.display.set_caption("ESIEE - BOMB HERMANN")
-	#pygame.mixer.music.play()   # Activation de la musique
 
 	LIST_IA.append(JOUEUR_JAUNE)        # Ajout du joueur JAUNE dans la liste IA
 	LIST_IA.append(JOUEUR_ORANGE)       # Ajout du joueur ORANGE dans la liste IA
