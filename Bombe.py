@@ -153,8 +153,14 @@ class Bombe:
                     if(self.animStop(TAB,direction,testcase,'x',caseX,caseY) and ((caseTesteX == 3 or caseTesteX == 6) and not explX)):
                         
                         if(not random.randrange(3) and caseTesteX != 6): 
-                            listebonus.append(Bonus(caseX+direction, caseY, random.randrange(8), zoom))
-                            TAB[caseY][caseX+direction]=6
+                            listebonus.append(Bonus(caseX+direction, caseY, random.randrange(7), zoom))
+                            for bonus in listebonus:
+                                if(bonus.caseX ==caseX+direction and bonus.caseY ==caseY ):
+                                    if(bonus.bonus >2):
+                                      
+                                        TAB[caseY][caseX+direction]=6
+                                    else:
+                                        TAB[caseY][caseX+direction]=0
                         else:
                             TAB[caseY][caseX+direction]=5
                             for bonus in listebonus:
@@ -193,8 +199,14 @@ class Bombe:
                     if(self.animStop(TAB,direction,testcase,'y',caseX,caseY) and ((caseTesteY == 3 or caseTesteY == 6) and not explY)):
                         tempRand = random.randrange(5)
                         if(not random.randrange(3) and caseTesteY != 6):
-                            listebonus.append(Bonus(caseX, caseY+direction, random.randrange(8), zoom))
-                            TAB[caseY+direction][caseX]=6
+                            listebonus.append(Bonus(caseX, caseY+direction, random.randrange(7), zoom))
+                            for bonus in listebonus:
+                                if(bonus.caseX ==caseX and bonus.caseY ==caseY +direction):
+                                    if(bonus.bonus >2):
+                                    
+                                        TAB[caseY+direction][caseX]=6
+                                    else:
+                                        TAB[caseY+direction][caseX]=0
                         else:
                             TAB[caseY+direction][caseX]=5
                             for bonus in listebonus:

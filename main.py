@@ -151,7 +151,7 @@ def removeBomb():
 			Bomb.spriteCount = 0
 			Bomb.spriteDir=0
 			Bomb.sprite= Bomb.getSpriteExplo(FIRE, ZOOM)
-			SON_BOMBE.play()       # Mise en commentaire car ca fais beuguer l'ordi de Quentin
+			#SON_BOMBE.play()       # Mise en commentaire car ca fais beuguer l'ordi de Quentin
 			TAB[Bomb.caseY][Bomb.caseX] = 5
 			Bomb.explode = False
 			Bomb.player.nbBombe -= 1
@@ -773,7 +773,7 @@ while not DONE:
 		jeu_fini = victory()
 
 	for player in LIST_JOUEUR:
-		if(TAB[player.caseX][player.caseY] == 6): takeBonus(player)
+		takeBonus(player)
 
 	SCREEN.fill(BLACK)
 	TIME = time.time()
