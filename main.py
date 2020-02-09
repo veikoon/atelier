@@ -173,6 +173,23 @@ def poseBombe(player):
 		TAB[caseY][caseX] = 4
 		player.nbBombe += 1
 
+def safeZone(ia):
+    x = ia.caseX
+    y = ia.caseY
+    safe = True
+    TAB[x][y] = 5
+    temp = IA(x+ia.dir[0],y+ia.dir[1], ia.color, int(ZOOM*(102/64)),ZOOM, (ia.dir[0],ia.dir[1]))
+    possibleMoves = getPossibleMove(temp)
+    if (0,0) in possibleMoves : possibleMoves.remove((0,0))
+    if len(possibleMoves) == 0: safe = False
+    del temp
+    TAB[x][y] = 0
+    return safe
+
+
+
+
+
 
 ## Meurt(player):
 #   Regarde si la position du joueur correspond à une cases en explosion
@@ -397,7 +414,7 @@ def normale(ia):
 		if(ia.x != 0 or ia.y !=0): ia.needToGoCenter = True
 		else:ia.needToGoCenter = False
 		distJoueurCloser = getCloserPlayer(ia)[0]
-		if (distJoueurCloser <= ia.rayonBombe) : poseBombe(ia)
+		if (distJoueurCloser <= ia.rayonBombe and safeZone(ia)) : poseBombe(ia)
 		if(not ia.needToGoCenter):
 			distBonus = GRILLE_BONUS[ia.caseX][ia.caseY]
 			possibleMove = getPossibleMove(ia)
@@ -407,7 +424,7 @@ def normale(ia):
 				if (dirBonus in possibleMove):
 					ia.dir = dirBonus
 			else:
-				if(TAB[ia.caseX + ia.dir[1]][ia.caseY + ia.dir[0]] == 3):
+				if(TAB[ia.caseX + ia.dir[1]][ia.caseY + ia.dir[0]] == 3 and safeZone(ia)):
 					poseBombe(ia)
 					return
 				else:
@@ -426,12 +443,12 @@ def tueur(ia):
 	else:
 		if(ia.x != 0 or ia.y !=0): ia.needToGoCenter = True
 		else:ia.needToGoCenter = False
-		if (JOUEUR_BLEU.cartedist[ia.caseX][ia.caseY] <= ia.rayonBombe) : poseBombe(ia)
+		if (JOUEUR_BLEU.cartedist[ia.caseX][ia.caseY] <= ia.rayonBombe and safeZone(ia)) : poseBombe(ia)
 
 		if(not ia.needToGoCenter):
 			possibleMove = getPossibleMove(ia)
 			if ((0,0) in possibleMove): possibleMove.remove((0,0))
-			if(TAB[ia.caseX + ia.dir[1]][ia.caseY + ia.dir[0]] == 3):
+			if(TAB[ia.caseX + ia.dir[1]][ia.caseY + ia.dir[0]] == 3 and safeZone(ia)):
 				poseBombe(ia)
 				return
 			else:
@@ -470,7 +487,7 @@ def fuyarde(ia):
 			else:
 				grilleDistBrique()
 				miseDistance(GRILLE_BRIQUE)
-				if(GRILLE_BRIQUE[ia.caseX][ia.caseY]==1):
+				if(GRILLE_BRIQUE[ia.caseX][ia.caseY]==1 and safeZone(ia)):
 					poseBombe(ia)
 					return
 				else:
