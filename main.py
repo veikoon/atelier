@@ -178,12 +178,16 @@ def safeZone(ia):
     y = ia.caseY
     safe = True
     TAB[x][y] = 5
-    temp = IA(x+ia.dir[0],y+ia.dir[1], ia.color, int(ZOOM*(102/64)),ZOOM, (ia.dir[0],ia.dir[1]))
+    temp = IA(x,y, ia.color, int(ZOOM*(102/64)),ZOOM, (ia.dir[0],ia.dir[1]))
+    temp.move(ia.dir[0]*VIT,ia.dir[1]*VIT,ZOOM)
+
     possibleMoves = getPossibleMove(temp)
     if (0,0) in possibleMoves : possibleMoves.remove((0,0))
-    if len(possibleMoves) == 0: safe = False
+    if len(possibleMoves) < 1: 
+        safe = False
     del temp
     TAB[x][y] = 0
+    print(safe)
     return safe
 
 
