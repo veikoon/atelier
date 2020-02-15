@@ -188,35 +188,38 @@ def safeZone(ia):
     #temp.move(ia.dir[0]*VIT,ia.dir[1]*VIT,ZOOM)
     temp.caseX -=ia.dir[0]
     temp.caseY -=ia.dir[1]
-    #print(temp.caseY)
-    #print(temp.caseX)
-    if(temp.caseY == 29):
-    	temp.caseY = 28
-    	temp.caseX +=1
-    if(temp.caseX == 14):
-    	temp.caseY +=1
-    	temp.caseX = 13
-    if(temp.caseY==2):
-    	#print("de")
-    	temp.caseY= 1
-    	temp.caseX+=1
+    if(TAB[temp.caseX][temp.caseY] == 0):
+  
+     
+        #print(temp.caseY)
+        #print(temp.caseX)
+        if(temp.caseY == 29):
+        	temp.caseY = 28
+        
+            	
+        if(temp.caseX == 14):
+        	temp.caseY +=1
+        	temp.caseX = 13
+        if(temp.caseY==2):
+        	temp.caseY= 1
+        	temp.caseX+=1
 
-    if(temp.caseX==2 and ia.dir[0] != -1):
-    	#print("de")
-    	temp.caseY= 1
-    	temp.caseX-=1
 
-    #print(temp.caseY)
-    #print(temp.caseX)
-    #print(getPossibleMove(ia))
-    possibleMoves = getPossibleMove(temp)
-   
-    if (0,0) in possibleMoves : possibleMoves.remove((0,0))
-    #if (0,-1) in possibleMoves : possibleMoves.remove((0,-1))
-    #print(possibleMoves)
-    if len(possibleMoves) <2:
-        safe = False
-        #print("false")
+        if(temp.caseX==2 and ia.dir[0] != -1):
+        	temp.caseY= 1
+        	temp.caseX-=1
+
+       # print(temp.caseY)
+       # print(temp.caseX)
+        #print(getPossibleMove(ia))
+        possibleMoves = getPossibleMove(temp)
+       
+        if (0,0) in possibleMoves : possibleMoves.remove((0,0))
+        #if (0,-1) in possibleMoves : possibleMoves.remove((0,-1))
+        #print(possibleMoves)
+        if len(possibleMoves) <2:
+            safe = False
+            #print("false")
     del temp
     TAB[x][y] = 0
     #print(safe)
@@ -244,7 +247,7 @@ def Meurt(player):
 				if(player in LIST_IA):
 					LIST_IA.remove(player)
 					player.nbBombeMax = 0
-					SON_MORT.play()
+					#SON_MORT.play()
 
 def Invinciblility(player):
 	if ((player.invincible + 5) - TIME) <= 0: player.invincible = 0
@@ -702,8 +705,8 @@ def init():
 	global TAB, LIST_BOMB, LIST_IA,LIST_JOUEUR, JOUEUR_BLEU,JOUEUR_JAUNE,JOUEUR_ORANGE,JOUEUR_ROUGE,HAUTEUR,LARGEUR,LIST_BONUS, TIME,DONE
 	SON_FOND.play(loops=-1, maxtime = 0, fade_ms=0)
 	TAB = [ [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-			[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,1],
-			[1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
+			[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,0,0,0,1],
+			[1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,3,1],
 			[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,1],
 			[1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
 			[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
@@ -753,6 +756,7 @@ def init():
 		ia.setRightDir()    # Defini la direction des sprites des ia a l'init
 
 	LIST_JOUEUR.append(JOUEUR_BLEU)
+    #generateBrick()
 
 	generateBrick()
 #################################################################################
@@ -802,15 +806,16 @@ while not DONE:
 	miseDistance(GRILLE_BONUS)
 
 
-	for i in range(JOUEUR_ROUGE.vitesse): normale(JOUEUR_ROUGE)
+	for i in range(JOUEUR_ROUGE.vitesse): fuyarde(JOUEUR_ROUGE)
 	for i in range(JOUEUR_ORANGE.vitesse): tueur(JOUEUR_ORANGE)
-	for i in range(JOUEUR_JAUNE.vitesse): fuyarde(JOUEUR_JAUNE)
+	for i in range(JOUEUR_JAUNE.vitesse): normale(JOUEUR_JAUNE)
 
 	interactionJoueur()
 
 	for joueur in LIST_JOUEUR:
 		Meurt(joueur)
 		Invinciblility(joueur)
+
 
 	#print()
 	#for i in range(len(TAB)):
