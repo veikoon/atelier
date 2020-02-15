@@ -179,15 +179,47 @@ def safeZone(ia):
     safe = True
     TAB[x][y] = 5
     temp = IA(x,y, ia.color, int(ZOOM*(102/64)),ZOOM, (ia.dir[0],ia.dir[1]))
-    temp.move(ia.dir[0]*VIT,ia.dir[1]*VIT,ZOOM)
+  
+    # print(ia.dir[1])
+    # print(ia.dir[0])
+    # print("coord IA")
+    # print(ia.caseX)
+    # print(ia.caseY)
+    #temp.move(ia.dir[0]*VIT,ia.dir[1]*VIT,ZOOM)
+    temp.caseX -=ia.dir[0]
+    temp.caseY -=ia.dir[1]
+    #print(temp.caseY)
+    #print(temp.caseX)
+    if(temp.caseY == 29):
+    	temp.caseY = 28
+    	temp.caseX +=1
+    if(temp.caseX == 14):
+    	temp.caseY +=1
+    	temp.caseX = 13
+    if(temp.caseY==2):
+    	#print("de")
+    	temp.caseY= 1
+    	temp.caseX+=1
 
+    if(temp.caseX==2 and ia.dir[0] != -1):
+    	#print("de")
+    	temp.caseY= 1
+    	temp.caseX-=1
+
+    #print(temp.caseY)
+    #print(temp.caseX)
+    #print(getPossibleMove(ia))
     possibleMoves = getPossibleMove(temp)
+   
     if (0,0) in possibleMoves : possibleMoves.remove((0,0))
-    if len(possibleMoves) < 1: 
+    #if (0,-1) in possibleMoves : possibleMoves.remove((0,-1))
+    #print(possibleMoves)
+    if len(possibleMoves) <2:
         safe = False
+        #print("false")
     del temp
     TAB[x][y] = 0
-    print(safe)
+    #print(safe)
     return safe
 
 
@@ -670,19 +702,19 @@ def init():
 	global TAB, LIST_BOMB, LIST_IA,LIST_JOUEUR, JOUEUR_BLEU,JOUEUR_JAUNE,JOUEUR_ORANGE,JOUEUR_ROUGE,HAUTEUR,LARGEUR,LIST_BONUS, TIME,DONE
 	SON_FOND.play(loops=-1, maxtime = 0, fade_ms=0)
 	TAB = [ [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-			[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+			[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,1],
+			[1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
+			[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,1],
 			[1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
 			[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
 			[1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
 			[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
 			[1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
-			[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+			[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,1],
 			[1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
-			[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-			[1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
-			[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-			[1,0,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
-			[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+			[1,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,1],
+			[1,2,2,0,2,0,2,0,2,0,2,0,2,0,2,2,0,2,0,2,0,2,0,2,0,2,0,2,0,1],
+			[1,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,1],
 			[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
 
 	HAUTEUR = len(TAB)     # Nombre de cases en hauteur
@@ -693,9 +725,9 @@ def init():
 	LIST_BONUS.clear()
 	POS_IA = [(HAUTEUR-2, LARGEUR-2), (HAUTEUR-2, 1), (1, LARGEUR-2)]
 	JOUEUR_BLEU = Player(1, 1, BLEU,int(ZOOM*(102/64)), ZOOM)
-	JOUEUR_JAUNE = IA(POS_IA[0][0], POS_IA[0][1], JAUNE,int(ZOOM*(102/64)), ZOOM, (0,-1))
+	JOUEUR_JAUNE = IA(POS_IA[2][0], POS_IA[2][1], JAUNE,int(ZOOM*(102/64)), ZOOM, (0,-1))
 	JOUEUR_ORANGE = IA(POS_IA[1][0], POS_IA[1][1], ORANGE,int(ZOOM*(102/64)), ZOOM,(1,0))
-	JOUEUR_ROUGE = IA(POS_IA[2][0], POS_IA[2][1], ROUGE,int(ZOOM*(102/64)), ZOOM, (-1,0))
+	JOUEUR_ROUGE = IA(POS_IA[0][0], POS_IA[0][1], ROUGE,int(ZOOM*(102/64)), ZOOM, (-1,0))
 
 	#init_jeu()
 	TIME = time.time()
@@ -770,9 +802,9 @@ while not DONE:
 	miseDistance(GRILLE_BONUS)
 
 
-	for i in range(JOUEUR_ROUGE.vitesse): fuyarde(JOUEUR_ROUGE)
+	for i in range(JOUEUR_ROUGE.vitesse): normale(JOUEUR_ROUGE)
 	for i in range(JOUEUR_ORANGE.vitesse): tueur(JOUEUR_ORANGE)
-	for i in range(JOUEUR_JAUNE.vitesse): normale(JOUEUR_JAUNE)
+	for i in range(JOUEUR_JAUNE.vitesse): fuyarde(JOUEUR_JAUNE)
 
 	interactionJoueur()
 
