@@ -492,7 +492,7 @@ def tueur(ia):
         else:
             ia.move(ia.dir[0]*VIT,ia.dir[1]*VIT,ZOOM)
 
-@jit(forceobj=True)
+
 def fuyarde(ia):
     if iaDanger(ia): iaFuite(ia)
     else:
