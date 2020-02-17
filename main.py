@@ -129,8 +129,8 @@ def dessine():
 
 
     SCREEN.blit(FONT.render("PV : "  + str(JOUEUR_BLEU.lives), True, YELLOW), (300,15))
-    SCREEN.blit(FONT.render("TIMER : " + str(int(TIME- TIME_START)) , True,YELLOW),(1000,15))
-    SCREEN.blit(FONT.render("BEST SCORE : " + getBestScore() , True, YELLOW),(1400,15) )
+    SCREEN.blit(FONT.render("TIMER : " + str(int(TIME- TIME_START)) , True,YELLOW),(850,15))
+    SCREEN.blit(FONT.render("BEST SCORE : " + getBestScore() , True, YELLOW),(1400,15))
 
     pygame.display.flip()       # Rafraichis l'affichage de Pygame
 
@@ -753,7 +753,7 @@ def init():
     SCREEN.fill(BLACK)
     MenuScreen()
     pygame.mouse.set_visible(True)
-    pygame.display.set_caption("ESIEE - BOMB HERMANN")
+    pygame.display.set_caption("ESIEE - BOMBERMAN")
 
     LIST_IA.append(JOUEUR_JAUNE)        # Ajout du joueur JAUNE dans la liste IA
     LIST_IA.append(JOUEUR_ORANGE)       # Ajout du joueur ORANGE dans la liste IA
