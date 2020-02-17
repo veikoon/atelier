@@ -84,7 +84,7 @@ TIME_START = time.time()# Temps depuis le lancement du jeu
 GAME_OVER = pygame.image.load("images/menu/gameover.png").convert()
 VIT =ZOOM //16 # Vitesse de deplacement des joueurs
 DONE = False
-
+BEST_SCORE = 0
 FONT = pygame.font.SysFont("arial", 30)     # Definition de la police d'écriture
 CLOCK = pygame.time.Clock()                 # Mise en place de l'horloge interne
 FONT = pygame.font.Font("police/ARCADE.TTF",50)
@@ -129,7 +129,8 @@ def dessine():
 
 
     SCREEN.blit(FONT.render("PV : "  + str(JOUEUR_BLEU.lives), True, YELLOW), (300,15))
-    SCREEN.blit(FONT.render("TIMER : " + str(int(TIME- TIME_START)) , True,YELLOW),(1400,15))
+    SCREEN.blit(FONT.render("TIMER : " + str(int(TIME- TIME_START)) , True,YELLOW),(1000,15))
+    SCREEN.blit(FONT.render("BEST SCORE : " + getBestScore() , True, YELLOW),(1400,15) )
 
     pygame.display.flip()       # Rafraichis l'affichage de Pygame
 
@@ -382,8 +383,9 @@ def victory():
     SON_FOND.stop()
     SON_VICTOIRE.play()
     with open("scores.txt","a") as fichier :
-        fichier.write(str(TIME - TIME_START) + "\n")
-        fichier.close()
+        if BEST_SCORE < (TIME - TIME_START):
+            fichier.write(str(TIME - TIME_START) + "\n")
+            fichier.close()
 
     while not done2:
         event = pygame.event.Event(pygame.USEREVENT)
@@ -411,7 +413,6 @@ def victory():
 ## iaFuite(ia):
 #   Regarde les deplacement possible de l'IA
 #   Se deplace sur la case la plus grande = le plus loin de la bombe
-@jit(forceobj=True)
 def iaFuite(ia) :
     if(ia.x != 0 or ia.y !=0): ia.needToGoCenter = True
     else:ia.needToGoCenter = False
@@ -438,7 +439,6 @@ def iaFuite(ia) :
 #   Regarde en premiere si l'IA est en danger = dans le rayon d'explosion de la bombe
 #   Si non, elle se dirige dans une direction jusqu'à rencontrer un mur
 
-@jit(forceobj=True)
 def normale(ia):
     if iaDanger(ia): iaFuite(ia)
     else:
@@ -656,6 +656,17 @@ def takeBonus(player):
             bonus.effect(player)
             LIST_BONUS.remove(bonus)
             TAB[player.caseX][player.caseY]=0
+
+def getBestScore():
+    global BEST_SCORE
+    with open("scores.txt","r") as fichier :
+        if fichier.mode == 'r':
+            BEST_SCORE = fichier.read()
+
+    if os.path.getsize("scores.txt") == 0 : return "0"
+    return str(int(BEST_SCORE))
+        
+
 
 def interactionJoueur():
     global JOUEUR_BLEU
