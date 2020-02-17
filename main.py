@@ -90,6 +90,7 @@ BEST_SCORE = 0
 FONT = pygame.font.SysFont("arial", 30)     # Definition de la police d'écriture
 CLOCK = pygame.time.Clock()                 # Mise en place de l'horloge interne
 FONT = pygame.font.Font("police/ARCADE.TTF",50)
+TIME_START = time.time()# Temps depuis le lancement du jeu
 
 LAST_DIRECTION = 0
 LIST_BOMB = []      # Liste contenant les bombes
