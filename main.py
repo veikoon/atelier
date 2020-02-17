@@ -7,6 +7,8 @@
 #                                                                               #
 #################################################################################
 
+
+
 #################################################################################
 ##
 ## Import
@@ -28,6 +30,7 @@ import numpy
 pygame.init()
 
 
+
 #################################################################################
 ##
 ##  Importation des images et musiques:
@@ -39,7 +42,6 @@ GRASS = pygame.image.load("images/blocks/grass.png")
 BLOCK_BRICK = pygame.image.load("images/blocks/brick.png")
 arrow_sprite = pygame.image.load("images/menu/arrow.png")
 fond = pygame.image.load("images/menu/menu2.png")
-
 
 # Sprites
 BLEU = pygame.image.load("images/ia/Bleu/sprite.png")
@@ -56,6 +58,7 @@ SON_BOMBE = pygame.mixer.Sound("son/bombe.wav")
 SON_MORT = pygame.mixer.Sound("son/mort.wav")
 SON_VICTOIRE = pygame.mixer.Sound("son/victory.wav")
 SON_DEFEAT = pygame.mixer.Sound("son/defeat.wav")
+
 
 
 #################################################################################
@@ -80,7 +83,6 @@ clock = pygame.time.Clock()
 WHITE = [255, 255, 255]
 BLACK = [0, 0, 0]
 YELLOW = [180,65,15]
-TIME_START = time.time()# Temps depuis le lancement du jeu
 GAME_OVER = pygame.image.load("images/menu/gameover.png").convert()
 VIT =ZOOM //16 # Vitesse de deplacement des joueurs
 DONE = False
@@ -89,16 +91,18 @@ FONT = pygame.font.SysFont("arial", 30)     # Definition de la police d'écritur
 CLOCK = pygame.time.Clock()                 # Mise en place de l'horloge interne
 FONT = pygame.font.Font("police/ARCADE.TTF",50)
 
-
 LAST_DIRECTION = 0
 LIST_BOMB = []      # Liste contenant les bombes
 LIST_IA = []        # Liste contenant les IA en vie
 LIST_JOUEUR = []    # Liste contennant les joueurs en vie
 LIST_BONUS = []     # Liste contennant les bonus
 
+
+
 #################################################################################
 ##
 ##  Fonctions principales
+
 
 ## dessine():
 #   Parcourt TAB et place les images aux coordonnees donnees
@@ -127,10 +131,9 @@ def dessine():
 
         joueur.dessine(SCREEN, ZOOM//2, int(ZOOM*(102/ZOOM)), ZOOM)
 
-
     SCREEN.blit(FONT.render("PV : "  + str(JOUEUR_BLEU.lives), True, YELLOW), (300,15))
     SCREEN.blit(FONT.render("TIMER : " + str(int(TIME- TIME_START)) , True,YELLOW),(850,15))
-    SCREEN.blit(FONT.render("BEST SCORE : " + getBestScore() , True, YELLOW),(1400,15))
+    SCREEN.blit(FONT.render("BEST SCORE : " + str(getBestScore()) , True, YELLOW),(1400,15))
 
     pygame.display.flip()       # Rafraichis l'affichage de Pygame
 
@@ -180,6 +183,10 @@ def poseBombe(player):
         TAB[caseY][caseX] = 4
         player.nbBombe += 1
 
+
+## safeZone(ia):
+#   Defini la zone de securite pour une ia
+#   Servira a fuir les bombes et l'explosion des bombes
 def safeZone(ia):
     x = ia.caseX
     y = ia.caseY
@@ -189,19 +196,13 @@ def safeZone(ia):
     temp.caseX -=ia.dir[0]
     temp.caseY -=ia.dir[1]
     if(TAB[temp.caseX][temp.caseY] == 0):
-
-        if(temp.caseY == 29):
-            temp.caseY = 28
-        
-                
+        if(temp.caseY == 29):   temp.caseY = 28
         if(temp.caseX == 14):
             temp.caseY +=1
             temp.caseX = 13
         if(temp.caseY==2):
             temp.caseY= 1
             temp.caseX+=1
-
-
         if(temp.caseX==2 and ia.dir[0] != -1):
             temp.caseY= 1
             temp.caseX-=1
@@ -209,16 +210,10 @@ def safeZone(ia):
         possibleMoves = getPossibleMove(temp)
        
         if (0,0) in possibleMoves : possibleMoves.remove((0,0))
-
-        if len(possibleMoves) <2:
-            safe = False
+        if len(possibleMoves) <2:   safe = False
     del temp
     TAB[x][y] = 0
     return safe
-
-
-
-
 
 
 ## Meurt(player):
@@ -240,9 +235,12 @@ def Meurt(player):
                     player.nbBombeMax = 0
                     #SON_MORT.play()
 
+
+## Invincibility(player):
+#   Lorsque le joueur a plusieurs vie, il ne meurt pas si la bombe explose sur lui
+#   Regle les problemes de temps rester sur le reayon de l'explosion
 def Invinciblility(player):
     if ((player.invincible + 5) - TIME) <= 0: player.invincible = 0
-
 
 
 ## iaDanger(ia):
@@ -262,10 +260,11 @@ def getCloserPlayer(player):
         if joueur.cartedist[player.caseX][player.caseY] < dist_min and joueur != player:
             dist_min = joueur.cartedist[player.caseX][player.caseY]
             joueurProche = joueur
-
     return (dist_min, joueurProche)
 
 
+## MenuScreen():
+#   Definition du menu d'accueil
 def MenuScreen():
     global screen,DONE,clock, arrow_sprite
     done2 = False
@@ -282,7 +281,6 @@ def MenuScreen():
     last_time = 0
 
     while not done2:
-
         time = int( pygame.time.get_ticks() / 100 )
 
         event = pygame.event.Event(pygame.USEREVENT)
@@ -312,11 +310,7 @@ def MenuScreen():
                 arrow['choice'] = yes
 
         if KeysPressed[pygame.K_RETURN]:
-
-            if arrow['choice'] == yes:
-                done2 = True
-
-
+            if arrow['choice'] == yes:  done2 = True
             if arrow['choice'] == no:
                 while not done:
                     for event in pygame.event.get():
@@ -326,12 +320,9 @@ def MenuScreen():
                             done = True
 
                     KeysPressed = pygame.key.get_pressed()
-                    if KeysPressed[pygame.K_ESCAPE]:
-                        done = True
+                    if KeysPressed[pygame.K_ESCAPE]:    done = True
                     SCREEN.blit(COMMANDES,(0,0))
                     pygame.display.flip()
-
-
 
         SCREEN.blit(fond ,(0,0))
         SCREEN.blit(arrow['sprite'],(arrow['x'],arrow['y']))
@@ -340,6 +331,10 @@ def MenuScreen():
         pygame.display.flip()
         clock.tick(30)
 
+
+## GameOver():
+#   Menu gameover
+#   Indique au joueur qu'il a perdu
 def GameOver():
     global DONE
     done2 = False
@@ -348,17 +343,13 @@ def GameOver():
     press_speed = 5
     jeu_fini = False
     SON_FOND.stop()
-    
     SON_DEFEAT.play()
     while not done2:
-
         event = pygame.event.Event(pygame.USEREVENT)
         for event in pygame.event.get():  # User did something
             if event.type == pygame.QUIT:  # If user clicked close
                 DONE = True
                 done2 = True
-
-
         KeysPressed = pygame.key.get_pressed()
 
         if KeysPressed[pygame.K_RETURN]:
@@ -373,6 +364,10 @@ def GameOver():
         SCREEN.blit(GAME_OVER,(0,0))
         pygame.display.flip()
 
+
+## victory():
+#   Menu de victoire
+#   Indique au joueur qu'il a gagner
 def victory():
     global DONE
     done2 = False
@@ -382,9 +377,9 @@ def victory():
     jeu_fini = False
     SON_FOND.stop()
     SON_VICTOIRE.play()
-    with open("scores.txt","a") as fichier :
-        if BEST_SCORE < (TIME - TIME_START):
-            fichier.write(str(TIME - TIME_START) + "\n")
+    with open("scores.txt","w") as fichier :
+        if int(BEST_SCORE) < (TIME - TIME_START) or BEST_SCORE == 0:
+            fichier.write(str(int(TIME - TIME_START)))
             fichier.close()
 
     while not done2:
@@ -433,12 +428,8 @@ def iaFuite(ia) :
         ia.move(ia.dir[0]*VIT, ia.dir[1]*VIT,ZOOM)
 
 
-
-## moveIA(ia):
-#   S'occupe du deplacement principal des IA
-#   Regarde en premiere si l'IA est en danger = dans le rayon d'explosion de la bombe
-#   Si non, elle se dirige dans une direction jusqu'à rencontrer un mur
-
+## normale(ia):
+#   Defini le caractere de base d'un ia
 def normale(ia):
     if iaDanger(ia): iaFuite(ia)
     else:
@@ -469,13 +460,15 @@ def normale(ia):
         else:
             ia.move(ia.dir[0]*VIT,ia.dir[1]*VIT,ZOOM)
 
+
+## tueur(ia):
+#   Defini le caractere tueur a une ia
 def tueur(ia):
     if iaDanger(ia): iaFuite(ia)
     else:
         if(ia.x != 0 or ia.y !=0): ia.needToGoCenter = True
         else:ia.needToGoCenter = False
         if (JOUEUR_BLEU.cartedist[ia.caseX][ia.caseY] <= ia.rayonBombe and safeZone(ia)) : poseBombe(ia)
-
         if(not ia.needToGoCenter):
             possibleMove = getPossibleMove(ia)
             if ((0,0) in possibleMove): possibleMove.remove((0,0))
@@ -493,6 +486,8 @@ def tueur(ia):
             ia.move(ia.dir[0]*VIT,ia.dir[1]*VIT,ZOOM)
 
 
+## fuyarde(ia):
+#   Defini le caractere fuyarde d'une ia
 def fuyarde(ia):
     if iaDanger(ia): iaFuite(ia)
     else:
@@ -528,11 +523,13 @@ def fuyarde(ia):
                         if(GRILLE_BRIQUE[ia.caseX + dep[1]][ia.caseY + dep[0]] < caseMin):
                             caseMin = GRILLE_BRIQUE[ia.caseX + dep[1]][ia.caseY + dep[0]]
                             ia.dir = dep
-
             ia.move(ia.dir[0]*VIT,ia.dir[1]*VIT,ZOOM)
         else:
             ia.move(ia.dir[0]*VIT,ia.dir[1]*VIT,ZOOM)
 
+
+## bonusDisponible():
+#   Regarde si la joueur peut acceder a un bonus
 def bonusDisponnible(joueur): return GRILLE_BONUS[joueur.caseX][joueur.caseY] < 100
 
 
@@ -570,6 +567,7 @@ def getPossibleMove(player):
 
     return possibleMove
 
+
 ## grilleDistBombe():
 #   Grille contenantles murs et les bombes
 #   Elle permet ensuite de savoir si les ia sont en danger ou non
@@ -583,6 +581,9 @@ def grilleDistBombe():
             if (TAB[y][x] == 0): GRILLE_BOMBE[y][x] = 100
 
 
+## grilleDistBonus():
+#   Grille qui defini la distance aux bonus
+#   On l'utilisera pour savoir si un objet est atteignable
 def grilleDistBonus():
     global GRILLE_BONUS
     GRILLE_BONUS = numpy.copy(TAB)
@@ -593,6 +594,8 @@ def grilleDistBonus():
             else: GRILLE_BONUS[y][x] = 100
 
 
+## grilleDistBrique():
+#   Grille qui defini la distance a la prochaine brique
 def grilleDistBrique():
     global GRILLE_BRIQUE
     GRILLE_BRIQUE = numpy.copy(TAB)
@@ -619,6 +622,11 @@ def miseDistance(grille):
                     if (mini +1 < grille[y][x]):
                         grille[y][x] = mini +1
                         done = True
+
+
+## directionBonus(x,y):
+#   Permet aux ia de se deplacer vers un bonus
+#   Se sert a la grille des distance aux bonus
 @jit
 def direcionBonus(x,y):
     global GRILLE_BONUS
@@ -626,28 +634,30 @@ def direcionBonus(x,y):
     coup = (x, y)
     if (GRILLE_BONUS[x+1][y] < distmin):
         distmin = GRILLE_BONUS[x+1][y]
-
         coup = (0, 1)
     if (GRILLE_BONUS[x-1][y] < distmin):
         distmin = GRILLE_BONUS[x-1][y]
-
         coup = (0, -1)
     if (GRILLE_BONUS[x][y+1] < distmin):
         distmin = GRILLE_BONUS[x][y+1]
-
         coup = (1, 0)
     if (GRILLE_BONUS[x][y-1] < distmin):
         distmin = GRILLE_BONUS[x][y-1]
-
         coup = (-1, 0)
     return coup
 
+
+## iaBloque(ia):
+#   Permet de savoir si l'ia est bloquer
 @jit
 def iaBloque(ia):
     x = ia.caseX; y = ia.caseY
     if(GRILLE_BONUS[x][y]==100): ia.bloqued =True
     else: ia.bloqued = False
 
+
+## takeBonus(player):
+#   Permet au joueur de prendre un bonus en passant dessus
 @jit(forceobj=True)
 def takeBonus(player):
     global TAB
@@ -657,17 +667,19 @@ def takeBonus(player):
             LIST_BONUS.remove(bonus)
             TAB[player.caseX][player.caseY]=0
 
+
+## getBestScore():
+#   Permet d'ecrire le meilleur score dans le fichier score
 def getBestScore():
     global BEST_SCORE
     with open("scores.txt","r") as fichier :
         if fichier.mode == 'r':
-            BEST_SCORE = fichier.read()
-
-    if os.path.getsize("scores.txt") == 0 : return "0"
-    return str(int(BEST_SCORE))
+            BEST_SCORE = int(fichier.read())
+    return int(BEST_SCORE)
         
 
-
+## interactionJoueur():
+#   Tout ce qui concerne le joueur
 def interactionJoueur():
     global JOUEUR_BLEU
 
@@ -707,11 +719,14 @@ def interactionJoueur():
         JOUEUR_BLEU.move(JOUEUR_BLEU.dir[0]*VIT,JOUEUR_BLEU.dir[1]*VIT,ZOOM)
 
 
+
 #################################################################################
 ##
 ##  Initialisation
+
 def init():
     global TAB, LIST_BOMB, LIST_IA,LIST_JOUEUR, JOUEUR_BLEU,JOUEUR_JAUNE,JOUEUR_ORANGE,JOUEUR_ROUGE,HAUTEUR,LARGEUR,LIST_BONUS, TIME,DONE
+    TIME_START = time.time()# Temps depuis le lancement du jeu
     SON_FOND.play(loops=-1, maxtime = 0, fade_ms=0)
     TAB = [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,0,0,0,1],
@@ -744,7 +759,7 @@ def init():
     #init_jeu()
     TIME = time.time()
 
-    DONE = False                                # Variable qui indique si le jeu est terminé
+    DONE = False            # Variable qui indique si le jeu est terminé
 
     GRILLE_BOMBE = numpy.zeros((LARGEUR,HAUTEUR))     # Grille contenant les distances aux bombes sur la map
     GRILLE_BRIQUE = numpy.zeros((LARGEUR,HAUTEUR)) 
@@ -759,7 +774,6 @@ def init():
     LIST_IA.append(JOUEUR_ORANGE)       # Ajout du joueur ORANGE dans la liste IA
     LIST_IA.append(JOUEUR_ROUGE)        # Ajout du joueur ROUGE dans la liste IA
 
-
     for ia in LIST_IA:
         LIST_JOUEUR.append(ia)
         ia.setRightDir()    # Defini la direction des sprites des ia a l'init
@@ -768,9 +782,13 @@ def init():
     #generateBrick()
 
     generateBrick()
+
+
+
 #################################################################################
 ##
 ##   Boucle principale
+
 # --------  Main -----------
 init()
 while not DONE:
@@ -807,13 +825,10 @@ while not DONE:
     for joueur in LIST_JOUEUR:
         joueur.generateDist(TAB)
 
-
-
     grilleDistBombe()
     miseDistance(GRILLE_BOMBE)
     grilleDistBonus()
     miseDistance(GRILLE_BONUS)
-
 
     for i in range(JOUEUR_ROUGE.vitesse): fuyarde(JOUEUR_ROUGE)
     for i in range(JOUEUR_ORANGE.vitesse): tueur(JOUEUR_ORANGE)
@@ -824,10 +839,6 @@ while not DONE:
     for joueur in LIST_JOUEUR:
         Meurt(joueur)
         Invinciblility(joueur)
-
-
-
-
 
     if (JOUEUR_BLEU not in LIST_JOUEUR):
         SCREEN.fill(BLACK)
@@ -851,6 +862,5 @@ while not DONE:
         dessine()
         continue
     # A mettre quand le personnage est mort : pygame.mixer.music.stop()
-
 
 pygame.quit() # Ferme la fenetre et quitte le jeu
