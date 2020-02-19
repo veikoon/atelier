@@ -7,6 +7,7 @@ import copy
 from copy import deepcopy
 
 
+
 #################################################################################
 #	Class Player from Bomberman													#
 #	Created by Vincent : 24/01/2020												#
@@ -98,6 +99,8 @@ class Player:
 			self.spriteOffset += 1
 
 
+	## generateDist(self, tab):
+	#	Permet de creer la carte de distance pour chaque joueur
 	def generateDist(self, tab):
 		self.cartedist = [ [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 	            		   [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
@@ -137,7 +140,8 @@ class Player:
 							self.cartedist[y][x] = mini +1
 							done = True
 
-		## setRightDir(self):
+
+	## setRightDir(self):
 	#	Permet de determiner le bon sprite
 	#	en fonction de la direction de deplacement de l'IA
 	def setRightDir(self):
@@ -145,6 +149,7 @@ class Player:
 		if(self.dir == (0,-1)): self.spriteDir = 3
 		if(self.dir == (1,0)): self.spriteDir = 2
 		if(self.dir == (-1,0)): self.spriteDir = 1
+
 
 
 #################################################################################
@@ -166,6 +171,9 @@ class IA(Player):
 		self.needToGoCenter = False													# Initiation d'un direction par defaut de l'IA
 		self.bloque = False
 
+
+	## move(self, posX, posY,, zoom):
+	#	Permet de faire bouger l'ia
 	def move(self, posX, posY, zoom):
 		self.y += posY
 		self.x += posX

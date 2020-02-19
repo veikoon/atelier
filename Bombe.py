@@ -7,6 +7,9 @@ from pygame import *
 import time
 import random
 from Bonus import Bonus
+
+
+
 #################################################################################
 #   Class Bombe from Bomberman                                                  #
 #   Created by Quentin : 25/01/2020                                             #
@@ -39,6 +42,7 @@ class Bombe:
         self.stopmY =10
         self.stopX = 10
         self.stopY =10
+
 
     ## getSpriteBombe(self, imgBombe, zoom):
     #   Decoupe l'image imgBombe en sprite
@@ -114,7 +118,6 @@ class Bombe:
     def dessineExplo(self, surface,TAB,listeBombe,i,direction, zoom, listebonus):
         HAUTEUR = len(TAB)          # Nombre de cases en hauteur
         LARGEUR = len(TAB[0])       # Nombre de cases en largeur
-
         # Declanche le debu de l'explosion (branches)
         if(self.finexplode == True) : # Timer de la bombe est fini
             caseX = self.caseX        
@@ -173,12 +176,8 @@ class Bombe:
                             self.explmX= True
                             self.stopmX=i
 
-                
-             
-
                     if(self.animGo(TAB,direction,testcase,'x',caseX,caseY)): # verifie si c'est une case bombable                    
-                       
-
+                    
                         if(TAB[caseY][caseX+direction]==4):
                             self.explMulti(listeBombe,direction,'x')
                         if((caseX +direction)>0):
@@ -190,9 +189,7 @@ class Bombe:
                         surface.blit(rotateXimg, (self.x + place- 100 , self.y - 96))
                 
             if(i <= stopY1): 
-                if((i > HAUTEUR-self.caseY-2 and direction >0) or (self.caseY+direction <0)):
-                    a = 3
-
+                if((i > HAUTEUR-self.caseY-2 and direction >0) or (self.caseY+direction <0)):   a = 3
                 else:
                     caseTesteY = TAB[caseY+direction][caseX]
 
@@ -231,7 +228,6 @@ class Bombe:
                         rotateY =pygame.transform.rotate(self.sprite[spriteDir][self.spriteCount],rotatey)    
                         surface.blit(rotateY, (self.x - 100 , self.y + place - 96))   
                     
-
 
     ## animGo(self, tab, direction, testcase, sens, casex, casey):
     #   Permet de savoir le sens de l'affichage de la sprite de l'explosion
