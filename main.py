@@ -572,24 +572,31 @@ def getTabPos(x,y):
 #   En focntion de la position du joueur
 #   On regarde les cases tout autour pour connaitre leurs valeurs
 #   Retourne les deplacements possibles du joueur
-@jit(forceobj=True)
+#@jit(forceobj=True)
 def getPossibleMove(player):
-    possibleMove = []
-    tab = []
+    
 
+    try :
+        possibleMove = []
+        tab = []
+        tab.append(TAB[player.caseX+1][player.caseY])
+        tab.append(TAB[player.caseX-1][player.caseY])
+        tab.append(TAB[player.caseX][player.caseY+1])
+        tab.append(TAB[player.caseX][player.caseY-1])
+        tab.append(TAB[player.caseX][player.caseY])
 
-    tab.append(TAB[player.caseX+1][player.caseY])
-    tab.append(TAB[player.caseX-1][player.caseY])
-    tab.append(TAB[player.caseX][player.caseY+1])
-    tab.append(TAB[player.caseX][player.caseY-1])
-    tab.append(TAB[player.caseX][player.caseY])
+        if((tab[0]  == 0 or tab[0]  == 5 or tab[0]  == 6 or player.y != 0) and player.x == 0): possibleMove.append((0,1))
+        if((tab[1]  == 0 or tab[1]  == 5 or tab[1]  == 6 or player.y != 0) and player.x == 0): possibleMove.append((0,-1))
+        if((tab[2]  == 0 or tab[2]  == 5 or tab[2]  == 6 or player.x != 0) and player.y == 0): possibleMove.append((1,0))
+        if((tab[3]  == 0 or tab[3]  == 5 or tab[3]  == 6 or player.x != 0) and player.y == 0): possibleMove.append((-1,0))
+        if((tab[4]  == 0 or tab[4]  == 5 or tab[4]  == 6 or player.x != 0) and player.y == 0): possibleMove.append((0,0))
 
-    if((tab[0]  == 0 or tab[0]  == 5 or tab[0]  == 6 or player.y != 0) and player.x == 0): possibleMove.append((0,1))
-    if((tab[1]  == 0 or tab[1]  == 5 or tab[1]  == 6 or player.y != 0) and player.x == 0): possibleMove.append((0,-1))
-    if((tab[2]  == 0 or tab[2]  == 5 or tab[2]  == 6 or player.x != 0) and player.y == 0): possibleMove.append((1,0))
-    if((tab[3]  == 0 or tab[3]  == 5 or tab[3]  == 6 or player.x != 0) and player.y == 0): possibleMove.append((-1,0))
-    if((tab[4]  == 0 or tab[4]  == 5 or tab[4]  == 6 or player.x != 0) and player.y == 0): possibleMove.append((0,0))
-    return possibleMove
+        return possibleMove
+
+    except IndexError :
+        return TAB[player.caseX][player.caseY]
+
+   
 
 ## grilleDistBombe():
 #   Grille contenantles murs et les bombes
