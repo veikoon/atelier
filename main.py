@@ -526,7 +526,7 @@ def fuyarde(ia):
             possibleMove = getPossibleMove(ia)
             if ((0,0) in possibleMove): possibleMove.remove((0,0))
             joueurCloser = getCloserPlayer(ia)[1]
-            if distJoueurCloser <= 5:
+            if distJoueurCloser <= 5 and playerAcessible(ia):
                 caseMax = 0
                 for dep in possibleMove:
                     if(joueurCloser.cartedist[ia.caseX + dep[1]][ia.caseY + dep[0]] > caseMax):
@@ -637,6 +637,11 @@ def grilleDistBrique():
             elif (TAB[y][x] == 1 or TAB[y][x] == 2): GRILLE_BRIQUE[y][x] = 1000
             else: GRILLE_BRIQUE[y][x] = 100
 
+def playerAcessible(ia):
+    for player in LIST_JOUEUR:
+        if player.carteAcces[ia.caseY][ia.caseX] != 1000 and player != ia : return True
+
+    return False
 
 ## miseDistance():
 #   Fonction qui permet de mettre à distance les cases de la grille bombe
@@ -849,6 +854,7 @@ while not DONE:
 
     for joueur in LIST_JOUEUR:
         joueur.generateDist(TAB)
+        joueur.generateAcces(TAB)
     grilleDistBombe()
     miseDistance(GRILLE_BOMBE)
     grilleDistBonus()
