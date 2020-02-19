@@ -649,7 +649,7 @@ def direcionBonus(x,y):
 
 
 ## iaBloque(ia):
-#   Permet de savoir si l'ia est bloquer
+#   Permet de savoir si l'ia est bloquée
 @jit
 def iaBloque(ia):
     x = ia.caseX; y = ia.caseY
