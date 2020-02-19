@@ -745,7 +745,7 @@ def interactionJoueur():
 ##  Initialisation
 
 def init():
-    global TAB, LIST_BOMB, LIST_IA,LIST_JOUEUR, JOUEUR_BLEU,JOUEUR_JAUNE,JOUEUR_ORANGE,JOUEUR_ROUGE,HAUTEUR,LARGEUR,LIST_BONUS, TIME,DONE
+    global TAB, LIST_BOMB, LIST_IA,LIST_JOUEUR, JOUEUR_BLEU,JOUEUR_JAUNE,JOUEUR_ORANGE,JOUEUR_ROUGE,HAUTEUR,LARGEUR,LIST_BONUS, TIME,DONE,TIME_START
 
     TIME_START = time.time()# Temps depuis le lancement du jeu
     SON_FOND.play(loops=-1, maxtime = 0, fade_ms=0)
