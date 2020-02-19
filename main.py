@@ -135,12 +135,6 @@ def dessine():
     SCREEN.blit(FONT.render("PV : "  + str(JOUEUR_BLEU.lives), True, YELLOW), (300,15))
     SCREEN.blit(FONT.render("TIMER : " + str(int(TIME- TIME_START)) , True,YELLOW),(850,15))
     SCREEN.blit(FONT.render("BEST SCORE : " + str(getBestScore()) , True, YELLOW),(1400,15))
-
-<<<<<<< HEAD
-    SCREEN.blit(FONT.render("Temps : " + str(int(TIME- TIME_START)) + "  PV : "+str(JOUEUR_BLEU.lives), True, BLACK), (900,15))
-
-=======
->>>>>>> 7dab3583db50afde368583278e456f706f590a06
     pygame.display.flip()       # Rafraichis l'affichage de Pygame
 
 
@@ -188,10 +182,7 @@ def poseBombe(player):
         LIST_BOMB.append(Bombe(caseX*ZOOM+100,caseY*ZOOM+96,BOMBES, ZOOM, TIME,player))
         TAB[caseY][caseX] = 4
         player.nbBombe += 1
-<<<<<<< HEAD
-=======
 
->>>>>>> 7dab3583db50afde368583278e456f706f590a06
 
 ## safeZone(ia):
 #   Defini la zone de securite pour une ia
@@ -477,18 +468,13 @@ def normale(ia):
                     poseBombe(ia)                
                     return
                 else:
-
-                    
                     joueurCloser = getCloserPlayer(ia)[1]
-                    caseMin = 1000
-                    print(possibleMove)
-                    print((-ia.dir[0],-ia.dir[1]))
+                    caseMin = 1000  
                     if ((-ia.dir[0],-ia.dir[1]) in possibleMove): possibleMove.remove((-ia.dir[0],-ia.dir[1]))
-                    poseBombe(ia)
-                    return
-                else:
-                    joueurCloser = getCloserPlayer(ia)[1]
-                    caseMin = 1000      
+                    for dire in possibleMove:
+                        if (joueurCloser.cartedist[ia.caseX + dire[1]][ia.caseY + dire[0]] < caseMin):
+                            caseMin = joueurCloser.cartedist[ia.caseX + dire[1]][ia.caseY + dire[0]]
+                            ia.dir = dire    
             ia.move(ia.dir[0]*VIT,ia.dir[1]*VIT,ZOOM)
         else:
             ia.move(ia.dir[0]*VIT,ia.dir[1]*VIT,ZOOM)
@@ -590,7 +576,7 @@ def getTabPos(x,y):
 def getPossibleMove(player):
     possibleMove = []
     tab = []
-<<<<<<< HEAD
+
 
     tab.append(TAB[player.caseX+1][player.caseY])
     tab.append(TAB[player.caseX-1][player.caseY])
