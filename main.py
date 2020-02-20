@@ -453,9 +453,10 @@ def normale(ia):
     else:
         if(ia.x != 0 or ia.y !=0): ia.needToGoCenter = True
         else:ia.needToGoCenter = False
+
         distJoueurCloser = getCloserPlayer(ia)[0]
         if (distJoueurCloser <= ia.rayonBombe and safeZone(ia)) : poseBombe(ia)
-        if(not ia.needToGoCenter):
+        elif(not ia.needToGoCenter):
             distBonus = GRILLE_BONUS[ia.caseX][ia.caseY]
             possibleMove = getPossibleMove(ia)
             if ((0,0) in possibleMove): possibleMove.remove((0,0))
@@ -594,7 +595,9 @@ def getPossibleMove(player):
         return possibleMove
 
     except IndexError :
-        return TAB[player.caseX][player.caseY]
+        tab = []
+        tab.append(TAB[player.caseX][player.caseY])
+        return tab
 
    
 
@@ -639,7 +642,7 @@ def grilleDistBrique():
 
 def playerAcessible(ia):
     for player in LIST_JOUEUR:
-        if player.carteAcces[ia.caseY][ia.caseX] != 1000 and player != ia : return True
+        if player.carteAcces[ia.caseX][ia.caseY] != 1000 and player != ia : return True
 
     return False
 
