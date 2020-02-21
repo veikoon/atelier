@@ -468,10 +468,16 @@ def normale(ia):
                 if(TAB[ia.caseX + ia.dir[1]][ia.caseY + ia.dir[0]] == 3 and safeZone(ia)):
                     poseBombe(ia)                
                     return
+                if(safeZone(ia) == False):
+                    if ((-ia.dir[0],-ia.dir[1]) in possibleMove): 
+                            possibleMove.remove((-ia.dir[0],-ia.dir[1]))
+                            for dire in possibleMove:
+                                ia.dir=dire
+                    ia.move(ia.dir[0]*VIT,ia.dir[1]*VIT,ZOOM)
                 else:
                     joueurCloser = getCloserPlayer(ia)[1]
                     caseMin = 1000  
-                    if ((-ia.dir[0],-ia.dir[1]) in possibleMove): possibleMove.remove((-ia.dir[0],-ia.dir[1]))
+                    
                     for dire in possibleMove:
                         if (joueurCloser.cartedist[ia.caseX + dire[1]][ia.caseY + dire[0]] < caseMin):
                             caseMin = joueurCloser.cartedist[ia.caseX + dire[1]][ia.caseY + dire[0]]
@@ -496,10 +502,16 @@ def tueur(ia):
             if(TAB[ia.caseX + ia.dir[1]][ia.caseY + ia.dir[0]] == 3 and safeZone(ia)):
                 poseBombe(ia)
                 return
+            if(safeZone(ia) == False):
+                if ((-ia.dir[0],-ia.dir[1]) in possibleMove): 
+                        possibleMove.remove((-ia.dir[0],-ia.dir[1]))
+                        for dire in possibleMove:
+                            ia.dir=dire
+                ia.move(ia.dir[0]*VIT,ia.dir[1]*VIT,ZOOM)
             else:
                 
                 caseMin = 1000
-                if ((-ia.dir[0],-ia.dir[1]) in possibleMove): possibleMove.remove((-ia.dir[0],-ia.dir[1]))
+                
 
                 for dire in possibleMove:
                     if (JOUEUR_BLEU.cartedist[ia.caseX + dire[1]][ia.caseY + dire[0]] < caseMin):
@@ -526,14 +538,14 @@ def fuyarde(ia):
             distBonus = GRILLE_BONUS[ia.caseX][ia.caseY]
             possibleMove = getPossibleMove(ia)
             if ((0,0) in possibleMove): possibleMove.remove((0,0))
-            joueurCloser = getCloserPlayer(ia)[1]
-            if distJoueurCloser <= 5 and playerAcessible(ia):
-                caseMax = 0
-                for dep in possibleMove:
-                    if(joueurCloser.cartedist[ia.caseX + dep[1]][ia.caseY + dep[0]] > caseMax):
-                        caseMax = joueurCloser.cartedist[ia.caseX + dep[1]][ia.caseY + dep[0]]
-                        ia.dir = dep
-            elif bonusDisponnible(ia): 
+            #joueurCloser = getCloserPlayer(ia)[1]
+            # if distJoueurCloser <= 5 and playerAcessible(ia):
+            #     caseMax = 0
+            #     for dep in possibleMove:
+            #         if(joueurCloser.cartedist[ia.caseX + dep[1]][ia.caseY + dep[0]] > caseMax):
+            #             caseMax = joueurCloser.cartedist[ia.caseX + dep[1]][ia.caseY + dep[0]]
+            #             ia.dir = dep
+            if bonusDisponnible(ia): 
                 direction = direcionBonus(ia.caseX,ia.caseY)
                 if (direction in possibleMove):
                     ia.dir = direction
@@ -621,7 +633,7 @@ def grilleDistBombe():
 #   On l'utilisera pour savoir si un objet est atteignable
 def grilleDistBonus():
     global GRILLE_BONUS
-    GRILLE_BONUS = numpy.copy(TAB)
+    GRILLE_BONUS = copy.deepcopy(TAB)
     for x in range(LARGEUR):
         for y in range(HAUTEUR):
             if (TAB[y][x] == 6): GRILLE_BONUS[y][x] = 0
@@ -697,7 +709,7 @@ def iaBloque(ia):
 
 ## takeBonus(player):
 #   Permet au joueur de prendre un bonus en passant dessus
-@jit(forceobj=True)
+#@jit(forceobj=True)
 def takeBonus(player):
     global TAB
     for bonus in LIST_BONUS:

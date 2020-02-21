@@ -158,8 +158,9 @@ class Bombe:
                         if(not random.randrange(3) and caseTesteX != 6): 
                             listebonus.append(Bonus(caseX+direction, caseY, random.randrange(7), zoom))
                             for bonus in listebonus:
+
                                 if(bonus.caseX ==caseX+direction and bonus.caseY ==caseY ):
-                                    if(bonus.bonus >2):
+                                    if(bonus.bonus >3):
                                       
                                         TAB[caseY][caseX+direction]=6
                                     else:
@@ -199,7 +200,7 @@ class Bombe:
                             listebonus.append(Bonus(caseX, caseY+direction, random.randrange(7), zoom))
                             for bonus in listebonus:
                                 if(bonus.caseX ==caseX and bonus.caseY ==caseY +direction):
-                                    if(bonus.bonus >2):
+                                    if(bonus.bonus >3):
                                     
                                         TAB[caseY+direction][caseX]=6
                                     else:
