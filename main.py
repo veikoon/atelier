@@ -661,7 +661,7 @@ def playerAcessible(ia):
 ## miseDistance():
 #   Fonction qui permet de mettre à distance les cases de la grille bombe
 #   Si la case se trouve à cote de la bombe elle sera mise à 1 (etc)
-@jit
+@jit(forceobj=True)
 def miseDistance(grille):
     done = True
     while done:
