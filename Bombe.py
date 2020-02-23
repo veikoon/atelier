@@ -32,16 +32,16 @@ class Bombe:
         self.spriteOffset = 0       # Permet de changer de sprite en fonction du decalage et non a chaque mouvement
         self.caseX = player.caseY
         self.caseY = player.caseX
-        self.exploFin = False
-        self.finexplode = False
-        self.explX = False
-        self.explY = False
-        self.explmX = False
+        self.exploFin = False #Fin de l'explosion
+        self.finexplode = False #fin du temp du compte à rebours de la bombe
+        self.explX = False #si la bombe à exploser en X
+        self.explY = False #si la bombe à exploser en Y
+        self.explmX = False #Le m en plus indique que nous sommes en négatif
         self.explmY = False
         self.stopmX = 10
         self.stopmY =10
-        self.stopX = 10
-        self.stopY =10
+        self.stopX = 10 #distance à laquelle le rayon de l'explosion ne se propage plus en X
+        self.stopY =10 
 
 
     ## getSpriteBombe(self, imgBombe, zoom):
@@ -146,8 +146,8 @@ class Bombe:
             if(self.exploFin):     # Reinitialise la case de la bombe
                 TAB[caseY][caseX] = 0            
            
-            #if( i > LARGEUR-self.caseX-2 and direction >0):
-            if(i <= stopX1): 
+           
+            if(i <= stopX1):  #vérifie si l'explosion ne doit pas depasser un certains rayon, par exemple après avoir détruit un bloc
                 if( (self.caseX+direction <0 )or (i > LARGEUR-self.caseX-2 and direction >0)):
                     b= 2
                 else:
@@ -155,7 +155,7 @@ class Bombe:
                     caseTesteX = TAB[caseY][caseX+direction]
                     if(self.animStop(TAB,direction,testcase,'x',caseX,caseY) and ((caseTesteX == 3 or caseTesteX == 6) and not explX)):
                         
-                        if(not random.randrange(3) and caseTesteX != 6): 
+                        if(not random.randrange(3) and caseTesteX != 6): #rajoute les bonus dans certaines des cases détruites
                             listebonus.append(Bonus(caseX+direction, caseY, random.randrange(7), zoom))
                             for bonus in listebonus:
 
@@ -168,9 +168,10 @@ class Bombe:
                         else:
                             TAB[caseY][caseX+direction]=5
                             for bonus in listebonus:
+				#détruit le bonus si celui ci est dans l'explosion d'une des bombes			
                                 if(bonus.caseY == caseY and bonus.caseX == caseX + direction): listebonus.remove(bonus)
 
-                        if(direction>0):
+                        if(direction>0): #choisis les attributs à changer suivants si la fonction est appeler pour l'explosion en positif ou en négatif
                             self.explX= True
                             self.stopX=i
                         else:
@@ -178,36 +179,38 @@ class Bombe:
                             self.stopmX=i
 
                     if(self.animGo(TAB,direction,testcase,'x',caseX,caseY)): # verifie si c'est une case bombable                    
-                    
-                        if(TAB[caseY][caseX+direction]==4):
+                    	
+                        if(TAB[caseY][caseX+direction]==4):#Si il y a plusieurs bombes, on explose les autres bombes avec l'explosion.
                             self.explMulti(listeBombe,direction,'x')
                         if((caseX +direction)>0):
                             TAB[caseY][caseX+direction]=5
-                        if(self.exploFin):                     
+                        if(self.exploFin):  #sil'explosion est fini, on remet toute les cases à 0                  
                             TAB[caseY][caseX+direction]=0
 
                         rotateXimg =pygame.transform.rotate(self.sprite[spriteDir][self.spriteCount],rotatex)    
                         surface.blit(rotateXimg, (self.x + place- 100 , self.y - 96))
-                
-            if(i <= stopY1): 
+
+            #Le cas des X est juste au dessus il est le même en Y 
+            if(i <= stopY1): #vérifie si l'explosion ne doit pas depasser un certains rayon, par exemple après avoir détruit un bloc
                 if((i > HAUTEUR-self.caseY-2 and direction >0) or (self.caseY+direction <0)):   a = 3
                 else:
                     caseTesteY = TAB[caseY+direction][caseX]
 
                     if(self.animStop(TAB,direction,testcase,'y',caseX,caseY) and ((caseTesteY == 3 or caseTesteY == 6) and not explY)):
                         tempRand = random.randrange(5)
-                        if(not random.randrange(3) and caseTesteY != 6):
+                        if(not random.randrange(3) and caseTesteY != 6):#rajoute les bonus dans certaines des cases détruites
                             listebonus.append(Bonus(caseX, caseY+direction, random.randrange(7), zoom))
                             for bonus in listebonus:
                                 if(bonus.caseX ==caseX and bonus.caseY ==caseY +direction):
                                     if(bonus.bonus >3):
-                                    
+                               		#on mets la case à 6 pour les bonus et ainsi pour pouvoir guider les IA vers les Bonus et non les malus
                                         TAB[caseY+direction][caseX]=6
                                     else:
                                         TAB[caseY+direction][caseX]=0
                         else:
                             TAB[caseY+direction][caseX]=5
                             for bonus in listebonus:
+				#détruit le bonus si celui ci est dans l'explosion d'une des bombes	
                                 if(bonus.caseY == caseY + direction and bonus.caseX == caseX): listebonus.remove(bonus)
 
                         if(direction>0):
@@ -218,12 +221,13 @@ class Bombe:
                             self.stopmY=i
 
                     if(self.animGo(TAB,direction,testcase,'y',caseX,caseY)):
-                        
+                        #Si il y a plusieurs bombes, on explose les autres bombes avec l'explosion.
                         if(TAB[caseY+direction][caseX]==4):
                             self.explMulti(listeBombe,direction,'y')
                         TAB[caseY+direction][caseX] = 5
 
                         if(self.exploFin):
+
                             TAB[caseY+direction][caseX] = 0
 
                         rotateY =pygame.transform.rotate(self.sprite[spriteDir][self.spriteCount],rotatey)    
