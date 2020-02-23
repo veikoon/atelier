@@ -19,12 +19,14 @@ Il s'agit d'une copie du jeu Bomberman mettant en scene un joueur se déplacant 
 ### Commandes du jeu
 Il y a une page de commandes accessible directiement sur le menu du jeu, en appuyant sur la fflèche du bas et en appuyant sur entrée.
 Les commandes sont:
--ESPACE: Poser des Bombes
--Flèches directionnelles pour se deplacer
+- ESPACE: Poser des Bombes
+- Flèches directionnelles pour se deplacer
+
 Le but étant de tuer les autres IA avec les bombes en s'aidant si l'on veut des différents bonus cachés dans les briques
 ### Bugs reports
 Une section dédiée aux bugs reports se trouve dans le dossier .github
-###Présentation code
+
+### Présentation code
 Les classes:
 -main: contient les fonctions principales du jeu tel que la gestion des evenement, la gestion des différentes règles, 
 l'affichage des images, la création du terrain, et le lancement du Menu, 
