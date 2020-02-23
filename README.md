@@ -24,3 +24,11 @@ Les commandes sont:
 Le but étant de tuer les autres IA avec les bombes en s'aidant si l'on veut des différents bonus cachés dans les briques
 ### Bugs reports
 Une section dédiée aux bugs reports se trouve dans le dossier .github
+###Présentation code
+Les classes:
+-main: contient les fonctions principales du jeu tel que la gestion des evenement, la gestion des différentes règles, 
+l'affichage des images, la création du terrain, et le lancement du Menu, 
+et contient le caractère des ia et la génération des différentes grilles de distances intermédiaires par rapport au Bonus, Joueur,Bombe et Brique
+-Player:classe pour les IA et le Joueur
+-Bombe: gestion des animations et de l'explosion des bombes,destruction des briques/autres bombes/bonus, et ajoute les bonus sur certaines briques cassés.
+-Bonus: donne les effets des bonus/malus et modifie les attributs des joueurs
