@@ -161,7 +161,7 @@ def removeBomb():
             Bomb.spriteCount = 0
             Bomb.spriteDir=0
             Bomb.sprite= Bomb.getSpriteExplo(FIRE, ZOOM)
-            #SON_BOMBE.play()       # Mise en commentaire car ca fais beuguer l'ordi de Quentin
+            SON_BOMBE.play()     
             TAB[Bomb.caseY][Bomb.caseX] = 5
             Bomb.explode = False
             Bomb.player.nbBombe -= 1
@@ -230,7 +230,7 @@ def Meurt(player):
                 if(player in LIST_IA):
                     LIST_IA.remove(player)
                     player.nbBombeMax = 0
-                    #SON_MORT.play()
+                    SON_MORT.play()
 
 
 
@@ -661,7 +661,7 @@ def playerAcessible(ia):
 ## miseDistance():
 #   Fonction qui permet de mettre à distance les cases de la grille bombe
 #   Si la case se trouve à cote de la bombe elle sera mise à 1 (etc)
-@jit
+@jit(forceobj=True)
 def miseDistance(grille):
     done = True
     while done:
@@ -678,7 +678,7 @@ def miseDistance(grille):
 ## directionBonus(x,y):
 #   Permet aux ia de se deplacer vers un bonus
 #   Se sert a la grille des distance aux bonus
-@jit
+@jit(forceobj=True)
 def direcionBonus(x,y):
     global GRILLE_BONUS
     distmin = 10000
