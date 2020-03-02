@@ -1,5 +1,8 @@
 # atelier de E2 : IA et jeux
 
+# WARNING --> Pour jouer vous devez vous munir d'un écran 1920*1080
+
+
 ## Bomberman
 
 ### Explications
